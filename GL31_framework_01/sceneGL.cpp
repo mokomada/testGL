@@ -28,6 +28,10 @@ CSceneGL *CSceneGL::m_pCur;
 //=============================================================================
 CSceneGL::CSceneGL(int priority, OBJTYPE objType)
 {
+	// プライオリティ・オブジェクトタイプ反映
+	m_Priority	= priority;
+	m_ObjType	= objType;
+
 	if(m_pTop == NULL)
 	{// リストに何も登録されてない場合
 
