@@ -28,7 +28,7 @@ CSceneGL *CSceneGL::m_pCur;
 //=============================================================================
 CSceneGL::CSceneGL(int priority, OBJTYPE objType)
 {
-	// ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½^ï¿½Cï¿½vï¿½Eï¿½vï¿½ï¿½ï¿½Cï¿½Iï¿½ï¿½ï¿½eï¿½Bï¿½Zï¿½bï¿½g
+	// ƒIƒuƒWƒFƒNƒgƒ^ƒCƒvEƒvƒ‰ƒCƒIƒŠƒeƒBƒZƒbƒg
 	m_ObjType	= objType;
 	m_Priority	= priority;
 
