@@ -35,7 +35,9 @@
 # Debug Files
 *.log
 *.tlog
+*.cache
 *.db
+*.opendb
 *.pdb
 *.idb
 *.lastbuildstate
