@@ -1,9 +1,7 @@
-﻿  game.cpp
-  コードを生成中...
-  コンパイル中...
-  sceneModel.cpp
+﻿  sceneModel.cpp
   main.cpp
 c:\users\hal12\desktop\glグループ制作\gl31_framework_01\main.cpp(73): warning C4244: '引数' : 'float' から 'int' への変換です。データが失われる可能性があります。
 c:\users\hal12\desktop\glグループ制作\gl31_framework_01\main.cpp(73): warning C4244: '引数' : 'float' から 'int' への変換です。データが失われる可能性があります。
+  game.cpp
   コードを生成中...
   GL31_20160630_01.vcxproj -> C:\Users\HAL12\Desktop\GLグループ制作\GL31_framework_01\Debug\GL31_framework_01.exe
