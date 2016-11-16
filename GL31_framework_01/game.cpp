@@ -30,7 +30,6 @@
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
-CSceneModel	*CGame::m_Player;
 
 //=============================================================================
 //	関数名	:Init
@@ -43,7 +42,7 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
-	m_Player = CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
+	CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 2D

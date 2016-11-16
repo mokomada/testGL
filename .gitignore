@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+# *.obj
 
 # Precompiled Headers
 *.gch
@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Debug Files
+*.log
+*.tlog
+*.pdb
+*.idb
+*.lastbuildstate
+*.lik
+
+# Release Files
+*.unsuccessfulbuild
+*.manifest
