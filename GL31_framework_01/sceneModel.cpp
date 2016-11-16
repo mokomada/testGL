@@ -166,12 +166,12 @@ void CSceneModel::Update(void)
 		if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 		{
 			//‰ñ“]—Ê‚Ì‰ÁZ
-			m_MoveDirection.y += MOVE_ROT;
+			m_MoveDirection.y -= MOVE_ROT;
 		}
 		if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 		{
 			//‰ñ“]—Ê‚Ì‰ÁZ
-			m_MoveDirection.y -= MOVE_ROT;
+			m_MoveDirection.y += MOVE_ROT;
 		}
 		
 		// ˆÚ“®—Ê‚ğİ’è
@@ -198,8 +198,17 @@ void CSceneModel::Update(void)
 	m_Pos.x += m_Move.x;
 	m_Pos.z += m_Move.z;
 
-	m_Move += (-m_Move * MODEL_SPEED_DOWN);
-
+	//ˆÚ“®—Ê‚ÌŒ¸Š
+	if (m_bJump == true)
+	{
+		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
+		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
+		m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
+	}
+	else
+	{
+		m_Move += (-m_Move * MODEL_SPEED_DOWN);
+	}
 	// ƒWƒƒƒ“ƒv
 	if(KT_SPACE && !m_bJump)
 	{

@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-﻿  sceneModel.cpp
-LINK : fatal error LNK1104: ファイル 'C:\Users\HAL12\Desktop\GLグループ制作\GL31_framework_01\Debug\GL31_framework_01.ilk' を開くことができません。
-=======
 ﻿  game.cpp
   コードを生成中...
   コンパイル中...
-  meshfield.cpp
+  sceneModel.cpp
+  main.cpp
+c:\users\hal12\desktop\glグループ制作\gl31_framework_01\main.cpp(73): warning C4244: '引数' : 'float' から 'int' への変換です。データが失われる可能性があります。
+c:\users\hal12\desktop\glグループ制作\gl31_framework_01\main.cpp(73): warning C4244: '引数' : 'float' から 'int' への変換です。データが失われる可能性があります。
   コードを生成中...
-  スキップ中... (関連する変更は検出されませんでした)
-  manager.cpp
-  GL31_20160630_01.vcxproj -> C:\Users\ikeda.tatsuya\Documents\Visual Studio 2010\Projects\GL31_framework_01\Debug\GL31_framework_01.exe
->>>>>>> 61170162f3a4508e565ff9de227fb0eb2de41cb2
+  GL31_20160630_01.vcxproj -> C:\Users\HAL12\Desktop\GLグループ制作\GL31_framework_01\Debug\GL31_framework_01.exe
