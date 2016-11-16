@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+﻿  sceneModel.cpp
+LINK : fatal error LNK1104: ファイル 'C:\Users\HAL12\Desktop\GLグループ制作\GL31_framework_01\Debug\GL31_framework_01.ilk' を開くことができません。
+=======
 ﻿  game.cpp
   コードを生成中...
   コンパイル中...
@@ -6,3 +10,4 @@
   スキップ中... (関連する変更は検出されませんでした)
   manager.cpp
   GL31_20160630_01.vcxproj -> C:\Users\ikeda.tatsuya\Documents\Visual Studio 2010\Projects\GL31_framework_01\Debug\GL31_framework_01.exe
+>>>>>>> 61170162f3a4508e565ff9de227fb0eb2de41cb2

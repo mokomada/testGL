@@ -28,6 +28,9 @@
 #define	MODEL_SPEED_DOWN	(0.1f)			// プレイヤーの回転ステップ
 #define	PLAYER_JUMP			(10.0f)				// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY		(0.4f)			// プレイヤーの回転ステップ
+#define	MOVE_ROT		(0.02f)				// プレイヤーの回転量
+#define	FMOVE_SPEED		(0.8f)				// プレイヤーの前方移動量
+#define	BMOVE_SPEED		(0.4f)				// プレイヤーの後方移動量
 
 //=============================================================================
 //	構造体
@@ -110,6 +113,7 @@ private:
 	int		m_nCntMove;		// 回転カウンタ
 	VECTOR3	m_Move;			// 移動量
 	VECTOR3	m_RotMove;		// 回転量
+	VECTOR3 m_MoveDirection;// 移動方向
 	bool	m_bJump;		// ジャンプフラグ
 };
 
