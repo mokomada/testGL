@@ -201,12 +201,12 @@ void CSceneModel::Update(void)
 	m_Move += (-m_Move * MODEL_SPEED_DOWN);
 
 	// ジャンプ
-	/*if(KT_SPACE && !m_bJump)
+	if(KT_SPACE && !m_bJump)
 	{
 		m_Move.y += PLAYER_JUMP;
 
 		m_bJump = true;
-	}*/
+	}
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
