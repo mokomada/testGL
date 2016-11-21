@@ -79,7 +79,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="debugProcGL.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="network.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -106,7 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="debugProcGL.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="network.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />
