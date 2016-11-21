@@ -7,6 +7,8 @@
 *.suo
 *.lo
 *.o
+*.vcxproj
+*.db
 
 # Precompiled Headers
 *.gch
