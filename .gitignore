@@ -35,17 +35,8 @@
 *.app
 
 # Debug Files
-*.log
-*.ipch
-*.tlog
-*.cache
-*.db
-*.opendb
-*.pdb
-*.idb
-*.lastbuildstate
-*.lik
+/.vs/
+/Debug/
 
 # Release Files
-*.unsuccessfulbuild
-*.manifest
+/Release/
