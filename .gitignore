@@ -3,9 +3,13 @@
 
 # Compiled Object files
 *.slo
+*.suo
 *.lo
 *.o
 # *.obj
+*.vcxproj
+*.filters
+*.user
 
 # Precompiled Headers
 *.gch
@@ -34,6 +38,9 @@
 # Debug Files
 *.log
 *.tlog
+*.cache
+*.db
+*.opendb
 *.pdb
 *.idb
 *.lastbuildstate
