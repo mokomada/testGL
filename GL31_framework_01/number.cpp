@@ -24,7 +24,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CNumber::CNumber(int priority, OBJTYPE objtype) : CSceneGL(priority, objtype)
+CNumber::CNumber()
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;
@@ -54,8 +54,8 @@ void CNumber::Init(VECTOR3 pos, VECTOR2 size, int value, char *texName)
 
 
 	// 各種初期設定
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Pos = pos;
+	m_Rot = VECTOR3( 0.0f , 0.0f , 0.0f );
 	m_Size		= size;
 	m_fAngle	= atan2f(m_Size.x, m_Size.y);
 	m_fLength	= hypotf(m_Size.x, m_Size.y) * 0.5f;
@@ -72,7 +72,7 @@ void CNumber::Init(VECTOR3 pos, VECTOR2 size, int value, char *texName)
 //	戻り値	:無し
 //	説明	:終了処理を行う。
 //=============================================================================
-void CNumber::Uninit(bool isLast)
+void CNumber::Uninit()
 {
 
 }
@@ -214,4 +214,29 @@ void CNumber::SetNumber(int value)
 	}
 
 	m_Number = value;
+}
+
+//=============================================================================
+//	関数名	:GetFigure
+//	引数	:int num(数値)
+//	戻り値	:無し
+//	説明	;桁数を出す
+//=============================================================================
+int CNumber::GetFigure( int num )
+{
+	//0以下なら抜け出し0を渡す
+	if( num <= 0 )return 0;
+
+	int figure = 1;
+
+	while( num >= 10 )
+	{
+		//数の移動(シフト）
+		num /= 10;
+
+		//桁数の増加
+		figure ++;
+	}
+
+	return figure;
 }
