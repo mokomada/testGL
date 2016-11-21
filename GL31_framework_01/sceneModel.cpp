@@ -186,6 +186,12 @@ void CSceneModel::Update(void)
 			m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 		}
 
+		camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+		camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+
+		camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
+		camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
+
 		// ƒWƒƒƒ“ƒv
 		if (KT_SPACE && !m_bJump)
 		{
