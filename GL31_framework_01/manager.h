@@ -21,7 +21,6 @@
 //=============================================================================
 class CMode;
 class CInput;
-class CDebugProc;
 class CRendererGL;
 class CSceneGL;
 class CCameraGL;
@@ -43,15 +42,19 @@ public:
 	static CRendererGL	*GetRendererGL(void){ return m_RendererGL; }
 	static CCameraGL	*GetCamera(void){ return m_Camera; }
 
-	static void			SetMode(CMode *mode);
+	static CMode		*GetMode(void) { return m_Mode; }
+	static int			GetModeState(void) { return m_ModeState; }
+	static void			SetMode(CMode *mode, int modeState);
+
 
 private:
 	static CMode		*m_Mode;		// モードのインスタンス
 	static CInput		*m_Input;		// 入力のインスタンス
 	static CCameraGL	*m_Camera;		// カメラのインスタンス
 	static CLightGL		*m_Light;		// ライトのインスタンス
-//	static CDebugProc	*m_DebugProc;	// デバッグプロシージャクラス
 	static CRendererGL	*m_RendererGL;	// レンダラ(GL)
+
+	static int	m_ModeState;
 	
 	void	LoadScript(char *fileName);
 };

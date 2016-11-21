@@ -18,6 +18,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMode		*CFade::m_NextMode;
+int			CFade::m_NextModeState;
 FADE_STATE	CFade::m_FadeState;
 int			CFade::m_FadeTime;
 float		CFade::m_Alpha;
@@ -90,7 +91,7 @@ void CFade::Update(void)
 			
 			if(m_NextMode != NULL)
 			{
-				CManager::SetMode(m_NextMode);
+				CManager::SetMode(m_NextMode, m_NextModeState);
 				m_NextMode = NULL;
 			}
 		}
@@ -185,11 +186,12 @@ void CFade::Draw(void)
 //	戻り値	:無し
 //	説明	:フェードを開始する。
 //=============================================================================
-void CFade::Start(CMode *nextMode, FADE_STATE fadeState)
+void CFade::Start(CMode *nextMode, int nextModeState, FADE_STATE fadeState)
 {
 	if((nextMode != NULL) && (m_FadeState == FS_NONE))
 	{
 		m_NextMode = nextMode;
+		m_NextModeState = nextModeState;
 		m_FadeState = fadeState;
 	}
 }

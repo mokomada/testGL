@@ -60,7 +60,7 @@ void CTutorial::Update(void)
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
-		CFade::Start(new CGame, FS_OUT);
+		CFade::Start(new CGame, MODE_GAME, FS_OUT);
 	}
 }
 

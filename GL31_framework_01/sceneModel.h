@@ -28,6 +28,9 @@
 #define	MODEL_SPEED_DOWN	(0.1f)			// プレイヤーの回転ステップ
 #define	PLAYER_JUMP			(10.0f)				// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY		(0.4f)			// プレイヤーの回転ステップ
+#define	MOVE_ROT		(0.02f)				// プレイヤーの回転量
+#define	FMOVE_SPEED		(0.8f)				// プレイヤーの前方移動量
+#define	BMOVE_SPEED		(0.4f)				// プレイヤーの後方移動量
 
 //=============================================================================
 //	構造体
@@ -87,16 +90,18 @@ public:
 	~CSceneModel();
 
 	void	Init(void){}
-	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneModel	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CSceneModel	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	
 	void	LoadModel(char *fileName);
 	void	LoadMotion(char *fileName, int nNumMotion);
 	void	DrawModel(void);
+
+	bool	m_ifMinePlayer;
 
 private:
 	int		m_Texture;		// テクスチャ
@@ -110,6 +115,7 @@ private:
 	int		m_nCntMove;		// 回転カウンタ
 	VECTOR3	m_Move;			// 移動量
 	VECTOR3	m_RotMove;		// 回転量
+	VECTOR3 m_MoveDirection;// 移動方向
 	bool	m_bJump;		// ジャンプフラグ
 };
 
