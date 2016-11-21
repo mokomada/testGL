@@ -148,17 +148,17 @@ void CSceneModel::Update(void)
 {
 	CCameraGL	*camera = GetManager()->GetCamera();	// カメラ
 
-	// 自プレイヤーの場合にのみ処理
-	if(m_ifMinePlayer)
+														// 自プレイヤーの場合にのみ処理
+	if (m_ifMinePlayer)
 	{
-		if(CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
+		if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 		{
-			if(CInput::GetKeyboardPress(DIK_A))				// 左周り
+			if (CInput::GetKeyboardPress(DIK_A))				// 左周り
 			{
 				//回転量の加算
 				m_MoveDirection.y += MOVE_ROT;
 			}
-			if(CInput::GetKeyboardPress(DIK_D))				// 右回り
+			if (CInput::GetKeyboardPress(DIK_D))				// 右回り
 			{
 				//回転量の加算
 				m_MoveDirection.y -= MOVE_ROT;
@@ -168,17 +168,17 @@ void CSceneModel::Update(void)
 			m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
 			m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
 		}
-		if(CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
+		if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 		{
-			if(CInput::GetKeyboardPress(DIK_A))				// 左周り
-			{
-				//回転量の加算
-				m_MoveDirection.y += MOVE_ROT;
-			}
-			if(CInput::GetKeyboardPress(DIK_D))				// 右回り
+			if (CInput::GetKeyboardPress(DIK_A))				// 左周り
 			{
 				//回転量の加算
 				m_MoveDirection.y -= MOVE_ROT;
+			}
+			if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+			{
+				//回転量の加算
+				m_MoveDirection.y += MOVE_ROT;
 			}
 
 			// 移動量を設定
@@ -187,7 +187,7 @@ void CSceneModel::Update(void)
 		}
 
 		// ジャンプ
-		if(KT_SPACE && !m_bJump)
+		if (KT_SPACE && !m_bJump)
 		{
 			m_Move.y += PLAYER_JUMP;
 
@@ -196,12 +196,12 @@ void CSceneModel::Update(void)
 	}
 
 	// 回転量補正
-	if(m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
+	if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
 	{
 		// 回転量を逆方向に
 		m_Rot.y -= (PI * 2.0f);
 	}
-	else if(m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
+	else if (m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
 	{
 		// 回転量を逆方向に
 		m_Rot.y += (PI * 2.0f);
@@ -214,13 +214,23 @@ void CSceneModel::Update(void)
 	m_Pos.x += m_Move.x;
 	m_Pos.z += m_Move.z;
 
-	m_Move += (-m_Move * MODEL_SPEED_DOWN);
+	//移動量の減衰
+	if (m_bJump == true)
+	{
+		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
+		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
+		m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
+	}
+	else
+	{
+		m_Move += (-m_Move * MODEL_SPEED_DOWN);
+	}
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
 	// プレイヤーの高さを設定
-	if(m_Pos.y < 20.0f)
+	if (m_Pos.y < 20.0f)
 	{
 		m_Pos.y = 20.0f;
 		m_bJump = false;
@@ -232,7 +242,7 @@ void CSceneModel::Update(void)
 	}
 
 	// 自プレイヤーの場合、位置を送信
-	if(m_ifMinePlayer)
+	if (m_ifMinePlayer)
 	{
 		char str[1024] = { NULL };
 

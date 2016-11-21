@@ -18,7 +18,6 @@
 #include "vector.h"
 #include "matrix.h"
 #include "input.h"
-#include "manager.h"
 #include "readfile.h"
 //#include "singleton.h"
 
