@@ -90,16 +90,18 @@ public:
 	~CSceneModel();
 
 	void	Init(void){}
-	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneModel	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CSceneModel	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	
 	void	LoadModel(char *fileName);
 	void	LoadMotion(char *fileName, int nNumMotion);
 	void	DrawModel(void);
+
+	bool	m_ifMinePlayer;
 
 private:
 	int		m_Texture;		// テクスチャ

@@ -15,6 +15,7 @@
 #include "rendererGL.h"
 #include "sceneModel.h"
 #include "cameraGL.h"
+#include "network.h"
 
 //=============================================================================
 //	関数名	:CScene3D()
@@ -44,12 +45,15 @@ CSceneModel::~CSceneModel()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CSceneModel::Init(VECTOR3 pos)
+void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 {
 	CManager	*manager	= GetManager();
 	CRendererGL	*renderer	= manager->GetRendererGL();
 	
+	// 自プレイヤーかどうかセット
+	m_ifMinePlayer = ifMinePlayer;
 
+	// 各種初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_nCntMove		= 0;
@@ -144,48 +148,60 @@ void CSceneModel::Update(void)
 {
 	CCameraGL	*camera = GetManager()->GetCamera();	// カメラ
 
-	if(CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
+	// 自プレイヤーの場合にのみ処理
+	if(m_ifMinePlayer)
 	{
-		if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+		if(CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 		{
-			//回転量の加算
-			m_MoveDirection.y += MOVE_ROT;
+			if(CInput::GetKeyboardPress(DIK_A))				// 左周り
+			{
+				//回転量の加算
+				m_MoveDirection.y += MOVE_ROT;
+			}
+			if(CInput::GetKeyboardPress(DIK_D))				// 右回り
+			{
+				//回転量の加算
+				m_MoveDirection.y -= MOVE_ROT;
+			}
+
+			// 移動量を設定
+			m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
+			m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
 		}
-		if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+		if(CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 		{
-			//回転量の加算
-			m_MoveDirection.y -= MOVE_ROT;
+			if(CInput::GetKeyboardPress(DIK_A))				// 左周り
+			{
+				//回転量の加算
+				m_MoveDirection.y += MOVE_ROT;
+			}
+			if(CInput::GetKeyboardPress(DIK_D))				// 右回り
+			{
+				//回転量の加算
+				m_MoveDirection.y -= MOVE_ROT;
+			}
+
+			// 移動量を設定
+			m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
+			m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 		}
 
-		// 移動量を設定
-		m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
-		m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
-	}
-	if(CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
-	{
-		if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+		// ジャンプ
+		if(KT_SPACE && !m_bJump)
 		{
-			//回転量の加算
-			m_MoveDirection.y += MOVE_ROT;
+			m_Move.y += PLAYER_JUMP;
+
+			m_bJump = true;
 		}
-		if (CInput::GetKeyboardPress(DIK_D))				// 右回り
-		{
-			//回転量の加算
-			m_MoveDirection.y -= MOVE_ROT;
-		}
-		
-		// 移動量を設定
-		m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
-		m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 	}
 
 	// 回転量補正
-	if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
+	if(m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
 	{
 		// 回転量を逆方向に
 		m_Rot.y -= (PI * 2.0f);
 	}
-	else if (m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
+	else if(m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
 	{
 		// 回転量を逆方向に
 		m_Rot.y += (PI * 2.0f);
@@ -193,20 +209,12 @@ void CSceneModel::Update(void)
 
 	// 回転量を設定
 	m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
-	
+
 	// 移動量反映
 	m_Pos.x += m_Move.x;
 	m_Pos.z += m_Move.z;
 
 	m_Move += (-m_Move * MODEL_SPEED_DOWN);
-
-	// ジャンプ
-	if(KT_SPACE && !m_bJump)
-	{
-		m_Move.y += PLAYER_JUMP;
-
-		m_bJump = true;
-	}
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
@@ -221,7 +229,17 @@ void CSceneModel::Update(void)
 	{
 		// ジャンプ量の減衰
 		m_Move.y -= PLAYER_GRAVITY;
-	}	
+	}
+
+	// 自プレイヤーの場合、位置を送信
+	if(m_ifMinePlayer)
+	{
+		char str[1024] = { NULL };
+
+		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
+
+		CNetwork::SendData(str);
+	}
 }
 
 //=============================================================================
@@ -280,13 +298,13 @@ void CSceneModel::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CSceneModel *CSceneModel::Create(VECTOR3 pos)
+CSceneModel *CSceneModel::Create(bool ifMinePlayer, VECTOR3 pos)
 {
 	CSceneModel *scene3D;
 
 	scene3D = new CSceneModel;
 
-	scene3D->Init(pos);
+	scene3D->Init(ifMinePlayer, pos);
 
 	return scene3D;
 }
