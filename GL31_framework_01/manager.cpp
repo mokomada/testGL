@@ -14,7 +14,6 @@
 #include "main.h"
 #include "mode.h"
 #include "fade.h"
-#include "debugProcGL.h"
 #include "rendererGL.h"
 #include "network.h"
 #include "sceneGL.h"

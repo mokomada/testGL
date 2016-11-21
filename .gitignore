@@ -37,6 +37,7 @@
 
 # Debug Files
 *.log
+*.ipch
 *.tlog
 *.cache
 *.db
