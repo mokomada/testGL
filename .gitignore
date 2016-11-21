@@ -7,9 +7,6 @@
 *.suo
 *.lo
 *.o
-*.vcxproj
-*.filters
-*.user
 
 # Precompiled Headers
 *.gch
