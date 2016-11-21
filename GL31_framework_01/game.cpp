@@ -43,7 +43,7 @@ void CGame::Init(void)
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
-	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "data/TEXTURE/Žå‚¿‚á.png");
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
