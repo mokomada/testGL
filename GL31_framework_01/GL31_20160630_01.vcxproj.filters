@@ -96,6 +96,9 @@
     <ClInclude Include="network.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="trickgauge.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraGL.cpp">
@@ -165,6 +168,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="network.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="trickgauge.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
