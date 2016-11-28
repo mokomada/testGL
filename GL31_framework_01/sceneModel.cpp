@@ -366,6 +366,8 @@ void CSceneModel::Draw(void)
 
 	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
 	glPopMatrix();					// 保存マトリックスの取り出し
+
+	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================

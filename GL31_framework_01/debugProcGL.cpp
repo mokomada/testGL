@@ -19,7 +19,7 @@
 //=============================================================================
 HDC		CDebugProcGL::m_hDc;
 HFONT	CDebugProcGL::m_hFont;
-wchar_t	CDebugProcGL::m_aStrDebug[DEBUGSTR_MAX];
+char	CDebugProcGL::m_aStrDebug[DEBUGSTR_MAX];
 
 //=============================================================================
 //	関数名	:Init
@@ -106,7 +106,7 @@ void CDebugProcGL::Draw(void)
 	// 変換行列の初期化
 	glLoadIdentity();
 
-	Length = wcslen(m_aStrDebug);
+	Length = strlen(m_aStrDebug);
 	list = glGenLists(Length);
 
 	
@@ -144,7 +144,7 @@ void CDebugProcGL::Draw(void)
 			{
 				pos.y += FONT_SIZE;
 				pos.x = DEBUGPROC_POSX;
-				pos.x -= FONT_SIZE;
+				pos.x -= (float)FONT_SIZE * 0.5f;
 			}
 		}
 
@@ -191,18 +191,16 @@ void CDebugProcGL::Draw(void)
 //	戻り値	:無し
 //	説明	:文字列を描画する。
 //=============================================================================
-void CDebugProcGL::DebugProc(wchar_t *format, ...)
+void CDebugProcGL::DebugProc(char* format, ...)
 {
-	wchar_t buf[256];
-	va_list ap;
+	va_list list;
+	char str[256];
 
-	//ポインタがNULLの場合は終了
-	if(format == NULL)
-		return;
+	va_start(list, format);
 
-	//文字列変換
-	va_start(ap, format);
-	vswprintf_s(buf, format, ap);
-	wcscat_s(m_aStrDebug, buf);
-	va_end(ap);
+	vsprintf_s(str, format, list);
+
+	strcat_s(m_aStrDebug, str);
+
+	va_end(list);
 }
