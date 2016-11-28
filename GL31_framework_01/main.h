@@ -82,4 +82,11 @@ void SwapData(SWAPDATA &data1, SWAPDATA &data2)
 	data2 = dataBuff;
 }
 
+// データニ乗関数
+template <class POWDATA>
+POWDATA SwapData(POWDATA data)
+{
+	return data * data;
+}
+
 #endif
