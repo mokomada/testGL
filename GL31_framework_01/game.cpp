@@ -21,6 +21,7 @@
 #include "sceneBillboardGL.h"
 #include "meshfield.h"
 #include "score.h"
+#include "trickgauge.h"
 
 //=============================================================================
 //	プロトタイプ
@@ -43,11 +44,11 @@ void CGame::Init(void)
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
-	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f),VECTOR2(100,100),"./data/TEXTURE/test.png");
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
-
+	CTrickGauge::Create( );
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
 }
