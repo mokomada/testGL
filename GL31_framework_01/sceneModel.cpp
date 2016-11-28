@@ -17,6 +17,9 @@
 #include "cameraGL.h"
 #include "network.h"
 #include "bullet.h"
+#include "game.h"
+#include "debugProcGL.h"
+
 //=============================================================================
 //	関数名	:CScene3D()
 //	引数	:無し
@@ -77,6 +80,7 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 
 	m_Gauge = 100.0f;	//ゲージの初期化
 	m_FlgLowSpeed = false;
+	m_Radius = 30.0f;
 }
 
 //=============================================================================
@@ -314,6 +318,11 @@ void CSceneModel::Update(void)
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
+
+	if (m_ifMinePlayer)
+	{
+		CollisionDetection();
+	}
 
 	// プレイヤーの高さを設定
 	if (m_Pos.y < 20.0f)
@@ -756,5 +765,43 @@ void CSceneModel::DrawModel(void)
 		}
 		
 		glPopMatrix();		// 保存マトリックスの取り出し
+	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+void CSceneModel::CollisionDetection(void)
+{
+	CGame *game = (CGame*)CManager::GetMode();
+	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
+	for (int nCnt = 0; nCnt < 4; nCnt++)
+	{
+		if (sceneModel[nCnt] != NULL)
+		{
+			if (sceneModel[nCnt]->m_ifMinePlayer == false)
+			{
+				VECTOR3 sub = GetPos() - sceneModel[nCnt]->GetPos();
+				float distance = VECTOR3::dot(sub, sub);
+				float radius = m_Radius + sceneModel[nCnt]->m_Radius;
+
+				if (distance <= radius * radius)
+				{
+					CDebugProcGL::DebugProc("Hit%d\n", nCnt);
+
+					VECTOR3 Pos0 = GetPos(), Pos1 = sceneModel[nCnt]->GetPos();
+					float Radius = m_Radius + sceneModel[nCnt]->m_Radius;
+					float Lenght = (Pos1 - Pos0).magnitude();
+					VECTOR3 Vec = Pos0 - Pos1;
+					Vec.normalize();
+					Radius -= Lenght;
+					Pos0 += VECTOR3(Vec.x * Radius, Vec.y * Radius, Vec.z * Radius);
+					SetPos(Pos0);
+				}
+			}
+		}
 	}
 }
