@@ -14,13 +14,14 @@
 #include "scene2DGL.h"
 #include "rendererGL.h"
 #include "manager.h"
+#include "sceneModel.h"
+#include "game.h"
 
 /******************************************************************************
 マクロ定義
 ******************************************************************************/
 #define GAUGE_WIDTH 100.0f
 #define GAUGE_HEIGHT 200.0f
-#define GAUGE_MAX 500.0f
 
 /******************************************************************************
 構造体定義
@@ -64,10 +65,14 @@ void CTrickGauge::Init(void)
 {
 	CManager	*manager = GetManager( );
 	CRendererGL	*renderer = manager->GetRendererGL( );
+	CGame *game;
+	game = (CGame*)CManager::GetMode( );
+	CSceneModel *sceneModel = game->GetPlayer1( );
+	sceneModel->GetGauge( );
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
 	m_StrPos = VECTOR3( 0.0f,0.0f,0.0f );
-	m_GaugeMax = 500.0f;
+	m_GaugeMax = GAUGE_MAX;
 }
 
 /******************************************************************************
@@ -78,24 +83,33 @@ void CTrickGauge::Init(void)
 ******************************************************************************/
 void CTrickGauge::Update(void)
 {
+	CManager	*manager = GetManager( );
+	CRendererGL	*renderer = manager->GetRendererGL( );
+	CGame *game;
+	game = (CGame*)CManager::GetMode( );
+	CSceneModel *sceneModel = game->GetPlayer1( );
 	//現在のゲージ
-	m_Gauge = 200.0f;
+	m_Gauge = sceneModel->GetGauge( );
 	m_Pa = m_Gauge / m_GaugeMax;
 	if ( CInput::GetKeyboardPress(DIK_K) )
 	{
 		m_Gauge++;
+		sceneModel->SetGauge(m_Gauge);
 	}
 	if ( CInput::GetKeyboardPress(DIK_M) )
 	{
 		m_Gauge--;
+		sceneModel->SetGauge(m_Gauge);
 	}
 	if ( m_Gauge < 0 )
 	{
 		m_Gauge = 0;
+		sceneModel->SetGauge(m_Gauge);
 	}
 	if ( m_Gauge > GAUGE_MAX )
 	{
 		m_Gauge = GAUGE_MAX;
+		sceneModel->SetGauge(m_Gauge);
 	}
 }
 
@@ -162,7 +176,7 @@ void CTrickGauge::Draw(void)
 	//テクスチャ座標
 	glTexCoord2d(1, 1);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);//RGBA
-	glVertex3f(GAUGE_WIDTH * m_Pa, GAUGE_HEIGHT, 0.0f);//XYZ
+	glVertex3f(GAUGE_WIDTH * m_Pa, 100.0f, 0.0f);//XYZ
 
 
 
