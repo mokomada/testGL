@@ -24,12 +24,12 @@ public:
 	static void	Update(void);
 	static void	Draw(void);
 
-	static void DebugProc(wchar_t *format, ...);
+	static void DebugProc(char* format, ...);
 
 private:
 	static HDC		m_hDc;
 	static HFONT	m_hFont;
-	static wchar_t	m_aStrDebug[DEBUGSTR_MAX];	// デバッグ用文字列
+	static char		m_aStrDebug[DEBUGSTR_MAX];	// デバッグ用文字列
 };
 
 #endif

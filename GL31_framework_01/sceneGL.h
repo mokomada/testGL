@@ -52,6 +52,9 @@ public:
 	void	SetPos(VECTOR3 pos){ m_Pos = pos; }
 	void	SetRot(VECTOR3 rot){ m_Rot = rot; }
 
+	VECTOR3	GetPos(void) { return m_Pos; }
+	VECTOR3	GetRot(void) { return m_Rot; }
+
 protected:
 	static CSceneGL *m_pTop;	// リストの先頭ポインタ
 	static CSceneGL *m_pCur;	// リストの終端ポインタ
