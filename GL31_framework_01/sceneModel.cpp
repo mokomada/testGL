@@ -74,6 +74,9 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Motion = new MOTION[MODEL_MOTION_NUM];
 	LoadMotion("data/MOTION/miku_01_01.anm", 0);
 	//LoadMotion("data/MOTION/miku_01_02.anm", 0);
+
+	m_Gauge = 100.0f;	//ÉQÅ[ÉWÇÃèâä˙âª
+	m_FlgLowSpeed = false;
 }
 
 //=============================================================================
