@@ -31,13 +31,11 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
-	static CSceneModel	*GetPlayer1(void) { return m_Player1; }
-	static CSceneModel	*GetPlayer2(void) { return m_Player2; }
+	static CSceneModel	*GetPlayer(void) { return m_Player[0]; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
-	static CSceneModel	*m_Player1;		// プレイヤーのインスタンス
-	static CSceneModel	*m_Player2;		// プレイヤーのインスタンス
+	static CSceneModel	*m_Player[4];		// プレイヤーのインスタンス
 };
 
 #endif

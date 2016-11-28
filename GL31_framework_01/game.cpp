@@ -30,8 +30,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
-CSceneModel	*CGame::m_Player1;		// プレイヤーのインスタンス
-CSceneModel	*CGame::m_Player2;		// プレイヤーのインスタンス
+CSceneModel	*CGame::m_Player[4];		// プレイヤーのインスタンス
 
 //=============================================================================
 //	関数名	:Init
@@ -44,8 +43,10 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
-	m_Player1 = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
-	m_Player2 = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 0.0f));
+	m_Player[0] = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
+	m_Player[1] = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 0.0f));
+	m_Player[2] = NULL;
+	m_Player[3] = NULL;
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 
