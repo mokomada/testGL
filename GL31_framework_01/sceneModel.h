@@ -24,14 +24,20 @@
 
 #define	MODEL_MOVEMENT	(0.5f)					// テクスチャのファイル名
 #define	MODEL_ROT_STEP	(8)					// プレイヤーの回転ステップ
+#define	GAUGE_MAX		(300.0f)			// プレイヤーのゲージマックス
 
 #define	MODEL_SPEED_DOWN	(0.1f)			// プレイヤーの回転ステップ
 #define	MODEL_SPEED_DOWNJ	(0.25f)			// プレイヤーの回転ステップ
-#define	PLAYER_JUMP			(10.0f)				// プレイヤーの回転ステップ
+#define	PLAYER_JUMP			(10.0f)			// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY		(0.8f)			// プレイヤーの回転ステップ
 #define	MOVE_ROT		(0.02f)				// プレイヤーの回転量
+#define	MOVE_ROTJ		(0.01f)				// ジャンプ中のプレイヤーの回転量
+#define	LOWMOVE_ROT		(0.005f)			// 低速中のプレイヤーの回転量
+#define	LOWMOVE_ROTJ	(0.001f)			// 低速中のジャンプ中のプレイヤーの回転量
 #define	FMOVE_SPEED		(0.8f)				// プレイヤーの前方移動量
 #define	BMOVE_SPEED		(0.4f)				// プレイヤーの後方移動量
+#define	LOWBMOVE_SPEED		(0.1f)			// 低速中のプレイヤーの後方移動量
+#define	LOWFMOVE_SPEED		(0.2f)			// 低速中のプレイヤーの前方移動量
 
 
 //=============================================================================
@@ -103,8 +109,9 @@ public:
 	void	LoadMotion(char *fileName, int nNumMotion);
 	void	DrawModel(void);
 
+	float GetGauge(void) { return m_Gauge; }
+	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	bool	m_ifMinePlayer;
-
 private:
 	int		m_Texture;		// テクスチャ
 	PARTS	*m_Parts;		// モデル情報
@@ -119,6 +126,8 @@ private:
 	VECTOR3	m_RotMove;		// 回転量
 	VECTOR3 m_MoveDirection;// 移動方向
 	bool	m_bJump;		// ジャンプフラグ
+	float m_Gauge;
+	bool m_FlgLowSpeed;
 };
 
 #endif

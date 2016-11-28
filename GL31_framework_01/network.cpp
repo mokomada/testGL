@@ -195,7 +195,7 @@ void CNetwork::ReceiveData(void)
 //	説明	:受信したプレイヤーのデータをセットする。
 //=============================================================================
 void CNetwork::SetPlayerData(char *str)
-{
+{/*
 	CSceneModel	*player2 = CGame::GetPlayer2();
 	VECTOR3		pos = VECTOR3::zero();
 
@@ -207,5 +207,5 @@ void CNetwork::SetPlayerData(char *str)
 
 		// 取得した座標をセット
 		player2->SetPos(pos);
-	}
+	}*/
 }
