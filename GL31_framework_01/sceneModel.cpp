@@ -16,7 +16,7 @@
 #include "sceneModel.h"
 #include "cameraGL.h"
 #include "network.h"
-
+#include "bullet.h"
 //=============================================================================
 //	ä÷êîñº	:CScene3D()
 //	à¯êî	:ñ≥Çµ
@@ -74,9 +74,6 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Motion = new MOTION[MODEL_MOTION_NUM];
 	LoadMotion("data/MOTION/miku_01_01.anm", 0);
 	//LoadMotion("data/MOTION/miku_01_02.anm", 0);
-
-	m_Gauge = 100.0f;	//ÉQÅ[ÉWÇÃèâä˙âª
-	m_FlgLowSpeed = false;
 }
 
 //=============================================================================
@@ -188,49 +185,6 @@ void CSceneModel::Update(void)
 			m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
 			m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 		}
-		if (m_bJump == true)
-		{
-			if (CInput::GetKeyboardPress(DIK_W))				// à⁄ìÆï˚å¸Ç…à⁄ìÆ
-			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y += MOVE_ROTJ;
-				}
-				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y -= MOVE_ROTJ;
-				}
-			}
-			else if (CInput::GetKeyboardPress(DIK_S))		// à⁄ìÆï˚å¸Ç…à⁄ìÆÇÃîΩëŒÇ…à⁄ìÆ
-			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y -= MOVE_ROTJ;
-				}
-				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y += MOVE_ROTJ;
-				}
-			}
-			else
-			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y += MOVE_ROTJ;
-				}
-				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
-				{
-					//âÒì]ó ÇÃâ¡éZ
-					m_MoveDirection.y -= MOVE_ROTJ;
-				}
-			}
-			
-		}
 
 		camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 		camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
@@ -239,11 +193,12 @@ void CSceneModel::Update(void)
 		camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
 
 		// ÉWÉÉÉìÉv
-		if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+		if (KT_SPACE && !m_bJump)
 		{
-			m_Move.y += PLAYER_JUMP;
+			CBullet::Create( m_Pos , m_Rot , 10.0f );
+			//m_Move.y += PLAYER_JUMP;
 
-			m_bJump = true;
+			//m_bJump = true;
 		}
 	}
 
@@ -269,30 +224,13 @@ void CSceneModel::Update(void)
 	//à⁄ìÆó ÇÃå∏êä
 	if (m_bJump == true)
 	{
-		if (CInput::GetKeyboardPress(DIK_SPACE))
-		{
-			m_Move.x += (-m_Move.x * MODEL_SPEED_SDOWNJ);
-			m_Move.z += (-m_Move.z * MODEL_SPEED_SDOWNJ);
-			m_Move.y += (-m_Move.y * MODEL_SPEED_SDOWN);
-		}
-		else
-		{
-			m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
-			m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
-			m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
-		}
+		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
+		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
+		m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
 	}
 	else
 	{
-		if (CInput::GetKeyboardPress(DIK_SPACE))
-		{
-			m_Move += (-m_Move * MODEL_SPEED_SDOWN);
-		}
-		else
-		{
-			m_Move += (-m_Move * MODEL_SPEED_DOWN);
-		}
-
+		m_Move += (-m_Move * MODEL_SPEED_DOWN);
 	}
 
 	// ÉWÉÉÉìÉvó ÇÃîΩâf
