@@ -151,7 +151,10 @@ void CSceneModel::Update(void)
 {
 	CCameraGL	*camera = GetManager()->GetCamera();	// ƒJƒƒ‰
 
-														// ©ƒvƒŒƒCƒ„[‚Ìê‡‚É‚Ì‚İˆ—
+	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
+	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
+
+	// ©ƒvƒŒƒCƒ„[‚Ìê‡‚É‚Ì‚İˆ—
 	if (m_ifMinePlayer)
 	{
 		if (CInput::GetKeyboardPress(DIK_W))				// ˆÚ“®•ûŒü‚ÉˆÚ“®
@@ -159,34 +162,54 @@ void CSceneModel::Update(void)
 			if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 			{
 				//‰ñ“]—Ê‚Ì‰ÁZ
-				m_MoveDirection.y += MOVE_ROT;
+				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 			}
 			if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 			{
 				//‰ñ“]—Ê‚Ì‰ÁZ
-				m_MoveDirection.y -= MOVE_ROT;
+				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 			}
 
 			// ˆÚ“®—Ê‚ğİ’è
-			m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
-			m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
+			if (m_FlgLowSpeed == true)
+			{
+				m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
+				m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
+			}
+			if (m_FlgLowSpeed == false)
+			{
+				m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
+				m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
+			}
 		}
 		if (CInput::GetKeyboardPress(DIK_S))		// ˆÚ“®•ûŒü‚ÉˆÚ“®‚Ì”½‘Î‚ÉˆÚ“®
 		{
 			if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 			{
 				//‰ñ“]—Ê‚Ì‰ÁZ
-				m_MoveDirection.y -= MOVE_ROT;
+				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 			}
 			if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 			{
 				//‰ñ“]—Ê‚Ì‰ÁZ
-				m_MoveDirection.y += MOVE_ROT;
+				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 			}
 
 			// ˆÚ“®—Ê‚ğİ’è
-			m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
-			m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
+			if (m_FlgLowSpeed == true)
+			{
+				m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
+				m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
+			}
+			if (m_FlgLowSpeed == false)
+			{
+				m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
+				m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
+			}
 		}
 		if (m_bJump == true)
 		{
@@ -195,12 +218,14 @@ void CSceneModel::Update(void)
 				if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y += MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
 				if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y -= MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
 			}
 			else if (CInput::GetKeyboardPress(DIK_S))		// ˆÚ“®•ûŒü‚ÉˆÚ“®‚Ì”½‘Î‚ÉˆÚ“®
@@ -208,12 +233,14 @@ void CSceneModel::Update(void)
 				if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y -= MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
 				if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y += MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
 			}
 			else
@@ -221,12 +248,14 @@ void CSceneModel::Update(void)
 				if (CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y += MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
 				if (CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
 				{
 					//‰ñ“]—Ê‚Ì‰ÁZ
-					m_MoveDirection.y -= MOVE_ROTJ;
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
 			}
 			
@@ -269,30 +298,13 @@ void CSceneModel::Update(void)
 	//ˆÚ“®—Ê‚ÌŒ¸Š
 	if (m_bJump == true)
 	{
-		if (CInput::GetKeyboardPress(DIK_SPACE))
-		{
-			m_Move.x += (-m_Move.x * MODEL_SPEED_SDOWNJ);
-			m_Move.z += (-m_Move.z * MODEL_SPEED_SDOWNJ);
-			m_Move.y += (-m_Move.y * MODEL_SPEED_SDOWN);
-		}
-		else
-		{
-			m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
-			m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
-			m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
-		}
+		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
+		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
+		m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
 	}
 	else
 	{
-		if (CInput::GetKeyboardPress(DIK_SPACE))
-		{
-			m_Move += (-m_Move * MODEL_SPEED_SDOWN);
-		}
-		else
-		{
-			m_Move += (-m_Move * MODEL_SPEED_DOWN);
-		}
-
+		m_Move += (-m_Move * MODEL_SPEED_DOWN);
 	}
 
 	// ƒWƒƒƒ“ƒv—Ê‚Ì”½‰f
