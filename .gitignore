@@ -34,7 +34,7 @@
 
 # Debug Files
 /.vs/
-/Debug/
+*/Debug/*
 
 # Release Files
-/Release/
+*/Release/*

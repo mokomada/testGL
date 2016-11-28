@@ -67,8 +67,8 @@ void CTrickGauge::Init(void)
 	CRendererGL	*renderer = manager->GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	CSceneModel *sceneModel = game->GetPlayer1( );
-	sceneModel->GetGauge( );
+	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
+	sceneModel[0]->GetGauge( );
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
 	m_StrPos = VECTOR3( 0.0f,0.0f,0.0f );
@@ -87,29 +87,29 @@ void CTrickGauge::Update(void)
 	CRendererGL	*renderer = manager->GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	CSceneModel *sceneModel = game->GetPlayer1( );
+	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
 	//現在のゲージ
-	m_Gauge = sceneModel->GetGauge( );
+	m_Gauge = sceneModel[0]->GetGauge( );
 	m_Pa = m_Gauge / m_GaugeMax;
 	if ( CInput::GetKeyboardPress(DIK_K) )
 	{
 		m_Gauge++;
-		sceneModel->SetGauge(m_Gauge);
+		sceneModel[0]->SetGauge(m_Gauge);
 	}
 	if ( CInput::GetKeyboardPress(DIK_M) )
 	{
 		m_Gauge--;
-		sceneModel->SetGauge(m_Gauge);
+		sceneModel[0]->SetGauge(m_Gauge);
 	}
 	if ( m_Gauge < 0 )
 	{
 		m_Gauge = 0;
-		sceneModel->SetGauge(m_Gauge);
+		sceneModel[0]->SetGauge(m_Gauge);
 	}
 	if ( m_Gauge > GAUGE_MAX )
 	{
 		m_Gauge = GAUGE_MAX;
-		sceneModel->SetGauge(m_Gauge);
+		sceneModel[0]->SetGauge(m_Gauge);
 	}
 }
 
