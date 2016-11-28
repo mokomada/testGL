@@ -84,7 +84,7 @@ void SwapData(SWAPDATA &data1, SWAPDATA &data2)
 
 // データニ乗関数
 template <class POWDATA>
-POWDATA SwapData(POWDATA data)
+POWDATA PowData(POWDATA data)
 {
 	return data * data;
 }
