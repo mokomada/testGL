@@ -28,14 +28,16 @@
 
 #define	MODEL_SPEED_DOWN	(0.1f)			// プレイヤーの回転ステップ
 #define	MODEL_SPEED_DOWNJ	(0.25f)			// プレイヤーの回転ステップ
-#define	MODEL_SPEED_SDOWN	(0.4f)			// プレイヤーの回転ステップ
-#define	MODEL_SPEED_SDOWNJ	(0.55f)			// プレイヤーの回転ステップ
-#define	PLAYER_JUMP			(10.0f)				// プレイヤーの回転ステップ
+#define	PLAYER_JUMP			(10.0f)			// プレイヤーの回転ステップ
 #define	PLAYER_GRAVITY		(0.8f)			// プレイヤーの回転ステップ
 #define	MOVE_ROT		(0.02f)				// プレイヤーの回転量
 #define	MOVE_ROTJ		(0.01f)				// ジャンプ中のプレイヤーの回転量
+#define	LOWMOVE_ROT		(0.005f)			// 低速中のプレイヤーの回転量
+#define	LOWMOVE_ROTJ	(0.001f)			// 低速中のジャンプ中のプレイヤーの回転量
 #define	FMOVE_SPEED		(0.8f)				// プレイヤーの前方移動量
 #define	BMOVE_SPEED		(0.4f)				// プレイヤーの後方移動量
+#define	LOWBMOVE_SPEED		(0.1f)			// 低速中のプレイヤーの後方移動量
+#define	LOWFMOVE_SPEED		(0.2f)			// 低速中のプレイヤーの前方移動量
 
 
 //=============================================================================
