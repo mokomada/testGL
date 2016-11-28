@@ -16,7 +16,7 @@
 #include "sceneModel.h"
 #include "cameraGL.h"
 #include "network.h"
-#include "bullet.h"
+
 //=============================================================================
 //	ä÷êîñº	:CScene3D()
 //	à¯êî	:ñ≥Çµ
@@ -195,10 +195,9 @@ void CSceneModel::Update(void)
 		// ÉWÉÉÉìÉv
 		if (KT_SPACE && !m_bJump)
 		{
-			CBullet::Create( m_Pos , m_Rot , 10.0f );
-			//m_Move.y += PLAYER_JUMP;
+			m_Move.y += PLAYER_JUMP;
 
-			//m_bJump = true;
+			m_bJump = true;
 		}
 	}
 
