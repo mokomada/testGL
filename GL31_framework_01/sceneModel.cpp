@@ -47,8 +47,7 @@ CSceneModel::~CSceneModel()
 //=============================================================================
 void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 	
 	// 自プレイヤーかどうかセット
 	m_ifMinePlayer = ifMinePlayer;
@@ -146,7 +145,7 @@ void CSceneModel::Uninit(bool isLast)
 //=============================================================================
 void CSceneModel::Update(void)
 {
-	CCameraGL	*camera = GetManager()->GetCamera();	// カメラ
+	CCameraGL	*camera = CManager::GetCamera();	// カメラ
 
 														// 自プレイヤーの場合にのみ処理
 	if (m_ifMinePlayer)
