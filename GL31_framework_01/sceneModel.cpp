@@ -185,6 +185,49 @@ void CSceneModel::Update(void)
 			m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
 			m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 		}
+		if (m_bJump == true)
+		{
+			if (CInput::GetKeyboardPress(DIK_W))				// à⁄ìÆï˚å¸Ç…à⁄ìÆ
+			{
+				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y += MOVE_ROTJ;
+				}
+				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y -= MOVE_ROTJ;
+				}
+			}
+			else if (CInput::GetKeyboardPress(DIK_S))		// à⁄ìÆï˚å¸Ç…à⁄ìÆÇÃîΩëŒÇ…à⁄ìÆ
+			{
+				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y -= MOVE_ROTJ;
+				}
+				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y += MOVE_ROTJ;
+				}
+			}
+			else
+			{
+				if (CInput::GetKeyboardPress(DIK_A))				// ç∂é¸ÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y += MOVE_ROTJ;
+				}
+				if (CInput::GetKeyboardPress(DIK_D))				// âEâÒÇË
+				{
+					//âÒì]ó ÇÃâ¡éZ
+					m_MoveDirection.y -= MOVE_ROTJ;
+				}
+			}
+			
+		}
 
 		camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 		camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
@@ -193,7 +236,7 @@ void CSceneModel::Update(void)
 		camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
 
 		// ÉWÉÉÉìÉv
-		if (KT_SPACE && !m_bJump)
+		if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
 		{
 			m_Move.y += PLAYER_JUMP;
 
@@ -223,13 +266,30 @@ void CSceneModel::Update(void)
 	//à⁄ìÆó ÇÃå∏êä
 	if (m_bJump == true)
 	{
-		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
-		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
-		m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
+		if (CInput::GetKeyboardPress(DIK_SPACE))
+		{
+			m_Move.x += (-m_Move.x * MODEL_SPEED_SDOWNJ);
+			m_Move.z += (-m_Move.z * MODEL_SPEED_SDOWNJ);
+			m_Move.y += (-m_Move.y * MODEL_SPEED_SDOWN);
+		}
+		else
+		{
+			m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
+			m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
+			m_Move.y += (-m_Move.y * MODEL_SPEED_DOWN);
+		}
 	}
 	else
 	{
-		m_Move += (-m_Move * MODEL_SPEED_DOWN);
+		if (CInput::GetKeyboardPress(DIK_SPACE))
+		{
+			m_Move += (-m_Move * MODEL_SPEED_SDOWN);
+		}
+		else
+		{
+			m_Move += (-m_Move * MODEL_SPEED_DOWN);
+		}
+
 	}
 
 	// ÉWÉÉÉìÉvó ÇÃîΩâf
