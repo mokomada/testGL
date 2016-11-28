@@ -14,7 +14,7 @@
 //	前方宣言
 //=============================================================================
 class CMeshfield;
-class CPlayer;
+class CSceneModel;
 
 //=============================================================================
 //	クラス定義
@@ -31,9 +31,13 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
+	static CSceneModel	*GetPlayer1(void) { return m_Player1; }
+	static CSceneModel	*GetPlayer2(void) { return m_Player2; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
+	static CSceneModel	*m_Player1;		// プレイヤーのインスタンス
+	static CSceneModel	*m_Player2;		// プレイヤーのインスタンス
 };
 
 #endif

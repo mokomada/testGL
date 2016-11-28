@@ -56,7 +56,7 @@ void CResult::Update(void)
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
-		CFade::Start(new CTitle, FS_OUT);
+		CFade::Start(new CTitle, MODE_TITLE, FS_OUT);
 	}
 }
 

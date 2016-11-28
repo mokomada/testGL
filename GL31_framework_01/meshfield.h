@@ -26,7 +26,6 @@ public:
 	CMeshfield();
 	~CMeshfield();
 
-	void	Init(void){}
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 				VECTOR2 size = VECTOR2(MESHFIELD_WIDTH, MESHFIELD_HEIGHT),
 				char *texName = MESHFIELD_TEX_FILENAME000);

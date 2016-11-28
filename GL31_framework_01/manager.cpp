@@ -14,8 +14,8 @@
 #include "main.h"
 #include "mode.h"
 #include "fade.h"
-//#include "DebugProc.h"
 #include "rendererGL.h"
+#include "network.h"
 #include "sceneGL.h"
 #include "cameraGL.h"
 #include "lightGL.h"
@@ -25,6 +25,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
+int			CManager::m_ModeState;		// モード情報
 CInput		*CManager::m_Input;			// 入力のインスタンス
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
 CLightGL	*CManager::m_Light;			// ライトのインスタンス
@@ -43,7 +44,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_RendererGL->Init(hWnd);
 
 	// 各種インスタンス生成
-	m_Mode			= new CGame();
+	m_Mode			= new CTutorial();
 	m_Input			= new CInput();
 	m_Camera		= new CCameraGL();
 	m_Light			= new CLightGL();
@@ -55,6 +56,8 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_Camera->Init();
 	m_Light->Init();
 	CSound::Init();
+	CNetwork::Init();
+	CDebugProcGL::Init();
 }
 
 //=============================================================================
@@ -86,6 +89,7 @@ void CManager::Uninit(HWND hWnd)
 
 	CSceneGL::DeleteAll(true);
 	CSound::Uninit();
+	CNetwork::Uninit();
 }
 
 //=============================================================================
@@ -103,6 +107,8 @@ void CManager::Update(void)
 
 	m_Mode->Update();
 	CFade::Update();
+	CNetwork::Update();
+	CDebugProcGL::Update();
 }
 
 //=============================================================================
@@ -128,10 +134,13 @@ void CManager::Draw(void)
 	// フェード描画
 	CFade::Draw();
 
+	CNetwork::Draw();
+
 	// デバッグプロシージャ
-	//m_DebugProc->Draw();
 #ifdef _DEBUG
-	//m_DebugProc->DebugProc("FPS:%d\n", GetFPS());
+	//int i = 12;	使用例
+	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
+	CDebugProcGL::Draw();
 #endif
 
 	// 描画シーケンス終了
@@ -144,7 +153,7 @@ void CManager::Draw(void)
 //	戻り値	:無し
 //	説明	:モードを切り替える。
 //=============================================================================
-void CManager::SetMode(CMode *mode)
+void CManager::SetMode(CMode *mode, int modeState)
 {
 	if((m_Mode != NULL))
 	{
@@ -157,6 +166,10 @@ void CManager::SetMode(CMode *mode)
 	{
 		// モードの切り替え
 		m_Mode = mode;
+
+		// どのモードかセット
+		m_ModeState = modeState;
+
 		// モードの初期処理
 		m_Mode->Init();
 	}
