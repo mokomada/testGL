@@ -21,6 +21,7 @@
 #include "sceneBillboardGL.h"
 #include "meshfield.h"
 #include "score.h"
+#include "trickgauge.h"
 
 //=============================================================================
 //	プロトタイプ
@@ -30,7 +31,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
-CSceneModel	*CGame::m_Player[4];		// プレイヤーのインスタンス
+vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 
 //=============================================================================
 //	関数名	:Init
@@ -43,6 +44,7 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Player.resize(4);
 	m_Player[0] = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
 	m_Player[1] = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 0.0f));
 	m_Player[2] = NULL;
@@ -52,6 +54,7 @@ void CGame::Init(void)
 
 	// 2D
 	//CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	CTrickGauge::Create( );
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);

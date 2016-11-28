@@ -9,6 +9,8 @@
 //
 //=============================================================================
 #include "mode.h"
+#include <vector>
+using namespace std;
 
 //=============================================================================
 //	前方宣言
@@ -31,11 +33,11 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
-	static CSceneModel	*GetPlayer(void) { return m_Player[0]; }
+	static vector<CSceneModel*>::iterator	GetPlayer(void) { return m_Player.begin(); }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
-	static CSceneModel	*m_Player[4];		// プレイヤーのインスタンス
+	static vector<CSceneModel*>	m_Player;		// プレイヤーのインスタンス
 };
 
 #endif
