@@ -46,9 +46,7 @@ void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 {
 	////	ƒ[ƒJƒ‹•Ï”
 	/////////////////////////////////////////////////////////////
-	CManager	*manager = GetManager();
-	CRendererGL	*renderer = manager->GetRendererGL();
-
+	CRendererGL	*renderer = CManager::GetRendererGL();
 
 	////	Šeí‰Šúİ’è
 	/////////////////////////////////////////////////////////////
