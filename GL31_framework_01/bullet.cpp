@@ -13,6 +13,7 @@
 #include "bullet.h"
 #include "game.h"
 #include "sceneModel.h"
+#include "effect2D.h"
 
 /******************************************************************************
 *	É}ÉNÉçíËã`
@@ -104,6 +105,7 @@ void CBullet::Update( void )
 
 	if( m_life <= 0 )	//éıñΩÇ™êsÇ´ÇΩÇÁçÌèú
 	{
+		CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE00);
 		CSceneGL::Release();
 	}
 }
