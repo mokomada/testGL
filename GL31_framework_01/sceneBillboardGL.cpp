@@ -126,7 +126,12 @@ void CSceneBillboardGL::Draw(void)
 	// ライティングオフ
 	glDisable(GL_LIGHTING);
 
-	glBegin(GL_TRIANGLE_STRIP);
+	//アルファブレンド
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+glBegin(GL_TRIANGLE_STRIP);
 	{
 		// 頂点色設定
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -140,6 +145,7 @@ void CSceneBillboardGL::Draw(void)
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);
