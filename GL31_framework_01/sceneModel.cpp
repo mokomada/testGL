@@ -50,8 +50,7 @@ CSceneModel::~CSceneModel()
 //=============================================================================
 void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 	
 	// 自プレイヤーかどうかセット
 	m_ifMinePlayer = ifMinePlayer;
@@ -153,7 +152,7 @@ void CSceneModel::Uninit(bool isLast)
 //=============================================================================
 void CSceneModel::Update(void)
 {
-	CCameraGL	*camera = GetManager()->GetCamera();	// カメラ
+	CCameraGL	*camera = CManager::GetCamera();	// カメラ
 
 	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
 	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;

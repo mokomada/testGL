@@ -44,8 +44,7 @@ CSceneBillboardGL::~CSceneBillboardGL()
 //=============================================================================
 void CSceneBillboardGL::Init(VECTOR3 pos, VECTOR2 size, char *texName)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer = CManager::GetRendererGL();
 
 
 	// Šeí‰Šú‰»

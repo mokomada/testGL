@@ -25,13 +25,11 @@
 //	プロトタイプ
 //=============================================================================
 LRESULT	CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL	CALLBACK DialogProc(HWND hWnd , UINT uMsg , WPARAM wParam , LPARAM lParam);
 
 //=============================================================================
 //	グローバル変数
 //=============================================================================
-static int	g_nCountFPS;	// FPSカウンタ
-CManager	*g_Manager;		// マネージャのインスタンス
+static float	g_fCountFPS;	// FPSカウンタ
 
 //=============================================================================
 //	関数名:WinMain
@@ -80,17 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	rect.right -= rect.left;
 	rect.bottom -= rect.top;
 
-	// レンダラ―読み込み
-	if(g_Manager == NULL)
-	{
-		g_Manager = new CManager();
-	}
-
 	// 初期化処理
-	if(g_Manager != NULL)
-	{
-		g_Manager->Init(hInstance, hWnd, TRUE);
-	}
+	CManager::Init(hInstance, hWnd, TRUE);
 
 	// ウィンドウ初期化
 	ShowWindow(hWnd, nCmdShow);
@@ -117,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			dwCurrentTime = timeGetTime();
 			if((dwCurrentTime - dwFPSLastTime) >= 500)
 			{
-				g_nCountFPS = (dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime);
+				g_fCountFPS = (dwFrameCount * 1000.0f) / (dwCurrentTime - dwFPSLastTime);
 				dwFPSLastTime = dwCurrentTime;
 				dwFrameCount = 0;
 			}
@@ -126,16 +115,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				dwExecLastTime = dwCurrentTime;
 
 				// Update処理
-				if(g_Manager != NULL)
-				{
-					g_Manager->Update();
-				}
+				CManager::Update();
 				
 				// Draw処理
-				if(g_Manager != NULL)
-				{
-					g_Manager->Draw();
-				}
+				CManager::Draw();
 
 				dwFrameCount++;
 			}
@@ -144,11 +127,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UnregisterClass("NullWindow", wcex.hInstance);
 	
 	// レンダラ破棄
-	if(g_Manager != NULL)
-	{
-		g_Manager->Uninit(hWnd);
-		delete g_Manager;
-	}
+	CManager::Uninit(hWnd);
 
 
 	timeEndPeriod(1);
@@ -205,12 +184,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //=============================================================================
-//	関数名	:GetManager
+//	関数名	:GetFPS
 //	引数	:無し
-//	戻り値	:CManager
-//	説明	:Managerクラスの実体を受け渡す
+//	戻り値	:int
+//	説明	:FPSの値を受け渡す
 //=============================================================================
-CManager *GetManager(void)
+float GetFPS(void)
 {
-	return g_Manager;
+	return g_fCountFPS;
 }

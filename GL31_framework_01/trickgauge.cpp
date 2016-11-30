@@ -63,8 +63,7 @@ CTrickGauge::~CTrickGauge( )
 ******************************************************************************/
 void CTrickGauge::Init(void)
 {
-	CManager	*manager = GetManager( );
-	CRendererGL	*renderer = manager->GetRendererGL( );
+	CRendererGL	*renderer = CManager::GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
 	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
@@ -83,8 +82,7 @@ void CTrickGauge::Init(void)
 ******************************************************************************/
 void CTrickGauge::Update(void)
 {
-	CManager	*manager = GetManager( );
-	CRendererGL	*renderer = manager->GetRendererGL( );
+	CRendererGL	*renderer = CManager::GetRendererGL();
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
 	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
