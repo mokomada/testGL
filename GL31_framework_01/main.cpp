@@ -29,7 +29,7 @@ LRESULT	CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //=============================================================================
 //	グローバル変数
 //=============================================================================
-static float	g_fCountFPS;	// FPSカウンタ
+static int	g_CountFPS;	// FPSカウンタ
 
 //=============================================================================
 //	関数名:WinMain
@@ -66,8 +66,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	hWnd = CreateWindowEx(
 		0, "NullWindow", "GL31_framework", WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		(SCREEN_WIDTH  + GetSystemMetrics(SM_CXFIXEDFRAME) * 2),
-		(SCREEN_HEIGHT + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
+		((int)SCREEN_WIDTH  + GetSystemMetrics(SM_CXFIXEDFRAME) * 2),
+		((int)SCREEN_HEIGHT + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
 		NULL, NULL, hInstance, NULL);
 	if(!hWnd)
 	{
@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			dwCurrentTime = timeGetTime();
 			if((dwCurrentTime - dwFPSLastTime) >= 500)
 			{
-				g_fCountFPS = (dwFrameCount * 1000.0f) / (dwCurrentTime - dwFPSLastTime);
+				g_CountFPS = (dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime);
 				dwFPSLastTime = dwCurrentTime;
 				dwFrameCount = 0;
 			}
@@ -189,7 +189,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //	戻り値	:int
 //	説明	:FPSの値を受け渡す
 //=============================================================================
-float GetFPS(void)
+int GetFPS(void)
 {
-	return g_fCountFPS;
+	return g_CountFPS;
 }
