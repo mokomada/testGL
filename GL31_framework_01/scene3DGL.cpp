@@ -44,8 +44,7 @@ CScene3DGL::~CScene3DGL()
 //=============================================================================
 void CScene3DGL::Init(VECTOR3 pos, VECTOR2 size, char *texName)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 
 
 	// äeéÌèâä˙âª
@@ -163,20 +162,20 @@ void CScene3DGL::DrawPolygon(void)
 	// ç∂è„
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0, 1.0);
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(-(m_Size.x * 0.5f), (m_Size.y * 0.5f), 0.0f);
 
 	// âEè„
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0, 1.0);
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f((m_Size.x * 0.5f), (m_Size.y * 0.5f), 0.0f);
 
 	// ç∂â∫
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0, 0.0);
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(-(m_Size.x * 0.5f), -(m_Size.y * 0.5f), 0.0f);
 
 	// âEâ∫
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0, 0.0);
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f((m_Size.x * 0.5f), -(m_Size.y * 0.5f), 0.0f);
 }
