@@ -72,7 +72,7 @@ CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
 ******************************************************************************/
 void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 {
-	CSceneBillboardGL::Init( pos , VECTOR2( 50.0f , 50.0f ) );
+	CSceneBillboardGL::Init( pos , VECTOR2( 50.0f , 50.0f ) , "./data/TEXTURE/bullet000.png");
 	m_Rot = rot;				//”­ŽËŠp“x
 	m_speed = speed;			//ˆÚ“®‘¬“x
 	m_life = BULLET_LIFE;	//’e‚ÌŽõ–½
