@@ -8,6 +8,7 @@
 *.lo
 *.o
 *.db
+*.opendb
 
 # Precompiled Headers
 *.gch
@@ -34,7 +35,7 @@
 
 # Debug Files
 /.vs/
-/Debug/
+*/Debug/*
 
 # Release Files
-/Release/
+*/Release/*
