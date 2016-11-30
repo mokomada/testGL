@@ -28,15 +28,15 @@
 /////////////////////
 /*   ファイル名    */
 /////////////////////
-#define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/test.tga"			// 爆発テストエフェクト(4x4)
-#define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/explosion000.tga"	// 爆発テストエフェクト(7x1)
+#define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/explosion000.tga"	// 爆発テストエフェクト(8x1)
+#define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/explosion001.tga"	// 爆発テストエフェクト(7x1)
 #define	NUMBER_TEXFILENAME0000  "./data/TEXTURE/number000.tga"		// 横一列テスト画像(10x1)
 
 /////////////////////////////////
 /*   アニメーショングリッド    */
 /////////////////////////////////
-#define EXPLODE00_X	(4)
-#define EXPLODE00_Y	(4)
+#define EXPLODE00_X	(8)
+#define EXPLODE00_Y	(1)
 #define EXPLODE01_X	(7)
 #define EXPLODE01_Y	(1)
 #define NUMBER_X	(10)

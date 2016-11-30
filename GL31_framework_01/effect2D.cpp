@@ -206,6 +206,7 @@ void CEffect2D::Draw(void)
 		glDisable(GL_LIGHTING);								// ライティングオフ
 		glEnable(GL_BLEND);									// ブレンド有効化
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// αブレンド設定
+		glDepthMask(GL_FALSE);								// 深度バッファへの書き込みを禁止する。(爆風どうしの重なりの解消)
 
 		////	描画開始
 		/////////////////////////////////////////////////////////
@@ -229,7 +230,8 @@ void CEffect2D::Draw(void)
 	glDisable(GL_TEXTURE_2D);		// テクスチャ無効
 	glDisable(GL_DEPTH_TEST);		// 深度バッファ設定オフ
 	glDisable(GL_BLEND);			// αブレンドOFF
-	
+	glDepthMask(GL_TRUE);			// 深度バッファへの書き込みを許可
+
 	////	モデルビューマトリックスの設定
 	/////////////////////////////////////////////////////////////
 	glMatrixMode(GL_MODELVIEW);
@@ -255,25 +257,25 @@ void CEffect2D::DrawPolygon(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
 	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),								// テクスチャ座標X(U)
 				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));						// テクスチャ座標X(V)
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);	// 頂点座標
+	glVertex3f(-m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);	// 頂点座標
 
 	// 右上
 	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
 	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),							// テクスチャ座標X(U)
 				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));						// テクスチャ座標X(V)
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);	// 頂点座標
+	glVertex3f(m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);	// 頂点座標
 																						
 	// 左下
 	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
 	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),								// テクスチャ座標X(U)
 				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));					// テクスチャ座標X(V)
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);	// 頂点座標
+	glVertex3f(-m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);	// 頂点座標
 																						
 	// 右下
 	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
 	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),							// テクスチャ座標X(U)
 				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));					// テクスチャ座標X(V)
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);	// 頂点座標
+	glVertex3f(m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);	// 頂点座標
 }																						
 
 //=============================================================================
