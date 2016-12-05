@@ -7,6 +7,7 @@
 インクルードファイル
 *******************************************************************************/
 #include "scene3DGL.h"
+#include "game.h"
 
 /******************************************************************************
 マクロ定義
@@ -28,11 +29,11 @@ class CWall :CScene3DGL
 		void Updete(void);
 		void Draw(void);
 		static CWall *Create(VECTOR3 pos, VECTOR3 rot, float width, float height, float depth, char *texName);
-		;BOX_DATA GetWallBox(void);
+		BOX_DATA GetWallBox(void);
 
 	protected://継承先クラスでは使える
 	private://自分しか使えない
-		;BOX_DATA m_WallBox;
+		BOX_DATA m_WallBox;
 		int m_Texture;
 };
 #endif
