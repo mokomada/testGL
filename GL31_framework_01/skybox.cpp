@@ -14,6 +14,7 @@
 #include "manager.h"
 #include "main.h"
 #include "rendererGL.h"
+#include "game.h"
 #include "sceneGL.h"
 #include "scene3DGL.h"
 #include "skybox.h"
@@ -41,8 +42,7 @@ CSkybox::~CSkybox()
 ********************************************/
 void CSkybox::Init(void)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 
 
 	//‰ŠúˆÊ’u

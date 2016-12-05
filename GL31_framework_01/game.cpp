@@ -24,6 +24,7 @@
 #include "trickgauge.h"
 #include "effect2D.h"
 #include "countdown.h"
+#include "skybox.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -42,6 +43,7 @@ vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 //=============================================================================
 void CGame::Init(void)
 {
+	CSkybox::Create();
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
