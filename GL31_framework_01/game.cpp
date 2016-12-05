@@ -24,6 +24,7 @@
 #include "trickgauge.h"
 #include "effect2D.h"
 #include "countdown.h"
+#include "textureManager.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -42,6 +43,8 @@ vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 //=============================================================================
 void CGame::Init(void)
 {
+	CTextureManager::Init();
+
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
@@ -72,6 +75,7 @@ void CGame::Init(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
+	CTextureManager::Uninit();
 	CSceneGL::DeleteAll();
 }
 
