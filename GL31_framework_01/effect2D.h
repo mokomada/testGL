@@ -6,6 +6,11 @@
 //	作成日		2016/11/21
 //
 //=============================================================================
+//	< 更新履歴 >
+// 12/05 煙エフェクト追加
+// 
+//
+///////////////////////////////////////////////////////////////////////////////
 //=============================================================================
 //	マクロ定義
 //=============================================================================
@@ -30,7 +35,8 @@
 /////////////////////
 #define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/explosion000.tga"	// 爆発テストエフェクト(8x1)
 #define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/explosion001.tga"	// 爆発テストエフェクト(7x1)
-#define	NUMBER_TEXFILENAME0000  "./data/TEXTURE/number000.tga"		// 横一列テスト画像(10x1)
+#define	NUMBER_TEXFILENAME000	"./data/TEXTURE/number000.tga"		// 横一列テスト画像(10x1)
+#define SMOKE_TEXFILENAME000	"./data/TEXTURE/smoke00.tga"		// 土煙テストエフェクト(10x1)
 
 /////////////////////////////////
 /*   アニメーショングリッド    */
@@ -41,11 +47,19 @@
 #define EXPLODE01_Y	(1)
 #define NUMBER_X	(10)
 #define NUMBER_Y	(1)
+#define SMOKE00_X	(10)
+#define SMOKE00_Y	(1)
 
 /////////////////
 /*   その他    */
 /////////////////
-#define ANIMATION_CHANGE_FRAME_COUNT	(15)						// アニメーションが切り替わるまでのフレーム数
+
+////	アニメーションが切り替わるまでのフレーム数
+//////////////////////////////////////////////////////////////
+#define DEFAULT_ANIMATION_CHANGE_FRAME	(15)	// デフォルト
+#define EXPLODE_ANIMATION_CHANGE_FRAME	(5)		// 爆発
+#define NUMBER_ANIMATION_CHANGE_FRAME	(15)	// 数字
+#define SMOKE_ANIMATION_CHANGE_FRAME	(2)		// 土煙
 
 //=============================================================================
 //	構造体定義
@@ -55,8 +69,10 @@ typedef enum
 	ETYPE_NONE = 0,	// なし
 	ETYPE_EXPLODE00,	// 爆発エフェクト(テスト)
 	ETYPE_EXPLODE01,	// 爆発エフェクト
-	ETYPE_NUMBER,	// テスト用一列画像
+	ETYPE_NUMBER,		// テスト用一列画像
+	ETYPE_SMOKE00,		// 土煙エフェクト
 }EFFECTTYPE;
+
 
 //=============================================================================
 //	クラス定義
@@ -76,7 +92,7 @@ class CEffect2D : public CScene2DGL
 		void Update(void);											// 更新処理
 		void Draw(void);											// 描画処理
 		void DrawPolygon(void);										// 描画処理内のDraw部分
-
+		void TypeInit(EFFECTTYPE etype);							// エフェクトタイプ別の初期化処理
 		static CEffect2D *Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),			// 作成関数
 								 VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 								 EFFECTTYPE etype = ETYPE_NONE);
@@ -90,6 +106,7 @@ class CEffect2D : public CScene2DGL
 		/* アニメーション関連 */
 		int		m_nAnimX,m_nAnimY;			// 目標アニメーションカウント数
 		int		m_nAnimCntX, m_nAnimCntY;	// アニメーションカウンタ
+		int		m_nAnimChangeFrame;			// アニメーションの切り変えまでのフレーム数
 		int		m_nAnimChangeFrameCnt;		// アニメーションの切り変えまでのフレームカウンタ
 		bool	m_bEndflug;					// 最終アニメーション表示後自殺するフラグ
 };
