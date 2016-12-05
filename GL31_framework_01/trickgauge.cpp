@@ -14,8 +14,9 @@
 #include "scene2DGL.h"
 #include "rendererGL.h"
 #include "manager.h"
-#include "sceneModel.h"
 #include "game.h"
+#include "sceneModel.h"
+
 
 /******************************************************************************
 É}ÉNÉçíËã`

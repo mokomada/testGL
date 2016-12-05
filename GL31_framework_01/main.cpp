@@ -16,7 +16,6 @@
 #include "resource.h"
 #include <commctrl.h>
 //#include <afxwin.h>
-#include "sceneModel.h"
 
 #pragma once
 #pragma comment(lib, "ComCtl32.lib") //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
