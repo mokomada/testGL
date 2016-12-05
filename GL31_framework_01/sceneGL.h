@@ -21,6 +21,15 @@ typedef enum {
 	OBJTYPE_MAX
 } OBJTYPE;
 
+//	当たり判定で使うボックスの情報
+typedef struct
+{
+	float width;
+	float height;
+	float depth;
+} BOX_DATA;
+
+
 //=============================================================================
 //	マクロ定義
 //=============================================================================
@@ -51,9 +60,11 @@ public:
 	
 	void	SetPos(VECTOR3 pos){ m_Pos = pos; }
 	void	SetRot(VECTOR3 rot){ m_Rot = rot; }
+	void	SetRot(BOX_DATA box) { m_Box = box; }
 
 	VECTOR3	GetPos(void) { return m_Pos; }
 	VECTOR3	GetRot(void) { return m_Rot; }
+	BOX_DATA GetBox(void) { return m_Box; }
 
 protected:
 	static CSceneGL *m_pTop;	// リストの先頭ポインタ
@@ -64,6 +75,8 @@ protected:
 
 	VECTOR3 m_Pos;		// 位置
 	VECTOR3 m_Rot;		// 回転角
+
+	BOX_DATA m_Box;	//ボックスのデータ
 };
 
 #endif
