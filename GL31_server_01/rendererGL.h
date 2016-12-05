@@ -47,24 +47,24 @@ class CSceneGL;
 class CRendererGL
 {
 public:
-	void	Init(HWND hWnd);
-	void	Uninit(HWND hWnd);
-	void	Update(void);
-	void	Begin(void);
-	void	End(void);
+	static void	Init(HWND hWnd);
+	static void	Uninit(HWND hWnd);
+	static void	Update(void);
+	static void	Begin(void);
+	static void	End(void);
 	
 	static VECTOR3	GetBGColor(void) { return m_BGColor; }
 	static void		SetBGColor(VECTOR3 color) { m_BGColor = color; }
 	static void		AddBGColor(VECTOR3 color) { m_BGColor += color; }
 
-	int CreateTextureTGA(char *filename);
-	int CreateTextureBMP(char *filename);
+	static int CreateTextureTGA(char *filename);
+	static int CreateTextureBMP(char *filename);
 
 private:
-	HDC		m_Dc;	// Device Context
-	HGLRC	m_GlRC;	// Handle to openGL Device Context
+	static HDC		m_Dc;	// Device Context
+	static HGLRC	m_GlRC;	// Handle to openGL Device Context
 	
-	CSceneGL		*m_Scene[SCENE_NUM];	// シーンインスタンス
+	static CSceneGL	*m_Scene[SCENE_NUM];	// シーンインスタンス
 	static VECTOR3	m_BGColor;				// 背景色
 };
 

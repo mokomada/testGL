@@ -30,7 +30,7 @@ int			CNetwork::m_AddrLen;
 sockaddr_in	CNetwork::m_AddrClient;
 uint		CNetwork::thID1;
 HANDLE		CNetwork::hTh1;
-bool		CNetwork::m_IfInitialize = false;
+bool		CNetwork::m_ifInitialize = false;
 
 //=============================================================================
 //	ŠÖ”–¼	:Init
@@ -79,7 +79,7 @@ void CNetwork::Init(void)
 	setsockopt(m_Sock, SOL_SOCKET, SO_BROADCAST, (char *)&value, sizeof(value));
 
 	// ‰Šú‰»I—¹’m
-	m_IfInitialize = true;
+	m_ifInitialize = true;
 }
 
 //=============================================================================
@@ -125,7 +125,7 @@ unsigned int __stdcall thread1(void *p)
 	while(1)
 	{
 		// ‰Šú‰»‚ªI—¹‚µ‚Ä‚¢‚éê‡‚Ì‚İˆ—
-		if(CNetwork::m_IfInitialize)
+		if(CNetwork::m_ifInitialize)
 		{
 			CNetwork::ReceiveData();
 		}

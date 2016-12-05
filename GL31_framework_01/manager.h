@@ -21,7 +21,6 @@
 //	前方宣言
 //=============================================================================
 class CMode;
-class CInput;
 class CRendererGL;
 class CSceneGL;
 class CCameraGL;
@@ -39,7 +38,6 @@ public:
 	static void	Update(void);
 	static void	Draw(void);
 	
-	static CInput		*GetInput(void){ return m_Input; }
 	static CRendererGL	*GetRendererGL(void){ return m_RendererGL; }
 	static CCameraGL	*GetCamera(void){ return m_Camera; }
 
@@ -50,9 +48,7 @@ public:
 
 private:
 	static CMode		*m_Mode;		// モードのインスタンス
-	static CInput		*m_Input;		// 入力のインスタンス
 	static CCameraGL	*m_Camera;		// カメラのインスタンス
-	static CLightGL		*m_Light;		// ライトのインスタンス
 	static CRendererGL	*m_RendererGL;	// レンダラ(GL)
 
 	static int	m_ModeState;

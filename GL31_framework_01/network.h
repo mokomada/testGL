@@ -32,7 +32,7 @@ public:
 	static void SendData(char *str);
 	static void ReceiveData(void);
 
-	static bool			m_IfInitialize;	// Init()‚ªI—¹‚µ‚½‚©‚Ç‚¤‚©
+	static bool			m_ifInitialize;	// Init()‚ªI—¹‚µ‚½‚©‚Ç‚¤‚©
 
 private:
 	static WSADATA		m_Wsadata;

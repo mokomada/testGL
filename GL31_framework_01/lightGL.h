@@ -30,13 +30,10 @@
 class CLightGL
 {
 public:
-	CLightGL();
-	~CLightGL();
-
-	void	Init(void);
-	void	Uninit(void);
-	void	Update(void);
-	void	Set(void);
+	static void	Init(void);
+	static void	Uninit(void);
+	static void	Update(void);
+	static void	Set(void);
 
 private:
 

@@ -26,9 +26,7 @@
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 int			CManager::m_ModeState;		// モード情報
-CInput		*CManager::m_Input;			// 入力のインスタンス
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
-CLightGL	*CManager::m_Light;			// ライトのインスタンス
 CRendererGL	*CManager::m_RendererGL;	// レンダラ(GL)
 
 //=============================================================================
@@ -45,16 +43,14 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 	m_Mode			= new CTutorial();
-	m_Input			= new CInput();
 	m_Camera		= new CCameraGL();
-	m_Light			= new CLightGL();
 
 	// 初期化処理
 	m_Mode->Init();
 	CFade::Init();
-	m_Input->InitKeyboard(hInstance, hWnd);
+	CInput::InitKeyboard(hInstance, hWnd);
 	m_Camera->Init();
-	m_Light->Init();
+	CLightGL::Init();
 	CSound::Init();
 	CNetwork::Init();
 	CDebugProcGL::Init();
@@ -68,12 +64,6 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(HWND hWnd)
 {
-	if(m_Input != NULL)
-	{
-		m_Input->UninitKeyboard();
-		delete m_Input;
-		m_Input = NULL;
-	}
 	if(m_RendererGL != NULL)
 	{
 		m_RendererGL->Uninit(hWnd);
@@ -100,9 +90,9 @@ void CManager::Uninit(HWND hWnd)
 //=============================================================================
 void CManager::Update(void)
 {
-	m_Input->UpdateKeyboard();
+	CInput::UpdateKeyboard();
 	m_Camera->Update();
-	m_Light->Update();
+	CLightGL::Update();
 	m_RendererGL->Update();
 
 	m_Mode->Update();
@@ -126,7 +116,7 @@ void CManager::Draw(void)
 	m_Camera->Set();
 
 	// ライトの設定
-	m_Light->Set();
+	CLightGL::Set();
 
 	// モード描画
 	m_Mode->Draw();
