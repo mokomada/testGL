@@ -105,6 +105,7 @@
     <ClInclude Include="sceneGL.h" />
     <ClInclude Include="sceneModel.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="textureManager.h" />
     <ClInclude Include="title.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="sceneGL.cpp" />
     <ClCompile Include="sceneModel.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="textureManager.cpp" />
     <ClCompile Include="title.cpp" />

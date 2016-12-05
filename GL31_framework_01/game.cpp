@@ -25,6 +25,7 @@
 #include "effect2D.h"
 #include "countdown.h"
 #include "textureManager.h"
+#include "skybox.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -43,6 +44,7 @@ vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 //=============================================================================
 void CGame::Init(void)
 {
+	CSkybox::Create( );
 	CTextureManager::Init();
 
 	m_Meshfield	= CMeshfield::Create();
