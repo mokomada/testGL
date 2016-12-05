@@ -81,6 +81,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="cameraGL.h" />
     <ClInclude Include="debugProcGL.h" />
+    <ClInclude Include="effect2D.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="network.h" />
     <ClInclude Include="score.h" />
@@ -112,6 +113,7 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="cameraGL.cpp" />
     <ClCompile Include="debugProcGL.cpp" />
+    <ClCompile Include="effect2D.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="score.cpp" />
