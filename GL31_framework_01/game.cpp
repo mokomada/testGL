@@ -26,6 +26,7 @@
 #include "countdown.h"
 #include "wall.h"
 #include "textureManager.h"
+#include "skybox.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -45,6 +46,7 @@ vector<CPlayer*>	CGame::m_Player;		// プレイヤーのインスタンス
 void CGame::Init(void)
 {
 	CTextureManager::Init();
+	CSkybox::Create();
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
