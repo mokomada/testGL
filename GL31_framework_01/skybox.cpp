@@ -76,7 +76,7 @@ void CSkybox::Draw(void)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();					//保存
 	
-	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
 
 	glDisable(GL_CULL_FACE);
 
@@ -248,7 +248,7 @@ void CSkybox::Draw(void)
 
 	glEnable(GL_CULL_FACE);
 
-	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
 
 	//モデルビューマトリックス
 	glMatrixMode(GL_MODELVIEW);
