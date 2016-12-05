@@ -24,6 +24,7 @@
 #include "trickgauge.h"
 #include "effect2D.h"
 #include "countdown.h"
+#include "wall.h"
 
 //=============================================================================
 //	プロトタイプ
@@ -53,6 +54,8 @@ void CGame::Init(void)
 	m_Player[3] = CPlayer::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
+
+	CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50,50,0.5, "./data/TEXTURE/主ちゃ.png");
 
 	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい
 //	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
