@@ -33,10 +33,9 @@
 /////////////////////
 /*   ファイル名    */
 /////////////////////
-#define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/explosion000.tga"	// 爆発テストエフェクト(8x1)
-#define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/explosion001.tga"	// 爆発テストエフェクト(7x1)
-#define	NUMBER_TEXFILENAME000	"./data/TEXTURE/number000.tga"		// 横一列テスト画像(10x1)
-#define SMOKE_TEXFILENAME000	"./data/TEXTURE/smoke00.tga"		// 土煙テストエフェクト(10x1)
+#define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/EFFECT/Effect_Explosion00.tga"	// 爆発テストエフェクト(8x1)
+#define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/EFFECT/Effect_Explosion01.tga"	// 爆発テストエフェクト(7x1)
+#define SMOKE_TEXFILENAME000	"./data/TEXTURE/EFFECT/Effect_Smoke00.tga"		// 土煙テストエフェクト(10x1)
 
 /////////////////////////////////
 /*   アニメーショングリッド    */
@@ -45,8 +44,6 @@
 #define EXPLODE00_Y	(1)
 #define EXPLODE01_X	(7)
 #define EXPLODE01_Y	(1)
-#define NUMBER_X	(10)
-#define NUMBER_Y	(1)
 #define SMOKE00_X	(10)
 #define SMOKE00_Y	(1)
 
@@ -58,7 +55,6 @@
 //////////////////////////////////////////////////////////////
 #define DEFAULT_ANIMATION_CHANGE_FRAME	(15)	// デフォルト
 #define EXPLODE_ANIMATION_CHANGE_FRAME	(5)		// 爆発
-#define NUMBER_ANIMATION_CHANGE_FRAME	(15)	// 数字
 #define SMOKE_ANIMATION_CHANGE_FRAME	(2)		// 土煙
 
 //=============================================================================
@@ -69,7 +65,6 @@ typedef enum
 	ETYPE_NONE = 0,	// なし
 	ETYPE_EXPLODE00,	// 爆発エフェクト(テスト)
 	ETYPE_EXPLODE01,	// 爆発エフェクト
-	ETYPE_NUMBER,		// テスト用一列画像
 	ETYPE_SMOKE00,		// 土煙エフェクト
 }EFFECTTYPE;
 

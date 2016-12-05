@@ -282,14 +282,6 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;			// アニメーション切り替えまでのフレーム数
 			break;
 			
-		// 数字画像(テスト)　10x1
-		case ETYPE_NUMBER :
-			m_Texture = renderer->CreateTextureTGA(NUMBER_TEXFILENAME000);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = NUMBER_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = NUMBER_Y;											// Yの分割数(ヘッダに定義)
-			m_nAnimChangeFrame = NUMBER_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
-			break;
-
 		// 土煙画像(白)		10x1
 		case ETYPE_SMOKE00 :
 			m_Texture = renderer->CreateTextureTGA(SMOKE_TEXFILENAME000);	// 画像のアドレス(ヘッダに定義)
