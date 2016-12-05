@@ -13,6 +13,7 @@
 #include "shadow.h"
 #include "sceneModel.h"
 #include "game.h"
+#include "textureManager.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -53,10 +54,10 @@ CShadow::~CShadow()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CShadow * CShadow::Create( VECTOR3 pos , float width , float height )
+CShadow * CShadow::Create( VECTOR3 pos , float width , float height , CSceneGL *parent )
 {
 	CShadow * shadow = new CShadow;
-	shadow->Init( pos , width , height );
+	shadow->Init( pos , width , height , parent );
 	return shadow;
 }
 
@@ -66,19 +67,19 @@ CShadow * CShadow::Create( VECTOR3 pos , float width , float height )
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CShadow::Init( VECTOR3 pos , float width , float height )
+void CShadow::Init( VECTOR3 pos , float width , float height , CSceneGL *parent )
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
-
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 
 	// 各種初期化
 	SetPos(VECTOR3(pos.x, 0.1f, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Size = VECTOR2( width , height );
-	
+	m_parent = parent;
+	m_deleteFlag = false;	//削除するときにｔｒｕｅにする
+
 	// テクスチャ読込
-	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/shadow000.png");
+	m_Texture = CTextureManager::GetTexture( TEXTURE_SHADOW );
 }
 
 /******************************************************************************
@@ -89,12 +90,12 @@ void CShadow::Init( VECTOR3 pos , float width , float height )
 ******************************************************************************/
 void CShadow::Uninit( bool isLast )
 {
-	// テクスチャ削除
-	if(m_Texture != NULL)
-	{
-		if(isLast)
-		glDeleteTextures(1, ((GLuint *)m_Texture));
-	}
+	//// テクスチャ削除
+	//if(m_Texture != NULL)
+	//{
+	//	if(isLast)
+	//	glDeleteTextures(1, ((GLuint *)m_Texture));
+	//}
 }
 
 /******************************************************************************
@@ -105,11 +106,16 @@ void CShadow::Uninit( bool isLast )
 ******************************************************************************/
 void CShadow::Update( void )
 {
-	VECTOR3 pos = CGame::GetPlayer1()->GetPos();
-	VECTOR3 rot = CGame::GetPlayer1()->GetRot();
+	VECTOR3 pos = m_parent->GetPos();
+	VECTOR3 rot = m_parent->GetRot();
 
 	SetPos( VECTOR3( pos.x , 0.1f , pos.z ) );
 	SetRot( rot );
+
+	if( m_deleteFlag )
+	{
+		CScene3DGL::Release();
+	}
 }
 
 /******************************************************************************
@@ -133,7 +139,7 @@ void CShadow::Draw( void )
 	glScalef(1.0f, 1.0f, 1.0f);
 
 	// 描画処理ここから
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	glBindTexture(GL_TEXTURE_2D, *m_Texture);
 	glEnable(GL_TEXTURE_2D);
 	
 	// 深度バッファ設定

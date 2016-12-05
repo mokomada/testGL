@@ -1,5 +1,5 @@
 /******************************************************************************
-*	ファイル：弾
+*	ファイル：
 *	作成者  ：庄司茜
 *	作成日  ：
 ******************************************************************************/
@@ -10,18 +10,11 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
-#include "bullet.h"
-#include "game.h"
-#include "sceneModel.h"
-#include "shadow.h"
 #include "textureManager.h"
 
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
-
-#define BULLET_LIFE ( 120 )
-
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
@@ -31,16 +24,20 @@
 /******************************************************************************
 *	グローバル変数
 ******************************************************************************/
-
+int CTextureManager::m_Texture[ TEXTURE_MAX ] = { 0 };		// テクスチャ
+char * CTextureManager::m_texName[ TEXTURE_MAX ] = 			//テクスチャの名前
+{
+	{"./data/TEXTURE/shadow000.png"},
+	{"./data/TEXTURE/bullet000.png"}
+};
 /******************************************************************************
 *	関数名：
 *	引数  ：なし
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBullet::CBullet( int priority , OBJTYPE objType )
+CTextureManager::CTextureManager()
 {
-	m_speed = 0;
 }
 /******************************************************************************
 *	関数名：
@@ -48,47 +45,24 @@ CBullet::CBullet( int priority , OBJTYPE objType )
 *	戻り値：なし
 *	説明  ：デストラクタ
 ******************************************************************************/
-CBullet::~CBullet()
+CTextureManager::~CTextureManager()
 {
 }
-
-/******************************************************************************
-*	関数名：
-*	引数  ：
-*	戻り値：
-*	説明  ：クリエイト
-******************************************************************************/
-CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
-{
-	CBullet *bullet = new CBullet();
-	bullet->Init( pos , rot , speed );
-
-	return bullet;
-}
-
 /******************************************************************************
 *	関数名：
 *	引数  ：
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
+HRESULT CTextureManager::Init( void )
 {
-	CRendererGL	*renderer = CManager::GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 
-	// 各種初期化
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
-	m_Size = VECTOR2( 50.0f , 50.0f );
-	m_Rot = rot;				//発射角度
-	m_speed = speed;			//移動速度
-	m_life = BULLET_LIFE;	//弾の寿命
-
-	// テクスチャ読込
-	m_Texture = CTextureManager::GetTexture( TEXTURE_BULLET );
-
-	//影
-	m_myShadow = CShadow::Create( m_Pos , 50.0f , 50.0f , this );
+	for( int i = 0; i < TEXTURE_MAX; i++ )
+	{
+		m_Texture[ i ] = renderer->CreateTextureTGA( m_texName[ i ] );
+	}
+	return S_OK;
 }
 
 /******************************************************************************
@@ -97,38 +71,14 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 *	戻り値：なし
 *	説明  ：終了処理
 ******************************************************************************/
-void CBullet::Uninit( void )
+void CTextureManager::Uninit( void )
 {
-	CSceneBillboardGL::Uninit();
-}
-
-/******************************************************************************
-*	関数名：
-*	引数  ：なし
-*	戻り値：なし
-*	説明  ：更新処理
-******************************************************************************/
-void CBullet::Update( void )
-{
-	m_life--;
-
-	m_Pos.x -= -sinf( m_Rot.y ) * m_speed;
-	m_Pos.z -= -cosf( m_Rot.y ) * m_speed;
-
-	if( m_life <= 0 )	//寿命が尽きたら削除
+	for( int i = 0; i < TEXTURE_MAX; i++ )
 	{
-		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
-		CSceneGL::Release();
+		// テクスチャ削除
+		if(m_Texture[ i ] != NULL)
+		{
+			glDeleteTextures( 1 , ( ( GLuint * )m_Texture[ i ] ) );
+		}
 	}
-}
-
-/******************************************************************************
-*	関数名：
-*	引数  ：なし
-*	戻り値：なし
-*	説明  ：描画処理
-******************************************************************************/
-void CBullet::Draw( void )
-{
-	CSceneBillboardGL::Draw( m_Texture );
 }

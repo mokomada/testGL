@@ -1,7 +1,7 @@
 /******************************************************************************
-*	ファイル：bullet.h
+*	ファイル：textureManager.h
 *	作成者  ：庄司茜
-*	作成日  ：2016/11/14
+*	作成日  ：2016/12/05
 ******************************************************************************/
 /******************************************************************************
 *	ヘッダーファイルの多重インクルード防止
@@ -12,40 +12,41 @@
 /******************************************************************************
 *	インクルードファイル
 ******************************************************************************/
-
-#include "sceneBillboardGL.h"
-
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
+
+typedef enum
+{
+	TEXTURE_SHADOW = 0,
+	TEXTURE_BULLET,
+	TEXTURE_MAX
+}TEXTURE_LABEL;
+
+
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
-
-class CShadow;
-
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CBullet : public CSceneBillboardGL
+class CTextureManager
 {
 public:
-	CBullet(int priority = 1, OBJTYPE objType = OBJTYPE_BULLET);
-	~CBullet();
+	CTextureManager();
+	~CTextureManager();
 
-	static CBullet * Create( VECTOR3 pos , VECTOR3 rot , float speed );
+	static HRESULT Init( void );
+	static void Uninit( void );
+	static int *GetTexture( int texLabel ) { return &m_Texture[ texLabel ]; }
 
-	void Init( VECTOR3 pos , VECTOR3 rot , float speed );
-	void Uninit( void );
 	void Update( void );
 	void Draw( void );
 
 private:
-	int m_life;		//弾の寿命
-	float m_speed;
-	CShadow *m_myShadow;	//自分の影
-	int		*m_Texture;	// テクスチャ
+	static int m_Texture[ TEXTURE_MAX ];		// テクスチャ
+	static char *m_texName[ TEXTURE_MAX ];		//テクスチャの名前
 };
