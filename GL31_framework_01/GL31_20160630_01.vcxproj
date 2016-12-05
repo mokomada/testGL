@@ -78,8 +78,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="countdown.h" />
+    <ClInclude Include="debugProcGL.h" />
+    <ClInclude Include="effect2D.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="network.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -101,12 +106,18 @@
     <ClInclude Include="sceneModel.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="trickgauge.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="countdown.cpp" />
+    <ClCompile Include="debugProcGL.cpp" />
+    <ClCompile Include="effect2D.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="network.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />
@@ -125,6 +136,7 @@
     <ClCompile Include="sceneModel.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="trickgauge.cpp" />
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>

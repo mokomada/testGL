@@ -55,6 +55,11 @@ public:
 	void	SetPosV(VECTOR3 pos){ 
 		m_CameraState.posV = pos;
 		m_CameraState.Rot.y = atan2f((m_CameraState.posR.x - m_CameraState.posV.x), (m_CameraState.posR.z - m_CameraState.posV.z)); }
+
+	void	SetPosR(VECTOR3 pos) {
+		m_CameraState.posR = pos;
+		m_CameraState.Rot.y = atan2f((m_CameraState.posR.x - m_CameraState.posV.x), (m_CameraState.posR.z - m_CameraState.posV.z));
+	}
 	
 	CAMERA	m_CameraState;			// ÉJÉÅÉâ
 

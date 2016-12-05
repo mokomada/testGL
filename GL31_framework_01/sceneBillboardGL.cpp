@@ -45,8 +45,7 @@ CSceneBillboardGL::~CSceneBillboardGL()
 //=============================================================================
 void CSceneBillboardGL::Init(VECTOR3 pos, VECTOR2 size, char *texName)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer = CManager::GetRendererGL();
 
 
 	// 各種初期化
@@ -127,7 +126,12 @@ void CSceneBillboardGL::Draw(void)
 	// ライティングオフ
 	glDisable(GL_LIGHTING);
 
-	glBegin(GL_TRIANGLE_STRIP);
+	//アルファブレンド
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+glBegin(GL_TRIANGLE_STRIP);
 	{
 		// 頂点色設定
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -141,6 +145,7 @@ void CSceneBillboardGL::Draw(void)
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);
@@ -177,20 +182,20 @@ void CSceneBillboardGL::DrawPolygon(void)
 	// 左上
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0, 1.0);
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(( - (m_Size.x * 0.5f)), ((m_Size.y * 0.5f)), 0.0f);
 
 	// 右上
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0, 1.0);
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y + (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(((m_Size.x * 0.5f)), ( (m_Size.y * 0.5f)), 0.0f);
 
 	// 左下
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0, 0.0);
-	glVertex3f((m_Pos.x - (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(( - (m_Size.x * 0.5f)), ( - (m_Size.y * 0.5f)), 0.0f);
 
 	// 右下
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0, 0.0);
-	glVertex3f((m_Pos.x + (m_Size.x * 0.5f)), (m_Pos.y - (m_Size.y * 0.5f)), m_Pos.z);
+	glVertex3f(( (m_Size.x * 0.5f)), (- (m_Size.y * 0.5f)), 0.0f);
 }

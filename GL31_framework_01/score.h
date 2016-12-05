@@ -21,14 +21,14 @@
 //=============================================================================
 //	ƒNƒ‰ƒX’è‹`
 //=============================================================================
-class CScore : public CNumber
+class CScore : public CScene2DGL
 {
 public:
 	CScore(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScore();
 	
 	void	Init(VECTOR3 pos, VECTOR2 size, int figure);
-	void	Uninit(void);
+	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 

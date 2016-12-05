@@ -9,6 +9,8 @@
 //=============================================================================
 //	インクルード
 //=============================================================================
+#include "sceneGL.h"
+#include "scene2DGL.h"
 #include "score.h"
 #include "manager.h"
 #include "main.h"
@@ -23,9 +25,9 @@ int		CScore::m_NumFigure;
 //	関数名	:CScore()
 //	引数	:無し
 //	戻り値	:無し
-//	説明	:コンストラクタ。
+//	説明	:コンストラクタ。f
 //=============================================================================
-CScore::CScore(int priority, OBJTYPE objtype) : CNumber(priority, objtype)
+CScore::CScore(int priority, OBJTYPE objtype) : CScene2DGL( priority , objtype )
 {
 
 }
@@ -55,12 +57,9 @@ void CScore::Init(VECTOR3 pos, VECTOR2 size, int figure)
 	// ナンバーインスタンス配列生成
 	m_Number = new CNumber *[m_NumFigure];
 
-	// 座標初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	
-	// 回転初期化
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
-
+	
 	// 座標設定
 	for(int i = 0 ; i < m_NumFigure; i++)
 	{// 整数部設定
@@ -78,7 +77,7 @@ void CScore::Init(VECTOR3 pos, VECTOR2 size, int figure)
 //	戻り値	:無し
 //	説明	:終了処理を行う。
 //=============================================================================
-void CScore::Uninit(void)
+void CScore::Uninit(bool isLast)
 {
 
 }
@@ -123,7 +122,7 @@ CScore *CScore::Create(VECTOR3 pos, VECTOR2 size, int figure)
 	CScore *score;	// インスタンス
 
 	// インスタンス生成
-	score = new CScore;
+	score = new CScore();
 
 	// 初期化処理
 	score->Init(pos, size, figure);
