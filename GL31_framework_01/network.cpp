@@ -195,17 +195,17 @@ void CNetwork::ReceiveData(void)
 //	説明	:受信したプレイヤーのデータをセットする。
 //=============================================================================
 void CNetwork::SetPlayerData(char *str)
-{
+{/*
 	CSceneModel	*player2 = CGame::GetPlayer2();
 	VECTOR3		pos = VECTOR3::zero();
 
 	// ゲームモードの時のみ処理
-	if(GetManager()->GetModeState() == MODE_GAME)
+	if(CManager::GetModeState() == MODE_GAME)
 	{
 		// 受信データからプレイヤー座標を取得
 		sscanf(str, "1, %f, %f, %f", &pos.x, &pos.y, &pos.z);
 
 		// 取得した座標をセット
 		player2->SetPos(pos);
-	}
+	}*/
 }

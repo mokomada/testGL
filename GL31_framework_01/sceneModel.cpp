@@ -13,10 +13,13 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
+#include "game.h"
 #include "sceneModel.h"
 #include "cameraGL.h"
 #include "network.h"
 #include "bullet.h"
+#include "debugProcGL.h"
+
 //=============================================================================
 //	関数名	:CScene3D()
 //	引数	:無し
@@ -47,8 +50,7 @@ CSceneModel::~CSceneModel()
 //=============================================================================
 void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 {
-	CManager	*manager	= GetManager();
-	CRendererGL	*renderer	= manager->GetRendererGL();
+	CRendererGL	*renderer	= CManager::GetRendererGL();
 	
 	// 自プレイヤーかどうかセット
 	m_ifMinePlayer = ifMinePlayer;
@@ -77,6 +79,7 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 
 	m_Gauge = 100.0f;	//ゲージの初期化
 	m_FlgLowSpeed = false;
+	m_Radius = 30.0f;
 }
 
 //=============================================================================
@@ -149,7 +152,7 @@ void CSceneModel::Uninit(bool isLast)
 //=============================================================================
 void CSceneModel::Update(void)
 {
-	CCameraGL	*camera = GetManager()->GetCamera();	// カメラ
+	CCameraGL	*camera = CManager::GetCamera();	// カメラ
 
 	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
 	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
@@ -314,6 +317,11 @@ void CSceneModel::Update(void)
 
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
+
+	if (m_ifMinePlayer)
+	{
+		CollisionDetection();
+	}
 
 	// プレイヤーの高さを設定
 	if (m_Pos.y < 20.0f)
@@ -757,4 +765,93 @@ void CSceneModel::DrawModel(void)
 		
 		glPopMatrix();		// 保存マトリックスの取り出し
 	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+void CSceneModel::CollisionDetection(void)
+{
+	CGame *game = (CGame*)CManager::GetMode();
+	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
+	for (int nCnt = 0; nCnt < 4; nCnt++)
+	{
+		if (sceneModel[nCnt] != NULL)
+		{
+			if (sceneModel[nCnt]->m_ifMinePlayer == false)
+			{
+				VECTOR3 sub = GetPos() - sceneModel[nCnt]->GetPos();
+				float distance = VECTOR3::dot(sub, sub);
+				float radius = m_Radius + sceneModel[nCnt]->m_Radius;
+
+				if (distance <= radius * radius)
+				{
+					CDebugProcGL::DebugProc("Hit%d\n", nCnt);
+
+					VECTOR3 Pos0 = GetPos(), Pos1 = sceneModel[nCnt]->GetPos();
+					float Radius = m_Radius + sceneModel[nCnt]->m_Radius;
+					float Lenght = (Pos1 - Pos0).magnitude();
+					VECTOR3 Vec = Pos0 - Pos1;
+					Vec.normalize();
+					Radius -= Lenght;
+					Pos0 += VECTOR3(Vec.x * Radius, Vec.y * Radius, Vec.z * Radius);
+					SetPos(Pos0);
+				}
+			}
+		}
+	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+bool CSceneModel::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1)
+{
+	VECTOR3 sub = Pos1 - Pos0;
+	float distance = VECTOR3::dot(sub, sub);
+	float radius = Radius0 + Radius1;
+
+	if (distance <= radius * radius)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+//=============================================================================
+//	関数名	:CollisionDetectionBox
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ボックスの当たり判定
+//=============================================================================
+bool CSceneModel::CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2)
+{
+	bool HitBox = false;
+
+	float WidthHalf1 = Box1->width * 0.5f;
+	float WidthHalf2 = Box2->width * 0.5f;
+
+	if ((Pos1.x + WidthHalf1 >= Pos2.x - WidthHalf2) && (Pos1.x - WidthHalf1 <= Pos2.x + WidthHalf2))
+	{
+		float HightHalf1 = Box1->height * 0.5f;
+		float HightHalf2 = Box2->height * 0.5f;
+		if ((Pos1.y + HightHalf1 >= Pos2.y - HightHalf2) && (Pos1.y - HightHalf1 <= Pos2.y + HightHalf2))
+		{
+			float DepthHalf1 = Box1->depth * 0.5f;
+			float DepthHalf2 = Box2->depth * 0.5f;
+			if ((Pos1.z + DepthHalf1 >= Pos2.z - DepthHalf2) && (Pos1.z - DepthHalf1 <= Pos2.z + DepthHalf2))
+			{
+				HitBox = true;
+			}
+		}
+	}
+
+	return HitBox;
 }

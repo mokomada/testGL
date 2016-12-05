@@ -39,23 +39,6 @@
 typedef unsigned char uchar;	// unsigned char短縮
 typedef unsigned int uint;		// unsigned int短縮
 
-
-
-//=============================================================================
-//	構造体
-//=============================================================================
-typedef struct{
-	bool ModelBeing;	// モデルが表示されているか否か
-	bool Wireframe;		// ワイヤフレームモード
-	bool Culling;		// カリングモード
-	bool Texture;		// テクスチャ貼付の有無
-	bool Lighting;		// ライティングの有無
-	bool Glid;			// グリッドの表示/非表示
-	bool XAxis;			// Ｘ軸
-	bool YAxis;			// Ｙ軸
-	bool ZAxis;			// Ｚ軸
-} FLUG;
-
 //=============================================================================
 //	前方宣言
 //=============================================================================
@@ -64,14 +47,46 @@ class CManager;
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
-CManager		*GetManager(void);
-FLUG			*GetFlug(void);
-float			GetZoomPos(void);
-float			GetSizePos(void);
-char			*ReadBinaryFile(char *filename);
-int				SearchWordByString(char *str, unsigned int offset, char *word);
-int				SearchWordNumByString(char *str, unsigned int offset, char *word);
-int				SearchWordNumByString(char *str, unsigned int offset, char *word, char *endword);
-bool			SearchWordByFile(FILE *fp, char *word);
+int GetFPS(void);
+
+// インスタンス削除関数
+template <class INSTANCE>
+void SafetyRelease(INSTANCE instance)
+{
+	if(instance != NULL)
+	{
+		instance->Release();
+		instance = NULL;
+	}
+}
+
+// インスタンス削除関数(自作クラス版)
+template <class INSTANCE>
+void SafetyUninit(INSTANCE instance)
+{
+	if(instance != NULL)
+	{
+		instance->Uninit();
+		delete instance;
+		instance = NULL;
+	}
+}
+
+// データ交換関数
+template <class SWAPDATA>
+void SwapData(SWAPDATA &data1, SWAPDATA &data2)
+{
+	SWAPDATA dataBuff;
+	dataBuff = data1;
+	data1 = data2;
+	data2 = dataBuff;
+}
+
+// データニ乗関数
+template <class POWDATA>
+POWDATA PowData(POWDATA data)
+{
+	return data * data;
+}
 
 #endif

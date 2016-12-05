@@ -112,6 +112,9 @@ public:
 	float GetGauge(void) { return m_Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	bool	m_ifMinePlayer;
+
+	float m_Radius;	//当たり判定の半径
+
 private:
 	int		m_Texture;		// テクスチャ
 	PARTS	*m_Parts;		// モデル情報
@@ -128,6 +131,10 @@ private:
 	bool	m_bJump;		// ジャンプフラグ
 	float m_Gauge;
 	bool m_FlgLowSpeed;
+
+	void CollisionDetection(void);
+	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
+	static bool CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2);
 };
 
 #endif

@@ -13,8 +13,7 @@
 #include "bullet.h"
 #include "game.h"
 #include "sceneModel.h"
-#include "shadow.h"
-#include "textureManager.h"
+#include "effect2D.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -74,21 +73,10 @@ CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
 ******************************************************************************/
 void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 {
-	CRendererGL	*renderer = CManager::GetRendererGL();
-
-	// 各種初期化
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
-	m_Size = VECTOR2( 50.0f , 50.0f );
+	CSceneBillboardGL::Init( pos , VECTOR2( 50.0f , 50.0f ) , "./data/TEXTURE/bullet000.png");
 	m_Rot = rot;				//発射角度
 	m_speed = speed;			//移動速度
 	m_life = BULLET_LIFE;	//弾の寿命
-
-	// テクスチャ読込
-	m_Texture = CTextureManager::GetTexture( TEXTURE_BULLET );
-
-	//影
-	m_myShadow = CShadow::Create( m_Pos , 50.0f , 50.0f , this );
 }
 
 /******************************************************************************
@@ -117,7 +105,7 @@ void CBullet::Update( void )
 
 	if( m_life <= 0 )	//寿命が尽きたら削除
 	{
-		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
+		CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE00);
 		CSceneGL::Release();
 	}
 }
@@ -130,5 +118,5 @@ void CBullet::Update( void )
 ******************************************************************************/
 void CBullet::Draw( void )
 {
-	CSceneBillboardGL::Draw( m_Texture );
+	CSceneBillboardGL::Draw();
 }
