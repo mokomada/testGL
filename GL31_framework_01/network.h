@@ -17,6 +17,20 @@
 //=============================================================================
 //	構造体
 //=============================================================================
+typedef enum {
+	DT_ENTRY = 0,
+	DT_PLAYER_NUM,
+	DT_PLAYER,
+	DT_BULLET,
+	DT_MAX
+} DATA_TAG;
+
+typedef struct {
+	char	Addr[16];	// 通信先IPアドレス
+	char	MAddr[16];	// マルチキャスト先IPアドレス
+	int		SendPort;	// 送信ポート
+	int		RecvPort;	// 受信ポート
+} CONNECT_PROTOCOL;		// 通信情報
 
 //=============================================================================
 //	クラス定義
@@ -24,30 +38,32 @@
 class CNetwork
 {
 public:
+	static uint __stdcall ReceveThread(void *);
+
 	static void	Init(void);
 	static void	Uninit(void);
 	static void	Update(void);
 	static void	Draw(void);
 
-	static void SendData(char *str);
+	static void SendData(char* format, ...);
 	static void ReceiveData(void);
 
-	static bool			m_ifInitialize;	// Init()が終了したかどうか
+	static bool	m_ifInitialize;	// Init()が終了したかどうか
 
 private:
-	static WSADATA		m_Wsadata;
-	static int			m_Sts;
-	static int			m_Errcode;
-	static SOCKET		m_Sock;			// ソケット
-	static sockaddr_in	m_Addr;			// アドレス
-	static int			m_AddrLen;		// 送信元アドレスサイズ
-	static sockaddr_in	m_AddrClient;	// 送信元情報
+	static void RemoveDataTag(char* data);
+	static void	ReadConnetProtocol(CONNECT_PROTOCOL *cp);
+	static void	SetPlayerData(char *str);
+	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
-	static uint			thID1;	// スレッドID1
-	static HANDLE		hTh1;	// スレッドハンドル1
+	static SOCKET		m_SockSend;				// サーバへのUDP送信ソケット
+	static SOCKET		m_SockRecv;				// サーバへのUDP受信ソケット
+	static sockaddr_in	m_AddrServer;			// サーバのアドレス
+	static sockaddr_in	m_AddrRecv;			// サーバのアドレス
+	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
 
-	static void			SetPlayerData(char *str);
-
+	static uint			m_thID;	// スレッドID1
+	static HANDLE		m_hTh;	// スレッドハンドル1
 };
 
 #endif

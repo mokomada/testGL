@@ -42,7 +42,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_RendererGL->Init(hWnd);
 
 	// 各種インスタンス生成
-	m_Mode			= new CTutorial();
+	m_Mode			= new CGame();
 	m_Camera		= new CCameraGL();
 
 	// 初期化処理
@@ -99,6 +99,11 @@ void CManager::Update(void)
 	CFade::Update();
 	CNetwork::Update();
 	CDebugProcGL::Update();
+
+	if(KT_L)
+	{
+		CNetwork::SendData("hoge");
+	}
 }
 
 //=============================================================================
@@ -127,10 +132,10 @@ void CManager::Draw(void)
 	CNetwork::Draw();
 
 	// デバッグプロシージャ
+	CDebugProcGL::Draw();
 #ifdef _DEBUG
 	//int i = 12;	使用例
 	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
-	CDebugProcGL::Draw();
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
 #endif
 

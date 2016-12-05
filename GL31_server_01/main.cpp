@@ -64,7 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	RegisterClassEx(&wcex);
 	hWnd = CreateWindowEx(
-		0, "NullWindow", "GL31_framework", WS_OVERLAPPEDWINDOW,
+		0, "NullWindow", "GL31_server", WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		((int)SCREEN_WIDTH  + GetSystemMetrics(SM_CXFIXEDFRAME) * 2),
 		((int)SCREEN_HEIGHT + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION)),
