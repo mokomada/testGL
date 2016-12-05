@@ -107,6 +107,7 @@
     <ClInclude Include="trickgauge.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="trickgauge.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GL31_framework_01.rc" />
