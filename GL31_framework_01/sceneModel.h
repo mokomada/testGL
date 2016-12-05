@@ -133,6 +133,7 @@ private:
 	bool m_FlgLowSpeed;
 
 	void CollisionDetection(void);
+	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
 };
 
 #endif

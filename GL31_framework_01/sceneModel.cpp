@@ -804,3 +804,22 @@ void CSceneModel::CollisionDetection(void)
 		}
 	}
 }
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+bool CSceneModel::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1)
+{
+	VECTOR3 sub = Pos1 - Pos0;
+	float distance = VECTOR3::dot(sub, sub);
+	float radius = Radius0 + Radius1;
+
+	if (distance <= radius * radius)
+	{
+		return true;
+	}
+	return false;
+}
