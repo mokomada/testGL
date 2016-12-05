@@ -31,13 +31,14 @@ public:
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
+	void	Draw( int *texture );
 
 	static CSceneBillboardGL	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 								VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 								char *texName = "./data/TEXTURE/sample_image.tga");
 	void	DrawPolygon(void);
 
-private:
+protected:
 	VECTOR2 m_Size;		// ポリゴンのサイズ
 	int		m_Texture;	// テクスチャ
 
