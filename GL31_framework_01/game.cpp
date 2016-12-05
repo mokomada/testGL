@@ -22,6 +22,9 @@
 #include "meshfield.h"
 #include "score.h"
 #include "trickgauge.h"
+#include "effect2D.h"
+#include "countdown.h"
+#include "wall.h"
 
 //=============================================================================
 //	プロトタイプ
@@ -52,8 +55,13 @@ void CGame::Init(void)
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 
+	CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50,50,0.5, "./data/TEXTURE/主ちゃ.png");
+
+	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい
+//	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
+
 	// 2D
-	//CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 	CTrickGauge::Create( );
 
 	// BGM再生
@@ -84,6 +92,12 @@ void CGame::Update(void)
 	if(KT_ENTER)
 	{
 		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
+	}
+
+	//	エフェクト表示テスト
+	if(KT_E)
+	{
+		CEffect2D::Create(VECTOR3(0.0f,100.0f,0.0f),VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
 	}
 }
 

@@ -9,6 +9,8 @@
 //
 //=============================================================================
 #include "scene3DGL.h"
+#include "game.h"
+
 //=============================================================================
 //	É}ÉNÉçíËã`
 //=============================================================================
@@ -133,6 +135,8 @@ private:
 	bool m_FlgLowSpeed;
 
 	void CollisionDetection(void);
+	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
+	static bool CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2);
 };
 
 #endif

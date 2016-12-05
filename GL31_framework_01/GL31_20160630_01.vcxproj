@@ -80,7 +80,9 @@
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="countdown.h" />
     <ClInclude Include="debugProcGL.h" />
+    <ClInclude Include="effect2D.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="network.h" />
     <ClInclude Include="score.h" />
@@ -107,11 +109,14 @@
     <ClInclude Include="trickgauge.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="countdown.cpp" />
     <ClCompile Include="debugProcGL.cpp" />
+    <ClCompile Include="effect2D.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="score.cpp" />
@@ -134,6 +139,7 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="trickgauge.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GL31_framework_01.rc" />
