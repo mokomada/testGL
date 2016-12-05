@@ -27,14 +27,12 @@ class CWall :CScene3DGL
 		void Init(char *texName);
 		void Updete(void);
 		void Draw(void);
-		static CWall *Create(VECTOR3 pos, VECTOR3 rot, float width, float height,float depth, char *texName);
-		CWall GetWall( );
+		static CWall *Create(VECTOR3 pos, VECTOR3 rot, float width, float height, float depth, char *texName);
+		;BOX_DATA GetWallBox(void);
 
 	protected://継承先クラスでは使える
 	private://自分しか使えない
-		float m_Width;
-		float m_Height;
-		float m_Depth;
+		;BOX_DATA m_WallBox;
 		int m_Texture;
 };
 #endif

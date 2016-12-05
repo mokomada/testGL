@@ -14,6 +14,7 @@
 #include "wall.h"
 #include "manager.h"
 #include "rendererGL.h"
+#include "game.h"
 
 /******************************************************************************
 マクロ定義
@@ -61,7 +62,7 @@ void CWall::Init(char *texName)
 {
 	CRendererGL	*renderer = CManager::GetRendererGL( );
 	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/主ちゃ.png");
-	CScene3DGL::Init(m_Pos, VECTOR2(m_Width, m_Height),"renderer->CreateTextureTGA(texName);");
+	CScene3DGL::Init(m_Pos, VECTOR2(m_WallBox.width, m_WallBox.height),"renderer->CreateTextureTGA(texName);");
 
 }
 
@@ -137,25 +138,26 @@ void CWall::Draw()
 //	戻り値	:無し
 //	説明	:生成処理を行う。
 //=============================================================================
-CWall *CWall::Create(VECTOR3 pos, VECTOR3 rot, float width, float height, float depth, char *texName)
+CWall *CWall::Create(VECTOR3 pos, VECTOR3 rot, float width, float height,float depth, char *texName)
 {
 	CWall *wall;
 	wall = new CWall;
 	wall->m_Pos = pos;
 	wall->m_Rot = rot;
-	wall->m_Width = width;
-	wall->m_Height = height;
+	wall->m_WallBox.depth = depth;
+	wall->m_WallBox.height = height;
+	wall->m_WallBox.width = width;
 	wall->Init(texName);
-	wall->m_Depth = depth;
 	return wall;
 }
 
 //=============================================================================
-//	関数名	:Create
+//	関数名	:GetWallBox
 //	引数	:無し
 //	戻り値	:無し
-//	説明	:生成処理を行う。
+//	説明	:BOX_DATAゲット
 //=============================================================================
-CWall GetWall( )
+BOX_DATA CWall::GetWallBox( )
 {	
+	return m_WallBox;
 }
