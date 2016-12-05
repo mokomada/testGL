@@ -124,13 +124,10 @@ void CSceneBillboardGL::Draw(void)
 
 	// ライティングオフ
 	glDisable(GL_LIGHTING);
-
-	//アルファブレンド
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-glBegin(GL_TRIANGLE_STRIP);
+	glDepthMask( FALSE );
+	glBegin(GL_TRIANGLE_STRIP);
 	{
 		// 頂点色設定
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -145,7 +142,73 @@ glBegin(GL_TRIANGLE_STRIP);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+	glDepthMask( TRUE );
+	// モデルビューマトリックスの設定
+	glMatrixMode(GL_MODELVIEW);
+	// 保存マトリックスの取り出し
+	glPopMatrix();
+}
 
+//=============================================================================
+//	関数名	:Draw
+//	引数	:テクスチャのアドレス
+//	戻り値	:無し
+//	説明	:描画処理を行う。
+//=============================================================================
+void CSceneBillboardGL::Draw( int * texture )
+{
+	// モデルビュー変換行列の操作用
+	GLdouble m[16];
+
+	// モデルビューマトリクスの設定
+	glMatrixMode(GL_MODELVIEW);
+	// マトリクスの退避
+	glPushMatrix();
+
+
+	// ワールドマトリクスの設定
+	glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
+	glScalef(1.0f, 1.0f, 1.0f);
+
+	// 現在のモデルビュー変換行列を取り出す
+	glGetDoublev(GL_MODELVIEW_MATRIX, m);
+
+	// 左上 3x3 要素を単位行列にする
+	m[0] = m[5] = m[10] = 1.0;
+	m[1] = m[2] = m[4] = m[6] = m[8] = m[9] = 0.0;
+
+	// 書き換えた行列を書き戻す
+	glLoadMatrixd(m);
+
+
+	// 描画処理ここから
+	glBindTexture(GL_TEXTURE_2D, *texture);
+	glEnable(GL_TEXTURE_2D);
+
+	// 深度バッファ設定
+	glEnable(GL_DEPTH_TEST);
+
+	// ライティングオフ
+	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask( FALSE );
+	glBegin(GL_TRIANGLE_STRIP);
+	{
+		// 頂点色設定
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+		DrawPolygon();
+	}
+	glEnd();
+
+
+	// 各種設定引き戻し
+	glEnable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glDepthMask( TRUE );
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);
 	// 保存マトリックスの取り出し
