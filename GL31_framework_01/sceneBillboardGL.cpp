@@ -22,6 +22,7 @@
 //=============================================================================
 CSceneBillboardGL::CSceneBillboardGL(int priority, OBJTYPE objType)
 {
+
 	glMatrixIdentity(&m_mtxWorld);
 }
 

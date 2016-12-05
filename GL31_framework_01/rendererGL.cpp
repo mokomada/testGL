@@ -11,6 +11,7 @@
 //=============================================================================
 #include "rendererGL.h"
 #include <stdio.h>
+#include "gl/glpng.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -66,6 +67,7 @@ void CRendererGL::Init(HWND hWnd)
 	glEnable(GL_LIGHT0);
 
 	// ブレンド設定
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// 背景色設定
@@ -304,6 +306,11 @@ int CRendererGL::CreateTextureTGA(char *filename)
 
 			// インスタンスの削除
 			delete[] image;
+		}
+		else if(strcmp(strFileOP, "png") == 0)
+		{
+			 pngInfo info;
+			 texID = pngBind(filename, PNG_NOMIPMAP, PNG_ALPHA, &info, GL_CLAMP, GL_NEAREST, GL_NEAREST);
 		}
 
 		// テクスチャIDをリターン

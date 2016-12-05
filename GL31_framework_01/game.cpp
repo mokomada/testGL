@@ -19,6 +19,7 @@
 #include "scene3DGL.h"
 #include "sceneModel.h"
 #include "sceneBillboardGL.h"
+#include "skybox.h"
 #include "meshfield.h"
 #include "score.h"
 
@@ -38,13 +39,20 @@ CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
 //	説明	:初期化処理を行う。
 //=============================================================================
 void CGame::Init(void)
-{
-	m_Meshfield	= CMeshfield::Create();
+{	
+	CSkybox::Create();
+	m_Meshfield = CMeshfield::Create();
 	// 3D
-	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
-	CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
-	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
+	
+
+	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+
+	
+
+	//CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
+	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/akima.png");
+	
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 
