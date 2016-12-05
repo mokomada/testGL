@@ -14,7 +14,7 @@
     <ProjectGuid>{82B4BF33-1BBD-447A-9DF7-378979E5A501}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GL31_20160630_01</RootNamespace>
-    <ProjectName>GL31_framework_01</ProjectName>
+    <ProjectName>GL31_server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
