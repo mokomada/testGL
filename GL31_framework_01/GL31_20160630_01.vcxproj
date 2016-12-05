@@ -79,6 +79,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="confetti.h" />
+    <ClInclude Include="countdown.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
@@ -106,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="confetti.cpp" />
+    <ClCompile Include="countdown.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
