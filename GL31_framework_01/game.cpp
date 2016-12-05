@@ -23,6 +23,7 @@
 #include "score.h"
 #include "trickgauge.h"
 #include "effect2D.h"
+#include "countdown.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -52,6 +53,7 @@ void CGame::Init(void)
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 
+	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 	CTrickGauge::Create( );

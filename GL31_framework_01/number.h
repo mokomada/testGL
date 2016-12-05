@@ -24,25 +24,30 @@
 //=============================================================================
 //	クラス定義
 //=============================================================================
-class CNumber : public CSceneGL
+class CNumber
 {
 public:
-	CNumber(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CNumber();
 	~CNumber();
 	
-	void	Init(){}
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2 size = VECTOR2(0.0f, 0.0f),
 				int value = 0, char *texName = "./data/TEXTURE/number000.tga");
-	void	Uninit(bool isLast = false);
+	void	Uninit(void);
 	void	Update(void);
 	void	Draw(void);
 
 	static CNumber	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2 size = VECTOR2(0.0f, 0.0f),
 							int value = 0, char *texName = "./data/TEXTURE/number000.tga");
 	
+	static int GetFigure( int num ); //桁数を出す
+	void	AddSize( VECTOR2 addsize ){ m_Size += addsize; };//サイズの加算
+	void	SetSize( VECTOR2 size ){ m_Size = size; };//サイズの設定
+
 	void	SetNumber(int value = 0);
 
 protected:
+	VECTOR3 m_Pos;//座標
+	VECTOR3 m_Rot;//角度
 	VECTOR2 m_Size;		// ポリゴンのサイズ
 	float	m_fLength;	// 対角線の長さ
 	float	m_fAngle;	// 角度
