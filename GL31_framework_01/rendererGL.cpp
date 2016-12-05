@@ -11,6 +11,9 @@
 //=============================================================================
 #include "rendererGL.h"
 #include <stdio.h>
+//#include <GL/glut.h>
+//#include <gl/glpng.h>
+#include "gl/glpng.h"
 
 //=============================================================================
 //	静的メンバ変数
@@ -304,6 +307,11 @@ int CRendererGL::CreateTextureTGA(char *filename)
 
 			// インスタンスの削除
 			delete[] image;
+		}
+		else if(strcmp(strFileOP, "png") == 0)
+		{
+			pngInfo info;
+			texID = pngBind(filename, PNG_NOMIPMAP, PNG_ALPHA, &info, GL_CLAMP, GL_NEAREST, GL_NEAREST);
 		}
 
 		// テクスチャIDをリターン

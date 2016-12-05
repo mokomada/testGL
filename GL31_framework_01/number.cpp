@@ -49,8 +49,7 @@ CNumber::~CNumber()
 //=============================================================================
 void CNumber::Init(VECTOR3 pos, VECTOR2 size, int value, char *texName)
 {
-	CManager	*manager = GetManager();
-	CRendererGL	*renderer = manager->GetRendererGL();
+	CRendererGL	*renderer = CManager::GetRendererGL();
 
 
 	// Šeí‰Šúİ’è

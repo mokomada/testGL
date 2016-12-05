@@ -9,12 +9,14 @@
 //
 //=============================================================================
 #include "mode.h"
+#include <vector>
+using namespace std;
 
 //=============================================================================
 //	前方宣言
 //=============================================================================
 class CMeshfield;
-class CPlayer;
+class CSceneModel;
 
 //=============================================================================
 //	クラス定義
@@ -31,9 +33,11 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
+	static vector<CSceneModel*>::iterator	GetPlayer(void) { return m_Player.begin(); }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
+	static vector<CSceneModel*>	m_Player;		// プレイヤーのインスタンス
 };
 
 #endif

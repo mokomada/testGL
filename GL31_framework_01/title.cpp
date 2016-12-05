@@ -61,7 +61,7 @@ void CTitle::Update(void)
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
-		CFade::Start(new CTutorial, FS_OUT);
+		CFade::Start(new CTutorial, MODE_TUTORIAL, FS_OUT);
 	}
 }
 

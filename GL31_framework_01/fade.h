@@ -40,10 +40,11 @@ public:
 	static void	Update(void);
 	static void	Draw(void);
 
-	static void			Start(CMode *nextMode, FADE_STATE fadeState = FS_OUT);
+	static void			Start(CMode *nextMode, int nextModeState, FADE_STATE fadeState = FS_OUT);
 
 private:
 	static CMode		*m_NextMode;
+	static int			m_NextModeState;
 	static FADE_STATE	m_FadeState;
 	static int			m_FadeTime;		// フェードの時間
 

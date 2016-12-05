@@ -21,7 +21,8 @@
 #include "sceneBillboardGL.h"
 #include "meshfield.h"
 #include "score.h"
-
+#include "trickgauge.h"
+#include "effect2D.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -30,6 +31,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
+vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 
 //=============================================================================
 //	関数名	:Init
@@ -42,11 +44,17 @@ void CGame::Init(void)
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
-	CSceneModel::Create(VECTOR3(0.0f, 50.0f, 0.0f));
-	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Player.resize(4);
+	m_Player[0] = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
+	m_Player[1] = CSceneModel::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));
+	m_Player[2] = CSceneModel::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
+	m_Player[3] = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
+
+	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 
 	// 2D
-	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	//CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	CTrickGauge::Create( );
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
@@ -75,7 +83,13 @@ void CGame::Update(void)
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
-		CFade::Start(new CResult, FS_OUT);
+		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
+	}
+
+	//	エフェクト表示テスト
+	if(KT_E)
+	{
+		CEffect2D::Create(VECTOR3(0.0f,100.0f,0.0f),VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
 	}
 }
 
