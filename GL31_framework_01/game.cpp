@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//	ƒ^ƒCƒgƒ‹	ƒQ[ƒ€ˆ—
-//	ƒtƒ@ƒCƒ‹–¼	title.cpp
-//	ì¬ŽÒ		AT13A284_07 ’r“c’BÆ
-//	ì¬“ú		2016/07/12
+//	ã‚¿ã‚¤ãƒˆãƒ«	ã‚²ãƒ¼ãƒ å‡¦ç†
+//	ãƒ•ã‚¡ã‚¤ãƒ«å	title.cpp
+//	ä½œæˆè€…		AT13A284_07 æ± ç”°é”å“‰
+//	ä½œæˆæ—¥		2016/07/12
 //
 //=============================================================================
 //=============================================================================
-//	ƒCƒ“ƒNƒ‹[ƒh
+//	ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 //=============================================================================
 #include "game.h"
 #include <process.h>
@@ -24,26 +24,24 @@
 #include "trickgauge.h"
 #include "effect2D.h"
 #include "countdown.h"
-#include "skybox.h"
 //=============================================================================
-//	ƒvƒƒgƒ^ƒCƒv
+//	ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—
 //=============================================================================
 
 //=============================================================================
-//	Ã“Iƒƒ“ƒo•Ï”
+//	é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
 //=============================================================================
-CMeshfield	*CGame::m_Meshfield;	// ƒƒbƒVƒ…ƒtƒB[ƒ‹ƒh
-vector<CSceneModel*>	CGame::m_Player;		// ƒvƒŒƒCƒ„[‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+CMeshfield	*CGame::m_Meshfield;	// ãƒ¡ãƒƒã‚·ãƒ¥ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
+vector<CSceneModel*>	CGame::m_Player;		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 
 //=============================================================================
-//	ŠÖ”–¼	:Init
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:‰Šú‰»ˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Init
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CGame::Init(void)
 {
-	CSkybox::Create();
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
@@ -53,24 +51,24 @@ void CGame::Init(void)
 	m_Player[2] = CSceneModel::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
 	m_Player[3] = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
 
-	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/Žå‚¿‚á.png");
+	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/ä¸»ã¡ã‚ƒ.png");
 
-	// ƒJƒEƒ“ƒgƒ_ƒEƒ“B‹N“®‚·‚é“x‚ÉƒJƒEƒ“ƒgƒ_ƒEƒ“‚³‚ê‚é‚Æ”Ï‚í‚µ‚¢‚½‚ßƒRƒƒ“ƒgƒAƒEƒgBƒ^ƒCƒ}[‚ªŽc‚è5•b‚É‚È‚Á‚½‚ç‚±‚êŒÄ‚ñ‚Å‰º‚³‚¢
+	// ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã€‚èµ·å‹•ã™ã‚‹åº¦ã«ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã•ã‚Œã‚‹ã¨ç…©ã‚ã—ã„ãŸã‚ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã€‚ã‚¿ã‚¤ãƒžãƒ¼ãŒæ®‹ã‚Š5ç§’ã«ãªã£ãŸã‚‰ã“ã‚Œå‘¼ã‚“ã§ä¸‹ã•ã„
 //	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 	CTrickGauge::Create( );
 
-	// BGMÄ¶
+	// BGMå†ç”Ÿ
 	CSound::Play(SOUNDLABEL_BGM000);
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Uninit
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:I—¹ˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Uninit
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:çµ‚äº†å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CGame::Uninit(void)
 {
@@ -78,21 +76,21 @@ void CGame::Uninit(void)
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Update
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:XVˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Update
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CGame::Update(void)
 {
-	// ƒV[ƒ“XV
+	// ã‚·ãƒ¼ãƒ³æ›´æ–°
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
 		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
 	}
 
-	//	ƒGƒtƒFƒNƒg•\Ž¦ƒeƒXƒg
+	//	ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¡¨ç¤ºãƒ†ã‚¹ãƒˆ
 	if(KT_E)
 	{
 		CEffect2D::Create(VECTOR3(0.0f,100.0f,0.0f),VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
@@ -100,13 +98,13 @@ void CGame::Update(void)
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Draw
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:•`‰æˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Draw
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:æç”»å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CGame::Draw(void)
 {
-	// ƒV[ƒ“•`‰æ
+	// ã‚·ãƒ¼ãƒ³æç”»
 	CSceneGL::DrawAll();
 }
