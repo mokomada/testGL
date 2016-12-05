@@ -1,1 +1,0 @@
-roilu is homo
