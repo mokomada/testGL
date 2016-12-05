@@ -13,11 +13,11 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
+#include "game.h"
 #include "sceneModel.h"
 #include "cameraGL.h"
 #include "network.h"
 #include "bullet.h"
-#include "game.h"
 #include "debugProcGL.h"
 
 //=============================================================================
@@ -803,4 +803,55 @@ void CSceneModel::CollisionDetection(void)
 			}
 		}
 	}
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
+//=============================================================================
+bool CSceneModel::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1)
+{
+	VECTOR3 sub = Pos1 - Pos0;
+	float distance = VECTOR3::dot(sub, sub);
+	float radius = Radius0 + Radius1;
+
+	if (distance <= radius * radius)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+//=============================================================================
+//	関数名	:CollisionDetectionBox
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ボックスの当たり判定
+//=============================================================================
+bool CSceneModel::CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2)
+{
+	bool HitBox = false;
+
+	float WidthHalf1 = Box1->width * 0.5f;
+	float WidthHalf2 = Box2->width * 0.5f;
+
+	if ((Pos1.x + WidthHalf1 >= Pos2.x - WidthHalf2) && (Pos1.x - WidthHalf1 <= Pos2.x + WidthHalf2))
+	{
+		float HightHalf1 = Box1->height * 0.5f;
+		float HightHalf2 = Box2->height * 0.5f;
+		if ((Pos1.y + HightHalf1 >= Pos2.y - HightHalf2) && (Pos1.y - HightHalf1 <= Pos2.y + HightHalf2))
+		{
+			float DepthHalf1 = Box1->depth * 0.5f;
+			float DepthHalf2 = Box2->depth * 0.5f;
+			if ((Pos1.z + DepthHalf1 >= Pos2.z - DepthHalf2) && (Pos1.z - DepthHalf1 <= Pos2.z + DepthHalf2))
+			{
+				HitBox = true;
+			}
+		}
+	}
+
+	return HitBox;
 }
