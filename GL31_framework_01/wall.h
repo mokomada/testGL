@@ -34,6 +34,6 @@ class CWall :CScene3DGL
 	protected://継承先クラスでは使える
 	private://自分しか使えない
 		BOX_DATA m_WallBox;
-		int m_Texture;
+		uint m_Texture;
 };
 #endif

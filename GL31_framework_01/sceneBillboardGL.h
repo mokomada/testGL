@@ -31,7 +31,7 @@ public:
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
-	void	Draw( int *texture );
+	void	Draw( uint texture );
 
 	static CSceneBillboardGL	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 								VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
@@ -40,7 +40,7 @@ public:
 
 protected:
 	VECTOR2 m_Size;		// ポリゴンのサイズ
-	int		m_Texture;	// テクスチャ
+	uint		m_Texture;	// テクスチャ
 
 	MATRIX	m_mtxWorld;
 };

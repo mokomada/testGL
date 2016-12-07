@@ -63,13 +63,12 @@ void CSceneBillboardGL::Init(VECTOR3 pos, VECTOR2 size, char *texName)
 //	戻り値	:無し
 //	説明	:終了処理を行う。
 //=============================================================================
-void CSceneBillboardGL::Uninit(bool isLast)
+void CSceneBillboardGL::Uninit( bool isLast )
 {
 	// テクスチャ削除
 	if(m_Texture != NULL)
 	{
-		if(isLast)
-		glDeleteTextures(1, ((GLuint *)m_Texture));
+		glDeleteTextures(1, &m_Texture);
 	}
 }
 
@@ -156,7 +155,7 @@ void CSceneBillboardGL::Draw(void)
 //	戻り値	:無し
 //	説明	:描画処理を行う。
 //=============================================================================
-void CSceneBillboardGL::Draw( int * texture )
+void CSceneBillboardGL::Draw( uint texture )
 {
 	// モデルビュー変換行列の操作用
 	GLdouble m[16];
@@ -183,7 +182,7 @@ void CSceneBillboardGL::Draw( int * texture )
 
 
 	// 描画処理ここから
-	glBindTexture(GL_TEXTURE_2D, *texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glEnable(GL_TEXTURE_2D);
 
 	// 深度バッファ設定
