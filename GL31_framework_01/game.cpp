@@ -79,8 +79,8 @@ void CGame::Init(void)
 //=============================================================================
 void CGame::Uninit(void)
 {
-	CTextureManager::Uninit();
 	CSceneGL::DeleteAll();
+	CTextureManager::Uninit();
 }
 
 //=============================================================================

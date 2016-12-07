@@ -21,7 +21,7 @@
 #include "network.h"
 #include "bullet.h"
 #include "debugProcGL.h"
-
+#include "shadow.h"
 //=============================================================================
 //	ä÷êîñº	:CScene3D()
 //	à¯êî	:ñ≥Çµ
@@ -71,6 +71,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Radius = 30.0f;
 
 	Model = CSceneModel::Create("./data/MODEL/miku_01.obj");
+	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 }
 
 //=============================================================================

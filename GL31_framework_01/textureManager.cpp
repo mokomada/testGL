@@ -24,7 +24,7 @@
 /******************************************************************************
 *	グローバル変数
 ******************************************************************************/
-int CTextureManager::m_Texture[ TEXTURE_MAX ] = { 0 };		// テクスチャ
+unsigned int CTextureManager::m_Texture[ TEXTURE_MAX ] = { 0 };		// テクスチャ
 char * CTextureManager::m_texName[ TEXTURE_MAX ] = 			//テクスチャの名前
 {
 	{"./data/TEXTURE/shadow000.png"},
@@ -78,7 +78,7 @@ void CTextureManager::Uninit( void )
 		// テクスチャ削除
 		if(m_Texture[ i ] != NULL)
 		{
-			glDeleteTextures( 1 , ( ( GLuint * )m_Texture[ i ] ) );
+			glDeleteTextures( 1 , &m_Texture[ i ] );
 		}
 	}
 }
