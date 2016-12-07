@@ -377,7 +377,24 @@ void CSceneModel::Draw(void)
 	glDisable(GL_CULL_FACE);
 	
 	// í∏ì_êFê›íË
-	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+	switch(CManager::GetWhatPlayer())
+	{
+	case 0:	// 1P
+		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		break;
+	case 1:	// 2P
+		glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+		break;
+	case 2:	// 3P
+		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		break;
+	case 3:	// 4P
+		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+		break;
+	default:
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		break;
+	}
 
 	// ÉÇÉfÉãï`âÊ
 	DrawModel();

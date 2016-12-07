@@ -63,12 +63,16 @@ private:
 	static int			m_Errcode;
 	static SOCKET		m_SockTCPRecv;		// 受信ソケット
 	static SOCKET		m_SockUDPSend;		// UDP送信ソケット
-	static sockaddr_in	m_AddrSend;			// マルチキャスト用UDP送信アドレス情報
+	static SOCKET		m_SockUDPRecv;		// UDP受信ソケット
+	static sockaddr_in	m_AddrUDPSend;		// マルチキャスト用UDP送信アドレス情報
+	static sockaddr_in	m_AddrUDPRecv;		// マルチキャスト用UDP受信アドレス情報
 	static sockaddr_in	m_AddrClient[4];	// 送信アドレス情報
 	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
 
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1
+
+	static int m_ifBindSuccess[2];
 };
 
 #endif

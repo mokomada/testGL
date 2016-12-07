@@ -23,11 +23,12 @@ unsigned int __stdcall thread1(void *);
 //	静的メンバ変数
 //=============================================================================
 bool		CNetwork::m_ifInitialize = false;
-CONNECT_PROTOCOL	CNetwork::m_ConnectProtocol;
+CONNECT_PROTOCOL	CNetwork::m_ConnectProtocol = { "127.0.0.1", "239.0.0.1", 20000, 20000 };
 
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
-sockaddr_in	CNetwork::m_AddrServer;
+sockaddr_in	CNetwork::m_AddrServerTCP;
+sockaddr_in	CNetwork::m_AddrServerUDP;
 sockaddr_in	CNetwork::m_AddrRecv;
 char		CNetwork::m_LastMessage[1024] = "NO DATA";
 uint		CNetwork::m_thID;
@@ -74,16 +75,21 @@ void CNetwork::Init(void)
 	m_SockSend = socket(AF_INET, SOCK_DGRAM, 0);
 
 	// アドレスタイプ設定
-	m_AddrServer.sin_family = AF_INET;
+	m_AddrServerTCP.sin_family	= AF_INET;
+	m_AddrServerUDP.sin_family = AF_INET;
 
 	// ポート番号設定
-	m_AddrServer.sin_port = htons(20000);
+	m_AddrServerTCP.sin_port	= htons(m_ConnectProtocol.SendPort);
+	m_AddrServerUDP.sin_port	= htons(m_ConnectProtocol.SendPort + 1);
 
 	// IPアドレス設定
-	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	m_AddrServerTCP.sin_addr.s_addr	= inet_addr(m_ConnectProtocol.Addr);
+	m_AddrServerUDP.sin_addr.s_addr = inet_addr(m_ConnectProtocol.Addr);
+	//m_AddrServerTCP.sin_addr.s_addr	= inet_addr("127.0.0.1");
+	//m_AddrServerUDP.sin_addr.s_addr	= inet_addr("127.0.0.1");
 
 	// サーバに接続
-	connect(sock, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	connect(sock, (sockaddr*)&m_AddrServerTCP, sizeof(m_AddrServerTCP));
 
 	char data[1024];
 	memset(data, 0, sizeof(data));
@@ -91,6 +97,7 @@ void CNetwork::Init(void)
 	// データ受信
 	recv(sock, data, sizeof(data), 0);
 
+	// プレイヤー番号セット
 	if(strcmp(data, ""))
 	{
 		int whatplayer = -1;
@@ -102,11 +109,7 @@ void CNetwork::Init(void)
 	}
 
 	// ソケット終了
-	closesocket(sock);
-
-
-	// ソケット終了
-	closesocket(sock);
+	if(sock) closesocket(sock);
 
 	// 初期化終了告知
 	m_ifInitialize = true;
@@ -121,9 +124,8 @@ void CNetwork::Init(void)
 void CNetwork::Uninit(void)
 {
 	// ソケット終了
-	//if(m_SockTCP)	closesocket(m_SockTCP);
-	//if(m_SockSend)	closesocket(m_SockSend);
-	//if(m_SockRecv)	closesocket(m_SockRecv);
+	if(m_SockSend)	closesocket(m_SockSend);
+	if(m_SockRecv)	closesocket(m_SockRecv);
 
 	// ＷＩＮＳＯＣＫ後処理
 	WSACleanup();
@@ -137,7 +139,7 @@ void CNetwork::Uninit(void)
 //=============================================================================
 void CNetwork::Update(void)
 {
-	
+	SendData("hoge");
 }
 
 //=============================================================================
@@ -150,6 +152,7 @@ void CNetwork::Draw(void)
 {
 #ifdef _DEBUG
 	CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
+	CDebugProcGL::DebugProc("TO_SERVER_PORT:TCP->%d, UDP->%d\n", ntohs(m_AddrServerTCP.sin_port), ntohs(m_AddrServerUDP.sin_port));
 #endif
 }
 
@@ -161,7 +164,7 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 		// 初期化が終了している場合のみ処理
 		if(m_ifInitialize)
 		{
-			//ReceiveData();
+			ReceiveData();
 		}
 	}
 
@@ -185,7 +188,7 @@ void CNetwork::SendData(char* format, ...)
 	va_end(list);
 
 	// データ送信
-	//sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
+	sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServerUDP, sizeof(m_AddrServerUDP));
 }
 
 //=============================================================================
@@ -200,12 +203,8 @@ void CNetwork::ReceiveData(void)
 
 	
 	// データ受信
-	//recv(m_SockTCP, data, strlen(data), 0);
-	/*if(recvfrom(m_SockRecv, data, strlen(data), 0, (sockaddr*)&m_AddrClient, &m_AddrLen) < 0)
-	{
-		perror("recvfrom");
-	}*/
-
+	recv(m_SockRecv, data, strlen(data), 0);
+	
 	// データが送信されてきた場合記録
 	if(strcmp(data, ""))
 	{
@@ -222,8 +221,6 @@ void CNetwork::ReceiveData(void)
 	switch(dataTag)
 	{
 	case DT_PLAYER_NUM:
-		sscanf(data, "%d", &whatPlayer);
-		CManager::SetWhatPlayer(whatPlayer);
 		break;
 
 	default:

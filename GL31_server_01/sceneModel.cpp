@@ -396,7 +396,7 @@ void CSceneModel::Draw(void)
 	glPopMatrix();					// 保存マトリックスの取り出し
 
 #ifdef _DEBUG
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 #endif
 }
 

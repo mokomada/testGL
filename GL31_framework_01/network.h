@@ -58,7 +58,8 @@ private:
 
 	static SOCKET		m_SockSend;				// サーバへのUDP送信ソケット
 	static SOCKET		m_SockRecv;				// サーバへのUDP受信ソケット
-	static sockaddr_in	m_AddrServer;			// サーバのアドレス
+	static sockaddr_in	m_AddrServerTCP;		// サーバのアドレス
+	static sockaddr_in	m_AddrServerUDP;		// サーバのアドレス
 	static sockaddr_in	m_AddrRecv;			// サーバのアドレス
 	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
 

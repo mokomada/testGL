@@ -22,19 +22,23 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
+CONNECT_PROTOCOL CNetwork::m_ConnectProtocol = { "127.0.0.1", "239.0.0.1", 20000, 20000 };
+
 int			CNetwork::m_PlayerNum = 0;
 WSADATA		CNetwork::m_Wsadata;
 int			CNetwork::m_Sts;
 int			CNetwork::m_Errcode;
 SOCKET		CNetwork::m_SockTCPRecv;
 SOCKET		CNetwork::m_SockUDPSend;
-sockaddr_in	CNetwork::m_AddrSend;
+SOCKET		CNetwork::m_SockUDPRecv;
+sockaddr_in	CNetwork::m_AddrUDPSend;
+sockaddr_in	CNetwork::m_AddrUDPRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
-CONNECT_PROTOCOL CNetwork::m_ConnectProtocol;
 char		CNetwork::m_LastMessage[1024] = "NO DATA";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 bool		CNetwork::m_ifInitialize = false;
+int			CNetwork::m_ifBindSuccess[2] = { -1, -1 };
 
 //=============================================================================
 //	関数名	:Init
@@ -47,42 +51,61 @@ void CNetwork::Init(void)
 	// †スレッド起動†
 	m_hTh = (HANDLE)_beginthreadex(NULL, 0, ReceveThread, NULL, 0, &m_thID);
 
-	WSADATA		wsadata;
-	int			sts;
-	int			errcode;
+	WSADATA		wsadata;	// winsockデータ
+	int			sts;		// スタートアップ情報
+	int			errcode;	// エラーコード
 	sockaddr_in	addr;		// アドレス
 
 
-							// ＷＩＮＳＯＣＫ初期処理
+	// ＷＩＮＳＯＣＫ初期処理
 	sts = WSAStartup(MAKEWORD(2, 2), &wsadata);
-	if(sts != 0) {
+	if(sts != 0)
+	{
 		errcode = WSAGetLastError();
 		printf("WSAStartupエラーです %d \n", errcode);
 		//return -1;
 	}
 
 	// バージョンチェック
-	if(LOBYTE(wsadata.wVersion) != 2 ||
-		HIBYTE(wsadata.wVersion) != 2) {
+	if(LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wVersion) != 2)
+	{
 		printf("バージョンエラーです\n");
 		WSACleanup();
 		//return -1;
 	}
 
+	// 接続先情報読み込み
+	ReadConnetProtocol(&m_ConnectProtocol);
+
 	// ソケット生成
 	m_SockTCPRecv = socket(AF_INET, SOCK_STREAM, 0);
+	//m_SockUDPSend = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	m_SockUDPRecv = socket(AF_INET, SOCK_DGRAM, 0);
 
 	// アドレスタイプ設定
-	addr.sin_family = AF_INET;
+	addr.sin_family				= AF_INET;
+	//m_AddrUDPSend.sin_family	= AF_INET;
+	m_AddrUDPRecv.sin_family	= AF_INET;
 
 	// ポート番号設定
-	addr.sin_port = htons(20000);
+	addr.sin_port			= htons(m_ConnectProtocol.RecvPort);
+	m_AddrUDPSend.sin_port	= htons(m_ConnectProtocol.SendPort);
+	m_AddrUDPRecv.sin_port	= htons(m_ConnectProtocol.SendPort + 1);
 
 	// IPアドレス設定
-	addr.sin_addr.s_addr = INADDR_ANY;
+	addr.sin_addr.s_addr			= INADDR_ANY;
+	m_AddrUDPSend.sin_addr.s_addr	= inet_addr(m_ConnectProtocol.MAddr);
+	m_AddrUDPRecv.sin_addr.s_addr	= INADDR_ANY;
+	
+	// ブロードキャスト許可
+	int valueTCP = 1;
+	setsockopt(m_SockUDPSend, SOL_SOCKET, SO_BROADCAST, (char *)&valueTCP, sizeof(valueTCP));
+	//int valueUDP = 1;
+	//setsockopt(m_SockUDPRecv, SOL_SOCKET, SO_BROADCAST, (char *)&valueUDP, sizeof(valueUDP));
 
 	// バインド
-	bind(m_SockTCPRecv, (sockaddr*)&addr, sizeof(addr));
+	m_ifBindSuccess[0] = bind(m_SockTCPRecv, (sockaddr*)&addr, sizeof(addr));
+	m_ifBindSuccess[1] = bind(m_SockUDPRecv, (sockaddr*)&m_AddrUDPRecv, sizeof(m_AddrUDPRecv));
 
 	// クライアントからの接続待ち
 	listen(m_SockTCPRecv, 5);
@@ -102,7 +125,7 @@ void CNetwork::Uninit(void)
 	// ソケット終了
 	if(m_SockTCPRecv) closesocket(m_SockTCPRecv);
 	if(m_SockUDPSend) closesocket(m_SockUDPSend);
-	//if(m_SockRecv) closesocket(m_SockRecv);
+	if(m_SockUDPRecv) closesocket(m_SockUDPRecv);
 
 	// ＷＩＮＳＯＣＫ後処理
 	WSACleanup();
@@ -129,6 +152,8 @@ void CNetwork::Draw(void)
 {
 	CDebugProcGL::DebugProc("PLAYER_NUM:%d\n", m_PlayerNum);
 	CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
+	CDebugProcGL::DebugProc("BIND:%d, %d\n", m_ifBindSuccess[0], m_ifBindSuccess[1]);
+	CDebugProcGL::DebugProc("UDP_PORT:SEND->%d, RECV->%d\n", ntohs(m_AddrUDPSend.sin_port), ntohs(m_AddrUDPRecv.sin_port));
 }
 
 uint __stdcall CNetwork::ReceveThread(void *p)
@@ -138,6 +163,7 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 	sockaddr_in client;
 	int len;
 
+	//while(m_PlayerNum < 4)
 	while(m_PlayerNum < 4)
 	{
 		if(m_ifInitialize)
@@ -185,6 +211,9 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 
 			// ソケット終了
 			closesocket(sock);
+
+			// データ受信
+			ReceiveData();
 		}
 	}
 
@@ -221,7 +250,7 @@ void CNetwork::SendData(char* format, ...)
 	va_end(list);
 
 	// データ送信
-	sendto(m_SockUDPSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrSend, sizeof(m_AddrSend));
+	sendto(m_SockUDPSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrUDPSend, sizeof(m_AddrUDPSend));
 }
 
 //=============================================================================
@@ -235,11 +264,7 @@ void CNetwork::ReceiveData(void)
 	char data[1024] = { NULL };	// 受信データ
 
 	// データ受信
-	//if(recvfrom(m_SockRecv, data, strlen(data), 0, (sockaddr*)&m_AddrClient, &m_AddrLen) < 0)
-	//if(recv(m_SockRecv, data, strlen(data), 0) < 0)
-	{
-		//perror("recvfrom");
-	}
+	recv(m_SockUDPRecv, data, strlen(data), 0);
 
 	// データが送信されてきた場合記録
 	if(strcmp(data, ""))

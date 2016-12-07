@@ -99,11 +99,6 @@ void CManager::Update(void)
 	CFade::Update();
 	CNetwork::Update();
 	CDebugProcGL::Update();
-
-	if(KT_L)
-	{
-		CNetwork::SendData("hoge");
-	}
 }
 
 //=============================================================================
