@@ -43,6 +43,9 @@ public:
 
 	static CMode		*GetMode(void) { return m_Mode; }
 	static int			GetModeState(void) { return m_ModeState; }
+	static void			SetWhatPlayer(int playernumber) { m_WhatPlayer = playernumber; }
+	static int			GetWhatPlayer(void) { return m_WhatPlayer; }
+
 	static void			SetMode(CMode *mode, int modeState);
 
 
@@ -52,6 +55,7 @@ private:
 	static CRendererGL	*m_RendererGL;	// ƒŒƒ“ƒ_ƒ‰(GL)
 
 	static int	m_ModeState;
+	static int	m_WhatPlayer;	// Ž©•ª‚ª‰½P‚©‚Ç‚¤‚©
 	
 	void	LoadScript(char *fileName);
 };

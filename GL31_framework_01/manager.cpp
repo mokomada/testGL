@@ -26,6 +26,7 @@
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 int			CManager::m_ModeState;		// モード情報
+int			CManager::m_WhatPlayer = -1;
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
 CRendererGL	*CManager::m_RendererGL;	// レンダラ(GL)
 
@@ -54,6 +55,8 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CSound::Init();
 	CNetwork::Init();
 	CDebugProcGL::Init();
+
+	// サーバにエントリーメッセージを送る
 }
 
 //=============================================================================
@@ -127,12 +130,14 @@ void CManager::Draw(void)
 	CNetwork::Draw();
 
 	// デバッグプロシージャ
+	CDebugProcGL::Draw();
 #ifdef _DEBUG
 	//int i = 12;	使用例
 	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
-	CDebugProcGL::Draw();
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 #endif
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 
 	// 描画シーケンス終了
 	m_RendererGL->End();
