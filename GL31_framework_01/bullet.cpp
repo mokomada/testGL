@@ -132,5 +132,5 @@ void CBullet::Update( void )
 ******************************************************************************/
 void CBullet::Draw( void )
 {
-	CSceneBillboardGL::Draw( m_Texture );
+	CSceneBillboardGL::Draw( *m_Texture );
 }
