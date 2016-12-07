@@ -41,12 +41,12 @@ public:
 
 	static HRESULT Init( void );
 	static void Uninit( void );
-	static int *GetTexture( int texLabel ) { return &m_Texture[ texLabel ]; }
+	static uint *GetTexture( int texLabel ) { return &m_Texture[ texLabel ]; }
 
 	void Update( void );
 	void Draw( void );
 
 private:
-	static int m_Texture[ TEXTURE_MAX ];		// テクスチャ
+	static uint m_Texture[ TEXTURE_MAX ];		// テクスチャ
 	static char *m_texName[ TEXTURE_MAX ];		//テクスチャの名前
 };

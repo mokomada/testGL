@@ -47,5 +47,5 @@ private:
 	int m_life;		//弾の寿命
 	float m_speed;
 	CShadow *m_myShadow;	//自分の影
-	int		*m_Texture;	// テクスチャ
+	unsigned int		*m_Texture;	// テクスチャ
 };
