@@ -137,6 +137,7 @@ void CManager::Draw(void)
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
 	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 #endif
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 
 	// 描画シーケンス終了
 	m_RendererGL->End();
