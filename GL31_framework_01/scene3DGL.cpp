@@ -12,6 +12,7 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
+#include "sceneGL.h"
 #include "scene3DGL.h"
 
 //=============================================================================
@@ -20,9 +21,9 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene3DGL::CScene3DGL(int priority, OBJTYPE objType)
+CScene3DGL::CScene3DGL(int priority, OBJTYPE objType) : CSceneGL( priority , objType )
 {
-	glMatrixIdentity(&m_mtxWorld);
+
 }
 
 //=============================================================================
