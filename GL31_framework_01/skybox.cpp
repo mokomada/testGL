@@ -63,7 +63,12 @@ void CSkybox::Init(void)
 ********************************************/
 void CSkybox::Update(void)
 {
+		m_rot += 0.02f;
 
+		if(m_rot >= 360)
+		{
+			m_rot -= 360;
+		}
 }
 
 /********************************************
@@ -83,7 +88,7 @@ void CSkybox::Draw(void)
 	//ワールドマトリックス設定
 
 	glTranslatef(m_pos.x , m_pos.y ,m_pos.z);
-	glRotated(m_rot, 0.0, 0.0, 0.0);
+	glRotated(m_rot, 0.0, 1.0, 0.0);
 	glScalef(1.0f , 1.0f , 1.0f);
 
 
@@ -190,7 +195,7 @@ void CSkybox::Draw(void)
 	glVertex3f(-50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.5f , 2.0 / 3.0f -  0.001);
+	glTexCoord2d(0.5f , 2.0 / 3.0f +  0.001);
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
