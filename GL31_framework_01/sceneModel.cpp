@@ -140,7 +140,7 @@ void CSceneModel::Draw(void)
 	glDisable(GL_CULL_FACE);
 	
 	// 頂点色設定
-	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// モデル描画
 	DrawModel();
@@ -398,6 +398,9 @@ void CSceneModel::DrawModel(void)
 			// 面の数だけ頂点データをセット
 			for(int idx = 0 ; idx < size ; idx++)
 			{
+				// 頂点色設定
+				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 				// 法線
 				glNormal3f(	m_Parts[i].data.Nrm[m_Parts[i].data.Idx[j][idx].nrm].x,
 							m_Parts[i].data.Nrm[m_Parts[i].data.Idx[j][idx].nrm].y,
