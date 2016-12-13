@@ -343,7 +343,7 @@ void CPlayer::CollisionDetection(void)
 {
 	CGame *game = (CGame*)CManager::GetMode();
 	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	for (int nCnt = 0; nCnt < game->GetPlayer().size(); nCnt++)
 	{
 		if (sceneModel[nCnt] != NULL)
 		{
