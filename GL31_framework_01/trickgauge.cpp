@@ -66,7 +66,7 @@ void CTrickGauge::Init(void)
 	CRendererGL	*renderer = CManager::GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
+	vector<CPlayer*> sceneModel = game->GetPlayer();
 	sceneModel[0]->GetGauge( );
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
@@ -85,7 +85,7 @@ void CTrickGauge::Update(void)
 	CRendererGL	*renderer = CManager::GetRendererGL();
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
+	vector<CPlayer*> sceneModel = game->GetPlayer();
 	//現在のゲージ
 	m_Gauge = sceneModel[0]->GetGauge( );
 	m_Pa = m_Gauge / m_GaugeMax;

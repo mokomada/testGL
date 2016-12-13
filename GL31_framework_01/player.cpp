@@ -14,7 +14,7 @@
 #include "manager.h"
 #include "rendererGL.h"
 #include "game.h"
-#include "scene3DGL.h"
+#include "sceneGL.h"
 #include "sceneModel.h"
 #include "player.h"
 #include "cameraGL.h"
@@ -72,6 +72,9 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 
 	Model = CSceneModel::Create("./data/MODEL/miku_01.obj");
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
+
+	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
+	SetBox(Box);
 }
 
 //=============================================================================
@@ -225,6 +228,14 @@ void CPlayer::Update(void)
 		}
 	}
 
+	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
+	{
+		if (CollisionDetectionBox(m_Pos, &m_Box, list->GetPos(), &list->GetBox()))
+		{
+			CDebugProcGL::DebugProc("HitBox\n");
+		}
+	}
+
 	// 回転量補正
 	if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
 	{
@@ -342,8 +353,8 @@ CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 void CPlayer::CollisionDetection(void)
 {
 	CGame *game = (CGame*)CManager::GetMode();
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
-	for (int nCnt = 0; nCnt < 4; nCnt++)
+	vector<CPlayer*> sceneModel = game->GetPlayer();
+	for (int nCnt = 0; nCnt < game->GetPlayer().size(); nCnt++)
 	{
 		if (sceneModel[nCnt] != NULL)
 		{
@@ -397,7 +408,7 @@ bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1
 //	戻り値	:無し
 //	説明	:ボックスの当たり判定
 //=============================================================================
-bool CPlayer::CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2)
+bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2)
 {
 	bool HitBox = false;
 

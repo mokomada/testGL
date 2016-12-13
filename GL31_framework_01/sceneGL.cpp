@@ -17,7 +17,7 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-list<CSceneGL*>	CSceneGL::m_SceneList[PRIORITY_NUM];
+list<CSceneGL*>	CSceneGL::m_SceneList[PRIORITY_MAX];
 
 //=============================================================================
 //	関数名	:CSceneGL()
@@ -60,7 +60,7 @@ void CSceneGL::UpdateAll(void)
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
+	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
@@ -82,7 +82,7 @@ void CSceneGL::DrawAll(void)
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = (PRIORITY_NUM - 1) ; i >= 0 ; i--)
+	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に描画処理を行う
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
@@ -104,7 +104,7 @@ void CSceneGL::DeleteAll(void)
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストに登録されている全ての要素を削除する
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; )
@@ -136,7 +136,7 @@ void CSceneGL::Release(void)
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストから自身のインスタンスを探索する
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
@@ -174,7 +174,7 @@ void CSceneGL::UnlinkList(void)
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
 
 	// 全リストを検索
-	for(int i = 0 ; i < PRIORITY_NUM ; i++)
+	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストから自身のインスタンスを探索する
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)

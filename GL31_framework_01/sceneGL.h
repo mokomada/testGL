@@ -20,6 +20,7 @@ typedef enum
 	PRIORITY_3D,
 	PRIORITY_PLAYER,
 	PRIORITY_BULLET,
+	PRIORITY_WALL,
 	PRIORITY_MAX,
 }PRIORITY;
 
@@ -42,7 +43,6 @@ typedef struct
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	PRIORITY_NUM	(4)
 
 //=============================================================================
 //	クラス定義
@@ -72,8 +72,10 @@ public:
 	void		SetPos(float x, float y, float z) { m_Pos = VECTOR3(x, y, z); }
 	void		SetRot(VECTOR3 rot) { m_Rot = rot; }
 	void		SetRot(float x, float y, float z) { m_Rot = VECTOR3(x, y, z); }
+	void SetBox(BOX_DATA Box) { m_Box = Box; }
 	VECTOR3	GetPos(void) { return m_Pos; }
 	VECTOR3	GetRot(void) { return m_Rot; }
+	BOX_DATA GetBox(void) { return m_Box; }
 	
 	static void	glMatrixIdentity(MATRIX *matrix){	matrix->_11 = 1; matrix->_12 = 0; matrix->_13 = 0; matrix->_14 = 0;
 													matrix->_21 = 0; matrix->_22 = 1; matrix->_23 = 0; matrix->_24 = 0;
@@ -81,10 +83,10 @@ public:
 													matrix->_41 = 0; matrix->_42 = 0; matrix->_43 = 0; matrix->_44 = 1;}
 
 	static list<CSceneGL*> GetList(void) { return m_SceneList[0]; }
-	static list<CSceneGL*> GetList(int priority) { return (priority < PRIORITY_NUM) ? m_SceneList[priority] : m_SceneList[0]; }
+	static list<CSceneGL*> GetList(int priority) { return (priority < PRIORITY_MAX) ? m_SceneList[priority] : m_SceneList[0]; }
 
 protected:
-	static list<CSceneGL*>	m_SceneList[PRIORITY_NUM];	// リスト
+	static list<CSceneGL*>	m_SceneList[PRIORITY_MAX];	// リスト
 
 	OBJTYPE	m_ObjType;		// オブジェクトタイプ
 
@@ -92,6 +94,7 @@ protected:
 
 	VECTOR3 m_Pos;		// 位置
 	VECTOR3 m_Rot;		// 回転角
+	BOX_DATA m_Box;
 };
 
 #endif
