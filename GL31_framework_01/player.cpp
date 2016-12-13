@@ -28,7 +28,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(PRIORITY priority, OBJTYPE objType)
+CPlayer::CPlayer(PRIORITY priority, OBJTYPE objType) : CScene3DGL(priority, objType)
 {
 
 }
@@ -284,6 +284,13 @@ void CPlayer::Update(void)
 		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
 
 		CNetwork::SendData(str);
+	}
+
+	CSceneGL* sceneGL = CSceneGL::GetList(PRIORITY_BULLET);
+	while (sceneGL)
+	{
+
+		sceneGL = sceneGL->GetNext();
 	}
 
 	Model->Update();

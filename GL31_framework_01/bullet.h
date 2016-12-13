@@ -33,7 +33,7 @@ class CShadow;
 class CBullet : public CSceneBillboardGL
 {
 public:
-	CBullet(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_BULLET);
+	CBullet(PRIORITY priority = PRIORITY_BULLET, OBJTYPE objType = OBJTYPE_BULLET);
 	~CBullet();
 
 	static CBullet * Create( VECTOR3 pos , VECTOR3 rot , float speed );
