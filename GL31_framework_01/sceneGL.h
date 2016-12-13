@@ -13,6 +13,15 @@
 //=============================================================================
 //	構造体・列挙体
 //=============================================================================
+typedef enum
+{
+	PRIORITY_NONE = 0,
+	PRIORITY_PLAYER,
+	PRIORITY_ENEMY,
+	PRIORITY_BULLET,
+	PRIORITY_MAX,
+}PRIORITY;
+
 typedef enum {
 	OBJTYPE_NONE = 0,
 	OBJTYPE_PLAYER,
@@ -20,6 +29,14 @@ typedef enum {
 	OBJTYPE_BULLET,
 	OBJTYPE_MAX
 } OBJTYPE;
+
+//	当たり判定で使うボックスの情報
+typedef struct
+{
+	float width;
+	float height;
+	float depth;
+} BOX_DATA;
 
 //=============================================================================
 //	マクロ定義
@@ -35,10 +52,10 @@ public:
 	CSceneGL(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneGL();
 
-	virtual void	Init(void)					= 0;
-	virtual void	Uninit(bool isLast = false)	= 0;
-	virtual void	Update(void)				= 0;
-	virtual void	Draw(void)					= 0;
+	virtual void	Init(void) {};
+	virtual void	Uninit(bool isLast = false) {};
+	virtual void	Update(void) {};
+	virtual void	Draw(void) {};
 
 	static void	UpdateAll(void);
 	static void	DrawAll(void);

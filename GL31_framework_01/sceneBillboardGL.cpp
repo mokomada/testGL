@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneBillboardGL::CSceneBillboardGL(PRIORITY priority, OBJTYPE objType) : CSceneGL(priority, objType)
+CSceneBillboardGL::CSceneBillboardGL(int priority, OBJTYPE objType) : CSceneGL(priority, objType)
 {
 
 	glMatrixIdentity(&m_mtxWorld);

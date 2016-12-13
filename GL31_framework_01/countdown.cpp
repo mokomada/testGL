@@ -27,7 +27,7 @@ int		CCountDown::m_NumFigure;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CCountDown::CCountDown(PRIORITY priority, OBJTYPE objtype) : CScene2DGL( priority , objtype )
+CCountDown::CCountDown(int priority, OBJTYPE objtype) : CScene2DGL( priority , objtype )
 {
 
 }

@@ -28,7 +28,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(PRIORITY priority, OBJTYPE objType) : CScene3DGL(priority, objType)
+CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
 
 }
@@ -286,13 +286,6 @@ void CPlayer::Update(void)
 		CNetwork::SendData(str);
 	}
 
-	CSceneGL* sceneGL = CSceneGL::GetList(PRIORITY_BULLET);
-	while (sceneGL)
-	{
-
-		sceneGL = sceneGL->GetNext();
-	}
-
 	Model->Update();
 }
 
@@ -349,7 +342,7 @@ CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 void CPlayer::CollisionDetection(void)
 {
 	CGame *game = (CGame*)CManager::GetMode();
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer();
+	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
 	for (int nCnt = 0; nCnt < 4; nCnt++)
 	{
 		if (sceneModel[nCnt] != NULL)

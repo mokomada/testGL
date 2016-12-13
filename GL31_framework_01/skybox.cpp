@@ -23,7 +23,7 @@
 /********************************************
 ---------------コンストラクタ----------------
 *********************************************/
-CSkybox::CSkybox(PRIORITY priority , OBJTYPE objType) : CScene3DGL( priority , objType )
+CSkybox::CSkybox(bool ifListAdd, int priority , OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
 }
 

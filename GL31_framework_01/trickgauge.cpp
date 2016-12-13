@@ -38,7 +38,7 @@
 戻り値:void
 説明  :
 ******************************************************************************/
-CTrickGauge::CTrickGauge(PRIORITY priority, OBJTYPE objType)
+CTrickGauge::CTrickGauge(bool ifListAdd, int priority, OBJTYPE objType)
 {
 
 }
@@ -66,7 +66,7 @@ void CTrickGauge::Init(void)
 	CRendererGL	*renderer = CManager::GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer();
+	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
 	sceneModel[0]->GetGauge( );
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
@@ -85,7 +85,7 @@ void CTrickGauge::Update(void)
 	CRendererGL	*renderer = CManager::GetRendererGL();
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CPlayer*>::iterator sceneModel = game->GetPlayer();
+	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
 	//現在のゲージ
 	m_Gauge = sceneModel[0]->GetGauge( );
 	m_Pa = m_Gauge / m_GaugeMax;

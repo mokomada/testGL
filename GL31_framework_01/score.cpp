@@ -27,7 +27,7 @@ int		CScore::m_NumFigure;
 //	戻り値	:無し
 //	説明	:コンストラクタ。f
 //=============================================================================
-CScore::CScore(PRIORITY priority, OBJTYPE objtype) : CScene2DGL( priority , objtype )
+CScore::CScore(int priority, OBJTYPE objtype) : CScene2DGL( priority , objtype )
 {
 
 }

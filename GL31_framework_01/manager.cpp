@@ -81,7 +81,7 @@ void CManager::Uninit(HWND hWnd)
 		m_Camera = NULL;
 	}
 
-	CSceneGL::DeleteAll(true);
+	CSceneGL::DeleteAll();
 	CTextureManager::Uninit();
 	CSound::Uninit();
 	CNetwork::Uninit();
