@@ -17,8 +17,8 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CSceneGL *CSceneGL::m_pTop;
-CSceneGL *CSceneGL::m_pCur;
+CSceneGL *CSceneGL::m_pTop[PRIORITY_MAX] = { NULL };
+CSceneGL *CSceneGL::m_pCur[PRIORITY_MAX] = { NULL };
 
 //=============================================================================
 //	関数名	:CSceneGL()
@@ -26,13 +26,15 @@ CSceneGL *CSceneGL::m_pCur;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneGL::CSceneGL(int priority, OBJTYPE objType)
+CSceneGL::CSceneGL(PRIORITY Priority, OBJTYPE objType)
 {
-	if(m_pTop == NULL)
+	m_Priority = Priority;
+
+	if(m_pTop[Priority] == NULL)
 	{// リストに何も登録されてない場合
 
 		// 自身のポインタをリスト先頭に登録
-		m_pTop = this;
+		m_pTop[Priority] = this;
 
 		// 先頭へ登録
 		m_pPrev = NULL;
@@ -41,14 +43,14 @@ CSceneGL::CSceneGL(int priority, OBJTYPE objType)
 	{// リストに他に追加されている場合
 
 		// 前項目を参照先に
-		m_pPrev = m_pCur;
+		m_pPrev = m_pCur[Priority];
 
 		// 前項目の次参照先を自身に
 		m_pPrev->m_pNext = this;
 	}
 		
 	// リストの終端ポインタに自身を登録
-	m_pCur = this;
+	m_pCur[Priority] = this;
 
 	// 次の項目は無い
 	m_pNext = NULL;
@@ -66,51 +68,65 @@ CSceneGL::CSceneGL(int priority, OBJTYPE objType)
 //=============================================================================
 CSceneGL::~CSceneGL()
 {
-	CSceneGL *pScene = m_pTop;		// 参照先バッファ
-	CSceneGL *pSceneNext = NULL;	// 次参照先バッファ
-	CSceneGL *pScenePrev = NULL;	// 前参照先バッファ
-
-	// 全てのシーンを参照
-	while(pScene)
+	for (int nCnt = 0; nCnt < PRIORITY_MAX; nCnt++)
 	{
-		// 次参照先と前参照先を退避
-		pSceneNext = pScene->m_pNext;
-		pScenePrev = pScene->m_pPrev;
+		CSceneGL *pScene = m_pTop[nCnt];		// 参照先バッファ
+		CSceneGL *pSceneNext = NULL;	// 次参照先バッファ
+		CSceneGL *pScenePrev = NULL;	// 前参照先バッファ
 
-		if(pScene == this)
+		// 全てのシーンを参照
+		while (pScene)
 		{
-			// 前参照先が存在する場合
-			if(pScene->m_pPrev)
+			// 次参照先と前参照先を退避
+			pSceneNext = pScene->m_pNext;
+			pScenePrev = pScene->m_pPrev;
+
+			if (pScene == this)
 			{
-				// 前参照先を更新
-				pScene->m_pPrev->m_pNext = pScene->m_pNext;
+				// 前参照先が存在する場合
+				if (pScene->m_pPrev)
+				{
+					// 前参照先を更新
+					pScene->m_pPrev->m_pNext = pScene->m_pNext;
+				}
+
+				// 次参照先が存在する場合
+				if (pScene->m_pNext)
+				{
+					// 次参照先を更新
+					pScene->m_pNext->m_pPrev = pScene->m_pPrev;
+				}
+
+				// リストの先頭の場合
+				if (pScene == m_pTop[nCnt])
+				{
+					// リストの先頭を更新
+					m_pTop[nCnt] = pSceneNext;
+				}
+
+				// リストの終端の場合
+				if (pScene == m_pCur[nCnt])
+				{
+					// リストの終端を更新
+					m_pCur[nCnt] = pScenePrev;
+				}
 			}
 
-			// 次参照先が存在する場合
-			if(pScene->m_pNext)
-			{
-				// 次参照先を更新
-				pScene->m_pNext->m_pPrev = pScene->m_pPrev;
-			}
-
-			// リストの先頭の場合
-			if(pScene == m_pTop)
-			{
-				// リストの先頭を更新
-				m_pTop = pSceneNext;
-			}
-
-			// リストの終端の場合
-			if(pScene == m_pCur)
-			{
-				// リストの終端を更新
-				m_pCur = pScenePrev;
-			}
+			// 次参照先をセット
+			pScene = pSceneNext;
 		}
-
-		// 次参照先をセット
-		pScene = pSceneNext;
 	}
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:初期化
+//=============================================================================
+void CSceneGL::Init(void)
+{
+	
 }
 
 //=============================================================================
@@ -121,20 +137,23 @@ CSceneGL::~CSceneGL()
 //=============================================================================
 void CSceneGL::UpdateAll(void)
 {
-	CSceneGL *scene = m_pTop;	// リストの先頭ポインタ
-	CSceneGL *sceneNext;		// リストの次参照先バッファ
-
-	// リストの最後に到達するまで更新を続ける
-	while(scene != NULL)
+	for (int nCnt = 0; nCnt < PRIORITY_MAX; nCnt++)
 	{
-		// 次参照先を更新
-		sceneNext = scene->m_pNext;
+		CSceneGL *scene = m_pTop[nCnt];	// リストの先頭ポインタ
+		CSceneGL *sceneNext;		// リストの次参照先バッファ
 
-		// シーンを更新
-		scene->Update();
+		// リストの最後に到達するまで更新を続ける
+		while (scene != NULL)
+		{
+			// 次参照先を更新
+			sceneNext = scene->m_pNext;
 
-		// 次の項目へ
-		scene = sceneNext;
+			// シーンを更新
+			scene->Update();
+
+			// 次の項目へ
+			scene = sceneNext;
+		}
 	}
 }
 
@@ -146,16 +165,19 @@ void CSceneGL::UpdateAll(void)
 //=============================================================================
 void CSceneGL::DrawAll(void)
 {
-	CSceneGL *scene = m_pTop;	// リストの先頭ポインタ
-	
-	// リストの最後に到達するまで描画を続ける
-	while(scene != NULL)
+	for (int nCnt = 0; nCnt < PRIORITY_MAX; nCnt++)
 	{
-		// シーンを描画
-		scene->Draw();
+		CSceneGL *scene = m_pTop[nCnt];	// リストの先頭ポインタ
 
-		// 次の項目へ
-		scene = scene->m_pNext;
+		// リストの最後に到達するまで描画を続ける
+		while (scene != NULL)
+		{
+			// シーンを描画
+			scene->Draw();
+
+			// 次の項目へ
+			scene = scene->m_pNext;
+		}
 	}
 }
 
@@ -167,25 +189,30 @@ void CSceneGL::DrawAll(void)
 //=============================================================================
 void CSceneGL::DeleteAll(bool isLast)
 {
-	CSceneGL *pScene = m_pTop;	// リストの先頭ポインタ
-	CSceneGL *pSceneNext;		// 次参照先
-	
-	while(pScene != NULL)
+	for (int nCnt = 0; nCnt < PRIORITY_MAX; nCnt++)
 	{
-		// 次参照先を退避
-		pSceneNext = pScene->m_pNext;
+		CSceneGL *pScene = m_pTop[nCnt];	// リストの先頭ポインタ
+		CSceneGL *pSceneNext;		// 次参照先
 
-		// 終了処理
-		pScene->Uninit(isLast);
-
-		// インスタンス削除
-		if(pScene != NULL)
+		while (pScene != NULL)
 		{
-			delete pScene;
+			// 次参照先を退避
+			pSceneNext = pScene->m_pNext;
+
+			// 終了処理
+			pScene->Uninit(isLast);
+
+			// インスタンス削除
+			if (pScene != NULL)
+			{
+				delete pScene;
+			}
+
+			// 次参照先をセット
+			pScene = pSceneNext;
 		}
 
-		// 次参照先をセット
-		pScene = pSceneNext;
+		m_pTop[nCnt] = NULL;
 	}
 }
 
@@ -200,11 +227,11 @@ void CSceneGL::Release(void)
 	// 終了処理
 	Uninit();
 
-	if(this == m_pTop)
+	if(this == m_pTop[m_Priority])
 	{// リストの先頭の場合
 
 		// リストの先頭を現在の次項目へ
-		m_pTop = m_pNext;
+		m_pTop[m_Priority] = m_pNext;
 	}
 	else
 	{// リストの先頭でない場合
@@ -213,11 +240,11 @@ void CSceneGL::Release(void)
 		m_pPrev->m_pNext = m_pNext;
 	}
 
-	if(this == m_pCur)
+	if(this == m_pCur[m_Priority])
 	{// リストの終端の場合
 
 		// リストの終端を現在の前項目へ
-		m_pCur = m_pPrev;
+		m_pCur[m_Priority] = m_pPrev;
 	}
 	else
 	{// リストの終端でない場合

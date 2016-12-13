@@ -17,7 +17,7 @@
 class CTrickGauge :public CScene2DGL
 {
 	public://’N‚Å‚àŽg‚¦‚é
-		CTrickGauge(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+		CTrickGauge(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 		~CTrickGauge( );
 		void Init(void);
 		void Update(void);

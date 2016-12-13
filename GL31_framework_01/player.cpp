@@ -28,7 +28,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(int priority, OBJTYPE objType)
+CPlayer::CPlayer(PRIORITY priority, OBJTYPE objType)
 {
 
 }

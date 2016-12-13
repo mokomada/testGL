@@ -47,10 +47,9 @@ class CSceneModel;
 class CPlayer : public CScene3DGL
 {
 public:
-	CPlayer(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CPlayer(PRIORITY priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_NONE);
 	~CPlayer();
 
-	void	Init(void){}
 	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);

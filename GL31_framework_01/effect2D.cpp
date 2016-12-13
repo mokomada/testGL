@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CEffect2D::CEffect2D(int priority, OBJTYPE objType)
+CEffect2D::CEffect2D(PRIORITY priority, OBJTYPE objType) : CScene2DGL(priority, objType)
 {
 	glMatrixIdentity(&m_mtxWorld);
 }

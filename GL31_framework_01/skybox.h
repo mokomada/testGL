@@ -4,7 +4,7 @@
 class CSkybox : public CScene3DGL
 {
 	public:
-		CSkybox(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+		CSkybox(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 		~CSkybox();
 
 		void Init(void);

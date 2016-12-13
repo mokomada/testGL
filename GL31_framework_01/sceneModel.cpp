@@ -22,7 +22,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CSceneModel::CSceneModel(int priority, OBJTYPE objType)
+CSceneModel::CSceneModel(PRIORITY priority, OBJTYPE objType)
 {
 
 }
