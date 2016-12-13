@@ -94,7 +94,7 @@ class CEffect2D : public CScene2DGL
 
 	private:
 		VECTOR2 m_Size;						// ポリゴンのサイズ
-		int		m_Texture;					// テクスチャ
+		uint*	m_Texture;					// テクスチャ
 		MATRIX	m_mtxWorld;					// ワールドマトリクス
 
 		/* アニメーション関連 */
