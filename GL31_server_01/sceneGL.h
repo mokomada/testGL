@@ -62,6 +62,9 @@ public:
 													matrix->_31 = 0; matrix->_32 = 0; matrix->_33 = 1; matrix->_34 = 0;
 													matrix->_41 = 0; matrix->_42 = 0; matrix->_43 = 0; matrix->_44 = 1;}
 
+	static list<CSceneGL*> GetList(void) { return m_SceneList[0]; }
+	static list<CSceneGL*> GetList(int priority) { return (priority < PRIORITY_NUM) ? m_SceneList[priority] : m_SceneList[0]; }
+
 protected:
 	static list<CSceneGL*>	m_SceneList[PRIORITY_NUM];	// ƒŠƒXƒg
 
