@@ -24,11 +24,14 @@
 /******************************************************************************
 *	グローバル変数
 ******************************************************************************/
-unsigned int CTextureManager::m_Texture[ TEXTURE_MAX ] = { 0 };		// テクスチャ
-char * CTextureManager::m_texName[ TEXTURE_MAX ] = 			//テクスチャの名前
+unsigned int CTextureManager::m_Texture[ TEXTURE_MAX ] = { 0 };	// テクスチャ
+char * CTextureManager::m_texName[ TEXTURE_MAX ] = 				//テクスチャの名前
 {
 	{"./data/TEXTURE/shadow000.png"},
-	{"./data/TEXTURE/bullet000.png"}
+	{"./data/TEXTURE/bullet000.png"},
+	{"./data/TEXTURE/EFFECT/Effect_Explosion00.tga"},	// 白い爆発(球用)
+	{"./data/TEXTURE/EFFECT/Effect_Explosion01.tga"},	// 赤い爆発(機体用)
+	{"./data/TEXTURE/EFFECT/Effect_Smoke00.tga"}		// 土煙テスト用
 };
 /******************************************************************************
 *	関数名：

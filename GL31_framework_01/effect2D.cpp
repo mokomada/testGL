@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "rendererGL.h"
 #include "effect2D.h"
+#include"textureManager.h"
 
 //=============================================================================
 //	関数名	:CSceneBillboard()
@@ -65,15 +66,7 @@ void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 //	説明	:終了処理を行う。
 //=============================================================================
 void CEffect2D::Uninit(bool isLast)
-{
-	////	テクスチャ削除
-	/////////////////////////////////////////////////////////////
-	if(m_Texture != NULL)
-	{
-		if(isLast)
-		glDeleteTextures(1, ((GLuint *)m_Texture));
-	}
-}
+{}
 
 //=============================================================================
 //	関数名	:Update
@@ -168,7 +161,7 @@ void CEffect2D::Draw(void)
 
 		////	各種描画設定
 		/////////////////////////////////////////////////////////
-		glBindTexture(GL_TEXTURE_2D, m_Texture);			// テクスチャバインド
+		glBindTexture(GL_TEXTURE_2D, *m_Texture);			// テクスチャバインド
 		glEnable(GL_TEXTURE_2D);							// テクスチャ有効化
 		glEnable(GL_DEPTH_TEST);							// 深度バッファ設定
 		glDisable(GL_LIGHTING);								// ライティングオフ
@@ -268,23 +261,23 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 
 		// 爆発エフェクト(白) 8x1 
 		case ETYPE_EXPLODE00 :
-			m_Texture = renderer->CreateTextureTGA(EXPLODE_TEXFILENAME000);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = EXPLODE00_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = EXPLODE00_Y;											// Yの分割数(ヘッダに定義)
-			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;			// アニメーション切り替えまでのフレーム数
+			m_Texture = CTextureManager::GetTexture( TEXTURE_BULLETEXPLODE );	// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = EXPLODE00_X;												// Xの分割数(ヘッダに定義)
+			m_nAnimY = EXPLODE00_Y;												// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
 			break;
 
 		// 爆発エフェクト(赤) 7x1 
 		case ETYPE_EXPLODE01 :
-			m_Texture = renderer->CreateTextureTGA(EXPLODE_TEXFILENAME001);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = EXPLODE01_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = EXPLODE01_Y;											// Yの分割数(ヘッダに定義)
-			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;			// アニメーション切り替えまでのフレーム数
+			m_Texture = CTextureManager::GetTexture( TEXTURE_PLAYEREXPLODE );	// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = EXPLODE01_X;												// Xの分割数(ヘッダに定義)
+			m_nAnimY = EXPLODE01_Y;												// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
 			break;
 			
 		// 土煙画像(白)		10x1
 		case ETYPE_SMOKE00 :
-			m_Texture = renderer->CreateTextureTGA(SMOKE_TEXFILENAME000);	// 画像のアドレス(ヘッダに定義)
+			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE );		// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = SMOKE00_X;											// Xの分割数(ヘッダに定義)
 			m_nAnimY = SMOKE00_Y;											// Yの分割数(ヘッダに定義)
 			m_nAnimChangeFrame = SMOKE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
