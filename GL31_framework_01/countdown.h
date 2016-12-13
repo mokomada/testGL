@@ -25,7 +25,7 @@
 class CCountDown : public CScene2DGL
 {
 public:
-	CCountDown(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CCountDown(PRIORITY priority = PRIORITY_NONE, OBJTYPE objtype = OBJTYPE_NONE);
 	~CCountDown();
 	
 	void	Init(VECTOR3 pos, VECTOR2 size, int figure);

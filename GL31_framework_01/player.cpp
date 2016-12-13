@@ -21,14 +21,14 @@
 #include "network.h"
 #include "bullet.h"
 #include "debugProcGL.h"
-
+#include "shadow.h"
 //=============================================================================
 //	関数名	:CScene3D()
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CPlayer::CPlayer(int priority, OBJTYPE objType)
+CPlayer::CPlayer(PRIORITY priority, OBJTYPE objType) : CScene3DGL(priority, objType)
 {
 
 }
@@ -71,6 +71,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Radius = 30.0f;
 
 	Model = CSceneModel::Create("./data/MODEL/miku_01.obj");
+	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 }
 
 //=============================================================================
@@ -283,6 +284,13 @@ void CPlayer::Update(void)
 		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
 
 		CNetwork::SendData(str);
+	}
+
+	CSceneGL* sceneGL = CSceneGL::GetList(PRIORITY_BULLET);
+	while (sceneGL)
+	{
+
+		sceneGL = sceneGL->GetNext();
 	}
 
 	Model->Update();

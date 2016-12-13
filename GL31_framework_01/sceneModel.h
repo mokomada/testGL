@@ -72,10 +72,9 @@ typedef struct{
 class CSceneModel
 {
 public:
-	CSceneModel(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneModel(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneModel();
 
-	void	Init(void){}
 	void	Init(char* FileName);
 	void	Uninit(bool isLast = false);
 	void	Update(void);

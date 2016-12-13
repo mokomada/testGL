@@ -20,6 +20,7 @@
 #include "cameraGL.h"
 #include "lightGL.h"
 #include "scene2DGL.h"
+#include "textureManager.h"
 
 //=============================================================================
 //	Ã“Iƒƒ“ƒo•Ï”
@@ -81,6 +82,7 @@ void CManager::Uninit(HWND hWnd)
 	}
 
 	CSceneGL::DeleteAll(true);
+	CTextureManager::Uninit();
 	CSound::Uninit();
 	CNetwork::Uninit();
 }

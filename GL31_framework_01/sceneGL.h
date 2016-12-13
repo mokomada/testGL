@@ -13,6 +13,15 @@
 //=============================================================================
 //	構造体・列挙体
 //=============================================================================
+typedef enum
+{
+	PRIORITY_NONE = 0,
+	PRIORITY_PLAYER,
+	PRIORITY_ENEMY,
+	PRIORITY_BULLET,
+	PRIORITY_MAX,
+}PRIORITY; 
+
 typedef enum {
 	OBJTYPE_NONE = 0,
 	OBJTYPE_PLAYER,
@@ -40,10 +49,10 @@ typedef struct
 class CSceneGL
 {
 public:
-	CSceneGL(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneGL(PRIORITY Priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneGL();
 
-	virtual void	Init(void)					= 0;
+	virtual void	Init(void);
 	virtual void	Uninit(bool isLast = false)	= 0;
 	virtual void	Update(void)				= 0;
 	virtual void	Draw(void)					= 0;
@@ -66,9 +75,12 @@ public:
 	VECTOR3	GetRot(void) { return m_Rot; }
 	BOX_DATA GetBox(void) { return m_Box; }
 
+	static CSceneGL *GetList(PRIORITY Priority = PRIORITY_NONE) { return m_pTop[Priority]; }
+	CSceneGL *GetNext(void) { return m_pNext; }
+
 protected:
-	static CSceneGL *m_pTop;	// リストの先頭ポインタ
-	static CSceneGL *m_pCur;	// リストの終端ポインタ
+	static CSceneGL *m_pTop[PRIORITY_MAX];	// リストの先頭ポインタ
+	static CSceneGL *m_pCur[PRIORITY_MAX];	// リストの終端ポインタ
 
 	CSceneGL *m_pPrev;		// 前参照先ポインタ
 	CSceneGL *m_pNext;		// 後参照先ポインタ
@@ -77,6 +89,7 @@ protected:
 	VECTOR3 m_Rot;		// 回転角
 
 	BOX_DATA m_Box;	//ボックスのデータ
+	PRIORITY m_Priority;
 };
 
 #endif

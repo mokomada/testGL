@@ -45,7 +45,7 @@ public:
 
 private:
 	VECTOR2 m_Size;		// ポリゴンのサイズ
-	int		*m_Texture;	// テクスチャ
+	uint		*m_Texture;	// テクスチャ
 
 	MATRIX	m_mtxWorld; // ワールドマトリックス
 	CSceneGL *m_parent;	//親のアドレス

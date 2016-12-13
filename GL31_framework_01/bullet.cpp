@@ -39,7 +39,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBullet::CBullet( int priority , OBJTYPE objType )
+CBullet::CBullet(PRIORITY priority, OBJTYPE objType ) : CSceneBillboardGL(priority , objType)
 {
 	m_speed = 0;
 }
@@ -132,5 +132,5 @@ void CBullet::Update( void )
 ******************************************************************************/
 void CBullet::Draw( void )
 {
-	CSceneBillboardGL::Draw( m_Texture );
+	CSceneBillboardGL::Draw( *m_Texture );
 }

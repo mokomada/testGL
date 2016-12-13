@@ -33,12 +33,12 @@
 プロトタイプ宣言
 ******************************************************************************/
 /******************************************************************************
-関数名:CTrickGauge::CTrickGauge(int priority, OBJTYPE objType )
-引数  :int priority, OBJTYPE objType
+関数名:CTrickGauge::CTrickGauge(PRIORITY priority, OBJTYPE objType )
+引数  :PRIORITY priority, OBJTYPE objType
 戻り値:void
 説明  :
 ******************************************************************************/
-CTrickGauge::CTrickGauge(int priority, OBJTYPE objType)
+CTrickGauge::CTrickGauge(PRIORITY priority, OBJTYPE objType)
 {
 
 }

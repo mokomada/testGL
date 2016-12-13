@@ -75,10 +75,9 @@ typedef enum
 class CEffect2D : public CScene2DGL
 {
 	public:
-		CEffect2D(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
+		CEffect2D(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
 		~CEffect2D();													// デストラクタ
 
-		void Init(void){}
 		void Init(VECTOR3 pos		= VECTOR3(0.0f, 0.0f, 0.0f),			// 初期化処理
 				  VECTOR2 size		= VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 				  EFFECTTYPE etype	= ETYPE_NONE);
