@@ -20,20 +20,18 @@
 /******************************************************************************
 クラス
 *******************************************************************************/
-class CWall :CScene3DGL
+class CWall : public CScene3DGL
 {
 	public://誰でも使える
-		CWall( );
+		CWall(bool ifListAdd = true, int priority = PRIORITY_WALL, OBJTYPE objType = OBJTYPE_NONE);
 		~CWall( );
 		void Init(char *texName);
 		void Updete(void);
 		void Draw(void);
 		static CWall *Create(VECTOR3 pos, VECTOR3 rot, float width, float height, float depth, char *texName);
-		BOX_DATA GetWallBox(void);
 
 	protected://継承先クラスでは使える
 	private://自分しか使えない
-		BOX_DATA m_WallBox;
 		uint m_Texture;
 };
 #endif

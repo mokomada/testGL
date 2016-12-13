@@ -19,7 +19,10 @@
 #include "matrix.h"
 #include "input.h"
 #include "readfile.h"
-//#include "singleton.h"
+#include <vector>
+#include <list>
+#include <random>
+using namespace std;
 
 //=============================================================================
 //	リンク
@@ -29,15 +32,15 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+#define	uchar		unsigned char	// unsigned char短縮
+#define	uint		unsigned int	// unsigned int短縮
+
 #define	CHANGE_SIZE			(5)			// 
 #define	SCREEN_WIDTH		(1280.0f * 0.85f)		// ウィンドウの横幅
 #define	SCREEN_HEIGHT		(760.0f * 0.85f)		// ウィンドウの縦幅
 #define	SCREEN_WIDTH_HALF	(SCREEN_WIDTH * 0.5f)	// ウィンドウの横幅(半分)
 #define	SCREEN_HEIGHT_HALF	(SCREEN_HEIGHT * 0.5f)	// ウィンドウの縦幅(半分)
 #define	PI					(3.14159265f)			// 円周率
-
-typedef unsigned char uchar;	// unsigned char短縮
-typedef unsigned int uint;		// unsigned int短縮
 
 //=============================================================================
 //	前方宣言

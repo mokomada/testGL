@@ -21,7 +21,7 @@
 class CSceneBillboardGL : public CSceneGL
 {
 public:
-	CSceneBillboardGL(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneBillboardGL(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneBillboardGL();
 
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),

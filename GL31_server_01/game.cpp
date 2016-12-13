@@ -41,9 +41,8 @@ vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 //=============================================================================
 void CGame::Init(void)
 {
-	m_Meshfield	= CMeshfield::Create();
 	// 3D
-	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Meshfield = CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Player.resize(4);
 	m_Player[0] = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
 	m_Player[1] = CSceneModel::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));

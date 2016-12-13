@@ -21,7 +21,7 @@
 class CScene2DGL : public CSceneGL
 {
 public:
-	CScene2DGL(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CScene2DGL(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CScene2DGL();
 
 	void	Init(void){}
@@ -42,7 +42,6 @@ private:
 	VECTOR2 m_Size;		// ポリゴンのサイズ
 	float	m_fLength;	// 対角線の長さ
 	float	m_fAngle;	// 角度
-	int		m_Texture;	// テクスチャ
 };
 
 #endif

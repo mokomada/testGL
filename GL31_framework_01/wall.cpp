@@ -14,6 +14,7 @@
 #include "wall.h"
 #include "manager.h"
 #include "rendererGL.h"
+#include "sceneGL.h"
 #include "game.h"
 
 /******************************************************************************
@@ -36,7 +37,7 @@
 戻り値:void
 説明  :
 ******************************************************************************/
-CWall::CWall( )
+CWall::CWall(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
 
 }
@@ -62,7 +63,7 @@ void CWall::Init(char *texName)
 {
 	CRendererGL	*renderer = CManager::GetRendererGL( );
 	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/主ちゃ.png");
-	CScene3DGL::Init(m_Pos, VECTOR2(m_WallBox.width, m_WallBox.height),"renderer->CreateTextureTGA(texName);");
+	CScene3DGL::Init(m_Pos, VECTOR2(m_Box.width, m_Box.height),"renderer->CreateTextureTGA(texName);");
 
 }
 
@@ -144,20 +145,9 @@ CWall *CWall::Create(VECTOR3 pos, VECTOR3 rot, float width, float height,float d
 	wall = new CWall;
 	wall->m_Pos = pos;
 	wall->m_Rot = rot;
-	wall->m_WallBox.depth = depth;
-	wall->m_WallBox.height = height;
-	wall->m_WallBox.width = width;
+	wall->m_Box.depth = depth;
+	wall->m_Box.height = height;
+	wall->m_Box.width = width;
 	wall->Init(texName);
 	return wall;
-}
-
-//=============================================================================
-//	関数名	:GetWallBox
-//	引数	:無し
-//	戻り値	:無し
-//	説明	:BOX_DATAゲット
-//=============================================================================
-BOX_DATA CWall::GetWallBox( )
-{	
-	return m_WallBox;
 }

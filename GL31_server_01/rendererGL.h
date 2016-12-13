@@ -26,6 +26,8 @@
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+#define	VEC2_ZERO			(VECTOR2(0.0f, 0.0f))		// 2Dベクトルの0
+#define	VEC3_ZERO			(VECTOR3(0.0f, 0.0f, 0.0f))	// 3Dベクトルの0
 #define	SCENE_NUM	(2)
 #define	BGCOLOR_R	(0.5f)
 #define	BGCOLOR_G	(0.5f)
@@ -56,6 +58,7 @@ public:
 	static VECTOR3	GetBGColor(void) { return m_BGColor; }
 	static void		SetBGColor(VECTOR3 color) { m_BGColor = color; }
 	static void		AddBGColor(VECTOR3 color) { m_BGColor += color; }
+	static char* FileName(const char *filename, const char *directory = "./data/TEXTURE/");
 
 	static int CreateTextureTGA(char *filename);
 	static int CreateTextureBMP(char *filename);

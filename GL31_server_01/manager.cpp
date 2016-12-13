@@ -54,6 +54,8 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CSound::Init();
 	CNetwork::Init();
 	CDebugProcGL::Init();
+
+	//CScene2DGL::Create(VECTOR3(100.0f, 100.0f, 0.0f), VECTOR2(100.0f, 100.0f));
 }
 
 //=============================================================================
@@ -77,7 +79,7 @@ void CManager::Uninit(HWND hWnd)
 		m_Camera = NULL;
 	}
 
-	CSceneGL::DeleteAll(true);
+	CSceneGL::DeleteAll();
 	CSound::Uninit();
 	CNetwork::Uninit();
 }

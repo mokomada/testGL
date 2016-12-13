@@ -37,7 +37,7 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
-	static vector<CPlayer*>::iterator	GetPlayer(void) { return m_Player.begin(); }
+	static vector<CPlayer*>	GetPlayer(void) { return m_Player; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
