@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene3DGL::CScene3DGL(int priority, OBJTYPE objType)
+CScene3DGL::CScene3DGL(bool ifListAdd, int priority, OBJTYPE objType) : CSceneGL(ifListAdd, priority, objType)
 {
 	glMatrixIdentity(&m_mtxWorld);
 }

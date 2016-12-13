@@ -21,7 +21,7 @@
 class CScene3DGL : public CSceneGL
 {
 public:
-	CScene3DGL(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CScene3DGL(bool ifListAdd = true, int priority = 2, OBJTYPE objType = OBJTYPE_NONE);
 	~CScene3DGL();
 
 	void	Init(void){}

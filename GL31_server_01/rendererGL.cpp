@@ -139,6 +139,22 @@ void CRendererGL::End(void)
 }
 
 //=============================================================================
+//	関数名	:FileName
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ディレクトリとファイル名を結合して返す。
+//=============================================================================
+char* CRendererGL::FileName(const char* filename, const char *directory)
+{
+	char str[1024] = { NULL };
+
+	strcat(str, directory);
+	strcat(str, filename);
+
+	return str;
+}
+
+//=============================================================================
 //	関数名	:CreateTextureTGA
 //	引数	:char *filename(読み込むファイル名)
 //	戻り値	:int

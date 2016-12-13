@@ -136,7 +136,7 @@
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GL31_framework_01.rc" />
+    <ResourceCompile Include="GL31_server.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

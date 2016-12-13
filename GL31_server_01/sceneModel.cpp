@@ -73,8 +73,8 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 	LoadModel("./data/MODEL/"MODEL_FILENAME000);
 
 	// モーション生成
-	m_Motion = new MOTION[MODEL_MOTION_NUM];
-	LoadMotion("data/MOTION/miku_01_01.anm", 0);
+	//m_Motion = new MOTION[MODEL_MOTION_NUM];
+	//LoadMotion("data/MOTION/miku_01_01.anm", 0);
 	//LoadMotion("data/MOTION/miku_01_02.anm", 0);
 
 	m_Gauge = 100.0f;	//ゲージの初期化
@@ -97,32 +97,7 @@ void CSceneModel::Uninit(bool isLast)
 		glDeleteTextures(1, ((GLuint *)m_Texture));
 	}
 
-	// 配列の消去
-	for(int nCntParts = 0 ; nCntParts < m_nNumParts ; nCntParts++ )
-	{
-		// 座標配列消去
-		delete[] m_Parts[nCntParts].data.Pos;
-		
-		// テクスチャ座標配列消去
-		delete[] m_Parts[nCntParts].data.Tex;
-		
-		// 法線配列消去
-		delete[] m_Parts[nCntParts].data.Nrm;
-
-		// インデックス配列消去
-		for(int nCntIdx = 0 ; nCntIdx < m_Parts[nCntParts].dataNum.Idx ; nCntIdx++)
-		{
-			delete[] m_Parts[nCntParts].data.Idx[nCntIdx];
-			m_Parts[nCntParts].data.Idx[nCntIdx] = NULL;
-		}
-		delete[] m_Parts[nCntParts].data.Idx;
-		m_Parts[nCntParts].data.Idx = NULL;
-	}
-
-	// パーツ配列消去
-	delete[] m_Parts;
-
-
+	/*
 	// モーション消去
 	if(m_Motion != NULL)
 	{
@@ -141,7 +116,7 @@ void CSceneModel::Uninit(bool isLast)
 			}
 		}
 		delete[] m_Motion;
-	}
+	}*/
 }
 
 //=============================================================================
@@ -425,202 +400,97 @@ CSceneModel *CSceneModel::Create(bool ifMinePlayer, VECTOR3 pos)
 //=============================================================================
 void CSceneModel::LoadModel(char *fileName)
 {
-	int		nCntData	= 0;	// 配列生成用カウンタ
-	char	*str		= NULL;	// ファイル内容格納文字列
-	int		offset		= 0;	// オフセット
-	
+	FILE *fp		= NULL;	// ファイルポインタ
+	FILE *fpBuff	= NULL;	// ファイルポインタ
 
-	// バイナリファイル読み込み
-	str = CReadFile::ReadBinaryFile(fileName);
+	// ファイルオープン
+	fp = fopen(fileName, "r");
 
-	// パーツ数をカウント
-	m_nNumParts = CReadFile::SearchWordNumByString(str, 0, "\ng ");
-	// パーツ情報生成
-	m_Parts = new PARTS[m_nNumParts];
-
-	// パーツ情報初期化
-	for(int i = 0 ; i < m_nNumParts ; i++)
+	// ファイル終了まで読み込み
+	while(!feof(fp))
 	{
-		m_Parts[i].Parents	= -1;
-		m_Parts[i].Pos		= VECTOR3(0.0f, 0.0f, 0.0f);
-		m_Parts[i].Rot		= VECTOR3(0.0f, 0.0f, 0.0f);
-		m_Parts[i].Move		= VECTOR3(0.0f, 0.0f, 0.0f);
-		m_Parts[i].RotMove	= VECTOR3(0.0f, 0.0f, 0.0f);
-	}
+		char str[65535] = { NULL };
+		memset(str, NULL, sizeof(str));
 
-	// 配列生成
-	for(int i = 0 ; i < m_nNumParts ; i++)
-	{
-		// オフセットの初期化
-		offset = 0;
+		// 単語を取得
+		fscanf(fp, "%s", str);
 
-		// 検索開始位置をセット
-		for(int j = 0 ; j <= i ; j++)
-		{
-			offset = CReadFile::SearchWordByString(str, offset + 3, "\ng ");
+		if(strcmp(str, "g") == 0)
+		{// スプライン制御点を追加
+
+			m_Parts.resize((int)m_Parts.size() + 1);
+
+			m_Parts[m_Parts.size() - 1].Parents = -1;
+			m_Parts[m_Parts.size() - 1].Pos		= VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].Rot		= VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].Move	= VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].RotMove	= VEC3_ZERO;
 		}
+		else if(strcmp(str, "v") == 0)
+		{// 頂点座標を追加
 
-		// 座標数をカウント
-		nCntData = CReadFile::SearchWordNumByString(str, offset + 3, "\nv ", "\ng ");
-		// 座標数を記録
-		m_Parts[i].dataNum.Pos = nCntData;
-		// 座標配列生成
-		m_Parts[i].data.Pos = new VECTOR3[nCntData];
+			VECTOR3 pos = VEC3_ZERO;
 
-		// テクスチャ座標数をカウント
-		nCntData = CReadFile::SearchWordNumByString(str, offset + 3, "\nvt ", "\ng ");
-		// テクスチャ座標数を記録
-		m_Parts[i].dataNum.Tex = nCntData;
-		// テクスチャ座標配列生成
-		m_Parts[i].data.Tex = new VECTOR2[nCntData];
-
-		// 法線数をカウント
-		nCntData = CReadFile::SearchWordNumByString(str, offset + 3, "\nvn ", "\ng ");
-		// 法線数を記録
-		m_Parts[i].dataNum.Nrm = nCntData;
-		// 法線配列生成
-		m_Parts[i].data.Nrm = new VECTOR3[nCntData];
-
-		// インデックス数をカウント
-		nCntData = CReadFile::SearchWordNumByString(str, offset + 3, "\nf ", "\ng ");
-		// インデックス数を記録
-		m_Parts[i].dataNum.Idx = nCntData;
-		// インデックス配列生成
-		m_Parts[i].data.Idx = new MODEL_INDEX*[nCntData];
-		for(int nCntIdx = 0 ; nCntIdx < nCntData ; nCntIdx++)
-		{
-			m_Parts[i].data.Idx[nCntIdx] = new MODEL_INDEX[3];
-		}
-	}
-
-	// 情報読み込み
-	for(int nCntParts = 0 ; nCntParts < m_nNumParts ; nCntParts++)
-	{
-		// オフセットの初期化
-		offset = 0;
-
-		// 検索開始位置をセット
-		for(int j = 0 ; j <= nCntParts ; j++)
-		{
-			offset = CReadFile::SearchWordByString(str, offset + 3, "\ng ");
-		}
-
-		// 座標情報読み込み
-		offset = CReadFile::SearchWordByString(str, offset, "\nv ");
-		offset += 1;
-		for(int nCntPos = 0 ; nCntPos < m_Parts[nCntParts].dataNum.Pos ; nCntPos++)
-		{
 			// データ格納
-			sscanf_s(&str[offset], "v %f %f %f\n",
-				&m_Parts[nCntParts].data.Pos[nCntPos].x,
-				&m_Parts[nCntParts].data.Pos[nCntPos].y,
-				&m_Parts[nCntParts].data.Pos[nCntPos].z);
+			fscanf_s(fp, " %f %f %f\n", &pos.x, &pos.y, &pos.z);
+			pos *= MODEL_POWER;
 
-			// スケール反映
-			m_Parts[nCntParts].data.Pos[nCntPos].x *= MODEL_POWER;
-			m_Parts[nCntParts].data.Pos[nCntPos].y *= MODEL_POWER;
-			m_Parts[nCntParts].data.Pos[nCntPos].z *= MODEL_POWER;
-
-			// オフセット移動
-			offset += 1;
-			if(nCntPos != (m_Parts[nCntParts].dataNum.Pos - 1))
-			{
-				offset = CReadFile::SearchWordByString(str, offset, "\nv ");
-				offset += 1;
-			}
+			m_Parts[m_Parts.size() - 1].data.Vtx.push_back(pos);
 		}
-
-		// テクスチャ座標情報読み込み
-		offset = CReadFile::SearchWordByString(str, offset, "\nvt ");
-		offset += 1;
-		for(int nCntTex = 0 ; nCntTex < m_Parts[nCntParts].dataNum.Tex ; nCntTex++)
-		{
-			// データ格納
-			sscanf_s(&str[offset], "vt %f %f\n",
-				&m_Parts[nCntParts].data.Tex[nCntTex].x,
-				&m_Parts[nCntParts].data.Tex[nCntTex].y);
-
-			// オフセット移動
-			offset += 1;
-			if(nCntTex != (m_Parts[nCntParts].dataNum.Tex - 1))
-			{
-				offset = CReadFile::SearchWordByString(str, offset, "\nvt ");
-				offset += 1;
-			}
-		}
-
-		// 法線情報読み込み
-		offset = CReadFile::SearchWordByString(str, offset, "\nvn ");
-		offset += 1;
-		for(int nCntNrm = 0 ; nCntNrm < m_Parts[nCntParts].dataNum.Nrm ; nCntNrm++)
-		{
-			// データ格納
-			sscanf_s(&str[offset], "vn %f %f %f\n",
-				&m_Parts[nCntParts].data.Nrm[nCntNrm].x,
-				&m_Parts[nCntParts].data.Nrm[nCntNrm].y,
-				&m_Parts[nCntParts].data.Nrm[nCntNrm].z);
+		else if(strcmp(str, "vt") == 0)
+		{// テクスチャ座標を追加
 			
-			// オフセット移動
-			offset += 1;
-			if(nCntNrm != (m_Parts[nCntParts].dataNum.Nrm - 1))
-			{
-				offset = CReadFile::SearchWordByString(str, offset, "\nvn ");
-				offset += 1;
-			}
-		}
+			VECTOR2 tex = VEC2_ZERO;
 
-		// マテリアル読み込み
-		;
-
-		// インデックス情報読み込み
-		offset = CReadFile::SearchWordByString(str, offset, "\nf ");
-		offset += 1;
-		for(int nCntIdx = 0 ; nCntIdx < m_Parts[nCntParts].dataNum.Idx ; nCntIdx++)
-		{
 			// データ格納
-			sscanf_s(&str[offset], "f %d/%d/%d %d/%d/%d %d/%d/%d\n",
-				&m_Parts[nCntParts].data.Idx[nCntIdx][0].vtx,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][0].tex,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][0].nrm,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][1].vtx,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][1].tex,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][1].nrm,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][2].vtx,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][2].tex,
-				&m_Parts[nCntParts].data.Idx[nCntIdx][2].nrm);
+			fscanf_s(fp, " %f %f\n", &tex.x, &tex.y);
 
-			// データ補正
-			m_Parts[nCntParts].data.Idx[nCntIdx][0].vtx--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][0].tex--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][0].nrm--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][1].vtx--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][1].tex--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][1].nrm--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][2].vtx--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][2].tex--;
-			m_Parts[nCntParts].data.Idx[nCntIdx][2].nrm--;
-			for(int idx = 0 ; idx < nCntParts ; idx++)
-			{
-				m_Parts[nCntParts].data.Idx[nCntIdx][0].vtx -= m_Parts[idx].dataNum.Pos;
-				m_Parts[nCntParts].data.Idx[nCntIdx][0].tex -= m_Parts[idx].dataNum.Tex;
-				m_Parts[nCntParts].data.Idx[nCntIdx][0].nrm -= m_Parts[idx].dataNum.Nrm;
-				m_Parts[nCntParts].data.Idx[nCntIdx][1].vtx -= m_Parts[idx].dataNum.Pos;
-				m_Parts[nCntParts].data.Idx[nCntIdx][1].tex -= m_Parts[idx].dataNum.Tex;
-				m_Parts[nCntParts].data.Idx[nCntIdx][1].nrm -= m_Parts[idx].dataNum.Nrm;
-				m_Parts[nCntParts].data.Idx[nCntIdx][2].vtx -= m_Parts[idx].dataNum.Pos;
-				m_Parts[nCntParts].data.Idx[nCntIdx][2].tex -= m_Parts[idx].dataNum.Tex;
-				m_Parts[nCntParts].data.Idx[nCntIdx][2].nrm -= m_Parts[idx].dataNum.Nrm;
-			}
+			m_Parts[m_Parts.size() - 1].data.Tex.push_back(tex);
+		}
+		else if(strcmp(str, "vn") == 0)
+		{// 法線ベクトルを追加
 
-			// オフセット移動
-			offset += 1;
-			if(nCntIdx != (m_Parts[nCntParts].dataNum.Idx - 1))
+			VECTOR3 nrm = VEC3_ZERO;
+
+			// データ格納
+			fscanf_s(fp, " %f %f %f\n", &nrm.x, &nrm.y, &nrm.z);
+
+			m_Parts[m_Parts.size() - 1].data.Nrm.push_back(nrm);
+		}
+		else if(strcmp(str, "f") == 0)
+		{// インデックスを追加
+
+			// インデックス情報配列生成
+			m_Parts[m_Parts.size() - 1].data.Idx.resize(m_Parts[m_Parts.size() - 1].data.Idx.size() + 1);
+			
+			// データ格納
+			int idxArray = m_Parts[m_Parts.size() - 1].data.Idx.size() - 1;
+
+			while(*fp->_ptr != '\n')
 			{
-				offset = CReadFile::SearchWordByString(str, offset, "\nf ");
-				offset += 1;
+				MODEL_INDEX idx = { 0 };
+
+				// インデックスの値を読み込み
+				fscanf_s(fp, " %d/%d/%d", &idx.vtx, &idx.tex, &idx.nrm);
+				// インデックスの値を補正
+				idx.IdxRight();
+				if((int)m_Parts.size() >= 2)
+				{
+					for(int j = 2 ; j <= (int)m_Parts.size() ; j++)
+					{
+						idx.vtx -= m_Parts[m_Parts.size() - j].data.Vtx.size();
+						idx.tex -= m_Parts[m_Parts.size() - j].data.Tex.size();
+						idx.nrm -= m_Parts[m_Parts.size() - j].data.Nrm.size();
+					}
+				}
+				// 配列生成
+				m_Parts[m_Parts.size() - 1].data.Idx[idxArray].push_back(idx);
 			}
 		}
 	}
+
+	// ファイルクローズ
+	fclose(fp);
 }
 
 //=============================================================================
@@ -724,43 +594,38 @@ void CSceneModel::LoadMotion(char *fileName, int nNumMotion)
 void CSceneModel::DrawModel(void)
 {
 	// パーツ数ぶん描画
-	for(int nCntParts = 0 ; nCntParts < m_nNumParts ; nCntParts++)
+	for(int i = 0 ; i < (int)m_Parts.size() ; i++)
 	{
 		glPushMatrix();	// マトリクスの退避
-		
-		// モーション情報の設定
-		if(m_ExecMotion > -1)
-		{
-			glTranslatef(m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].PosX,
-						m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].PosY,
-						m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].PosZ);
-			glRotatef((GLfloat)m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].RotZ, 0.0f, 0.0f, 1.0f);
-			glRotatef((GLfloat)m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].RotY, 0.0f, 1.0f, 0.0f);
-			glRotatef((GLfloat)m_Motion[m_ExecMotion].Pose[nCntParts][m_Frame].RotX, 1.0f, 0.0f, 0.0f);
-		}
 
 		// インデックス数だけ面を描画
-		for(int nCntIdx = 0 ; nCntIdx < m_Parts[nCntParts].dataNum.Idx ; nCntIdx++)
+		for(int j = 0 ; j < (int)m_Parts[i].data.Idx.size() ; j++)
 		{
+			// 描画シーケンス開始
 			glBegin(GL_TRIANGLES);
 
-			for(int idx = 0 ; idx < 3 ; idx++)
+			// 面の数を取得
+			int size = (int)m_Parts[i].data.Idx[j].size();
+
+			// 面の数だけ頂点データをセット
+			for(int idx = 0 ; idx < size ; idx++)
 			{
 				// 法線
-				glNormal3f(	m_Parts[nCntParts].data.Nrm[m_Parts[nCntParts].data.Idx[nCntIdx][idx].nrm].x,
-							m_Parts[nCntParts].data.Nrm[m_Parts[nCntParts].data.Idx[nCntIdx][idx].nrm].y,
-							m_Parts[nCntParts].data.Nrm[m_Parts[nCntParts].data.Idx[nCntIdx][idx].nrm].z);
+				glNormal3f(	m_Parts[i].data.Nrm[m_Parts[i].data.Idx[j][idx].nrm].x,
+							m_Parts[i].data.Nrm[m_Parts[i].data.Idx[j][idx].nrm].y,
+							m_Parts[i].data.Nrm[m_Parts[i].data.Idx[j][idx].nrm].z);
 
 				// テクスチャ座標
-				glTexCoord2d(	m_Parts[nCntParts].data.Tex[m_Parts[nCntParts].data.Idx[nCntIdx][idx].tex].x,
-								m_Parts[nCntParts].data.Tex[m_Parts[nCntParts].data.Idx[nCntIdx][idx].tex].y);
+				glTexCoord2d(	m_Parts[i].data.Tex[m_Parts[i].data.Idx[j][idx].tex].x,
+								m_Parts[i].data.Tex[m_Parts[i].data.Idx[j][idx].tex].y);
 
 				// 座標
-				glVertex3f(	m_Parts[nCntParts].data.Pos[m_Parts[nCntParts].data.Idx[nCntIdx][idx].vtx].x,
-							m_Parts[nCntParts].data.Pos[m_Parts[nCntParts].data.Idx[nCntIdx][idx].vtx].y,
-							m_Parts[nCntParts].data.Pos[m_Parts[nCntParts].data.Idx[nCntIdx][idx].vtx].z);
+				glVertex3f(	m_Parts[i].data.Vtx[m_Parts[i].data.Idx[j][idx].vtx].x,
+							m_Parts[i].data.Vtx[m_Parts[i].data.Idx[j][idx].vtx].y,
+							m_Parts[i].data.Vtx[m_Parts[i].data.Idx[j][idx].vtx].z);
 			}
 
+			// 描画シーケンス終了
 			glEnd();
 
 		}
