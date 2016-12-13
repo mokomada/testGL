@@ -21,7 +21,7 @@
 class CScene2DGL : public CSceneGL
 {
 public:
-	CScene2DGL(int priority = 0, OBJTYPE objType = OBJTYPE_NONE);
+	CScene2DGL(bool ifListAdd = true, int priority = 0, OBJTYPE objType = OBJTYPE_NONE);
 	~CScene2DGL();
 
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
