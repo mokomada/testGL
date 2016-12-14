@@ -78,7 +78,7 @@ void CSkybox::Draw(void)
 	
 	glDisable(GL_LIGHTING);
 
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
 
 	// 深度バッファ設定
 	glEnable(GL_DEPTH_TEST);
@@ -227,7 +227,7 @@ void CSkybox::Draw(void)
 
 	glEnd();
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glEnable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
