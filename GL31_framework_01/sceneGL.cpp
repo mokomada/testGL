@@ -134,10 +134,13 @@ void CSceneGL::DeleteAll(void)
 void CSceneGL::Release(void)
 {
 	list<CSceneGL*>::iterator itr;	// リストのイテレータ
+	bool ifRelease = false;
 
 	// 全リストを検索
 	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
+		if ( ifRelease ) break;
+
 		// リストから自身のインスタンスを探索する
 		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
 		{
@@ -155,6 +158,8 @@ void CSceneGL::Release(void)
 
 				// リスト削除
 				itr = m_SceneList[i].erase(itr);
+
+				ifRelease = true;
 
 				// 処理終了
 				break;
