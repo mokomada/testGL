@@ -50,9 +50,6 @@ typedef struct
 class CSceneGL
 {
 public:
-	CSceneGL(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
-	~CSceneGL();
-
 	virtual void	Init(void) {};
 	virtual void	Uninit(bool isLast = false) {};
 	virtual void	Update(void) {};
@@ -63,6 +60,7 @@ public:
 	static void	DeleteAll(void);
 	void		Release(void);
 	void		UnlinkList(void);
+	list<CSceneGL*> GetIterator(void) { ; }
 
 	void		AddPos(VECTOR3 pos) { m_Pos += pos; }
 	void		AddPos(float x, float y, float z) { m_Pos += VECTOR3(x, y, z); }
@@ -82,11 +80,15 @@ public:
 													matrix->_31 = 0; matrix->_32 = 0; matrix->_33 = 1; matrix->_34 = 0;
 													matrix->_41 = 0; matrix->_42 = 0; matrix->_43 = 0; matrix->_44 = 1;}
 
-	static list<CSceneGL*> GetList(void) { return m_SceneList[0]; }
-	static list<CSceneGL*> GetList(int priority) { return (priority < PRIORITY_MAX) ? m_SceneList[priority] : m_SceneList[0]; }
+	static list<CSceneGL*> GetList(void) { return m_List[0]; }
+	static list<CSceneGL*> GetList(int priority) { return (priority < PRIORITY_MAX) ? m_List[priority] : m_List[0]; }
 
 protected:
-	static list<CSceneGL*>	m_SceneList[PRIORITY_MAX];	// リスト
+	CSceneGL(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	~CSceneGL();
+
+	static list<CSceneGL*>	m_List[PRIORITY_MAX];	// リスト
+	static list<CSceneGL*>::iterator m_ListItr;		// リストのイテレータ
 
 	OBJTYPE	m_ObjType;		// オブジェクトタイプ
 

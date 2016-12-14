@@ -83,6 +83,7 @@
     <ClInclude Include="debugProcGL.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="network.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -114,6 +115,7 @@
     <ClCompile Include="debugProcGL.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="network.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />

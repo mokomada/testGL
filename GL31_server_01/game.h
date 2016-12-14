@@ -13,10 +13,14 @@
 using namespace std;
 
 //=============================================================================
+//	構造体
+//=============================================================================
+
+//=============================================================================
 //	前方宣言
 //=============================================================================
 class CMeshfield;
-class CSceneModel;
+class CPlayer;
 
 //=============================================================================
 //	クラス定義
@@ -33,11 +37,11 @@ public:
 	void	Draw(void);
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
-	static vector<CSceneModel*>::iterator	GetPlayer(void) { return m_Player.begin(); }
+	static vector<CPlayer*>	GetPlayer(void) { return m_Player; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
-	static vector<CSceneModel*>	m_Player;		// プレイヤーのインスタンス
+	static vector<CPlayer*>	m_Player;		// プレイヤーのインスタンス
 };
 
 #endif
