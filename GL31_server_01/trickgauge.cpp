@@ -14,7 +14,7 @@
 #include "scene2DGL.h"
 #include "rendererGL.h"
 #include "manager.h"
-#include "sceneModel.h"
+#include "player.h"
 #include "game.h"
 
 /******************************************************************************
@@ -33,12 +33,12 @@
 プロトタイプ宣言
 ******************************************************************************/
 /******************************************************************************
-関数名:CTrickGauge::CTrickGauge(int priority, OBJTYPE objType )
-引数  :int priority, OBJTYPE objType
+関数名:CTrickGauge::CTrickGauge(PRIORITY priority, OBJTYPE objType )
+引数  :PRIORITY priority, OBJTYPE objType
 戻り値:void
 説明  :
 ******************************************************************************/
-CTrickGauge::CTrickGauge(int priority, OBJTYPE objType)
+CTrickGauge::CTrickGauge(bool ifListAdd, int priority, OBJTYPE objType)
 {
 
 }
@@ -66,7 +66,7 @@ void CTrickGauge::Init(void)
 	CRendererGL	*renderer = CManager::GetRendererGL( );
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
+	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
 	sceneModel[0]->GetGauge( );
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
@@ -85,7 +85,7 @@ void CTrickGauge::Update(void)
 	CRendererGL	*renderer = CManager::GetRendererGL();
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
-	vector<CSceneModel*>::iterator sceneModel = game->GetPlayer();
+	vector<CPlayer*>::iterator sceneModel = game->GetPlayer().begin();
 	//現在のゲージ
 	m_Gauge = sceneModel[0]->GetGauge( );
 	m_Pa = m_Gauge / m_GaugeMax;

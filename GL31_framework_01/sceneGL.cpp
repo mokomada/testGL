@@ -17,7 +17,8 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-list<CSceneGL*>	CSceneGL::m_SceneList[PRIORITY_MAX];
+list<CSceneGL*>	CSceneGL::m_List[PRIORITY_MAX];
+list<CSceneGL*>::iterator	CSceneGL::m_ListItr;
 
 //=============================================================================
 //	関数名	:CSceneGL()
@@ -28,7 +29,7 @@ list<CSceneGL*>	CSceneGL::m_SceneList[PRIORITY_MAX];
 CSceneGL::CSceneGL(bool ifListAdd, int priority, OBJTYPE objType)
 {
 	// リスト追加フラグがオンの場合、リストに自身を追加
-	if(ifListAdd) m_SceneList[priority].push_back(this);
+	if(ifListAdd) m_List[priority].push_back(this);
 
 	// オブジェクトタイプを初期化
 	m_ObjType = objType;
@@ -57,16 +58,17 @@ CSceneGL::~CSceneGL()
 //=============================================================================
 void CSceneGL::UpdateAll(void)
 {
-	list<CSceneGL*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
 	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に更新処理を行う
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(m_ListItr = m_List[i].begin() ; m_ListItr != m_List[i].end() ; )
 		{
 			// 更新処理
-			(*itr)->Update();
+			(*m_ListItr)->Update();
+
+			// イテレート継続
+			if(m_ListItr != m_List[i].end()) m_ListItr++;
 		}
 	}
 }
@@ -79,16 +81,14 @@ void CSceneGL::UpdateAll(void)
 //=============================================================================
 void CSceneGL::DrawAll(void)
 {
-	list<CSceneGL*>::iterator itr;	// リストのイテレータ
-
 	// 全リストを検索
 	for(int i = (PRIORITY_MAX - 1) ; i >= 0 ; i--)
 	{
 		// リストに登録されている全ての要素に描画処理を行う
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(m_ListItr = m_List[i].begin() ; m_ListItr != m_List[i].end() ; m_ListItr++)
 		{
 			// 描画処理
-			(*itr)->Draw();
+			(*m_ListItr)->Draw();
 		}
 	}
 }
@@ -107,7 +107,7 @@ void CSceneGL::DeleteAll(void)
 	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストに登録されている全ての要素を削除する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; )
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; )
 		{
 			// インスタンスが存在している場合のみ処理
 			if(*itr)
@@ -120,7 +120,7 @@ void CSceneGL::DeleteAll(void)
 			}
 
 			// リストから削除
-			itr = m_SceneList[i].erase(itr);
+			itr = m_List[i].erase(itr);
 		}
 	}
 }
@@ -142,27 +142,24 @@ void CSceneGL::Release(void)
 		if ( ifRelease ) break;
 
 		// リストから自身のインスタンスを探索する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 自身のインスタンスを見つけ、リストから削除
 			if(*itr == this)
 			{
-				if(*itr)
-				{
-					// 終了処理
-					(*itr)->Uninit();
+				// 終了処理
+				(*itr)->Uninit();
 
-					// インスタンス削除
-					delete (*itr);
-				}
+				// インスタンス削除
+				delete (*itr);
 
-				// リスト削除
-				itr = m_SceneList[i].erase(itr);
+				// リストからオブジェクトを削除し、イテレートを継続
+				m_ListItr = m_List[i].erase(itr);
 
 				ifRelease = true;
 
 				// 処理終了
-				break;
+				return;
 			}
 		}
 	}
@@ -182,16 +179,16 @@ void CSceneGL::UnlinkList(void)
 	for(int i = 0 ; i < PRIORITY_MAX ; i++)
 	{
 		// リストから自身のインスタンスを探索する
-		for(itr = m_SceneList[i].begin() ; itr != m_SceneList[i].end() ; itr++)
+		for(itr = m_List[i].begin() ; itr != m_List[i].end() ; itr++)
 		{
 			// 自身のインスタンスを見つけ、リストから削除
 			if(*itr == this)
 			{
 				// リスト削除
-				itr = m_SceneList[i].erase(itr);
+				m_ListItr = m_List[i].erase(itr);
 
 				// 処理終了
-				break;
+				return;
 			}
 		}
 	}
