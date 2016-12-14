@@ -61,8 +61,6 @@ public:
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	bool	m_ifMinePlayer;
 
-	float m_Radius;	//“–‚½‚è”»’è‚Ì”¼Œa
-
 private:
 	VECTOR3	m_Scale;		// ƒXƒP[ƒ‹
 	VECTOR3	m_Move;			// ˆÚ“®—Ê

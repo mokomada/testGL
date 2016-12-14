@@ -230,9 +230,21 @@ void CPlayer::Update(void)
 
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
 	{
-		if (CollisionDetectionBox(m_Pos, &m_Box, list->GetPos(), &list->GetBox()))
+		if (CollisionDetectionBox(m_Pos, &GetBox(), list->GetPos(), &list->GetBox()))
 		{
 			CDebugProcGL::DebugProc("HitBox\n");
+		}
+	}
+
+	if (!m_ifMinePlayer)
+	{
+		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
+		{
+			if (CollisionDetectionSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
+			{
+				Release();
+				return;
+			}
 		}
 	}
 
@@ -352,7 +364,38 @@ CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 //=============================================================================
 void CPlayer::CollisionDetection(void)
 {
-	CGame *game = (CGame*)CManager::GetMode();
+	int nCnt = 0;
+
+	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_PLAYER))
+	{
+		if (list != NULL)
+		{
+			CPlayer* player = (CPlayer*)list;
+			if (player->m_ifMinePlayer == false)
+			{
+				VECTOR3 sub = GetPos() - player->GetPos();
+				float distance = VECTOR3::dot(sub, sub);
+				float radius = m_Radius + player->m_Radius;
+
+				if (distance <= radius * radius)
+				{
+					CDebugProcGL::DebugProc("Hit%d\n", nCnt);
+
+					VECTOR3 Pos0 = GetPos(), Pos1 = player->GetPos();
+					float Radius = m_Radius + player->m_Radius;
+					float Lenght = (Pos1 - Pos0).magnitude();
+					VECTOR3 Vec = Pos0 - Pos1;
+					Vec.normalize();
+					Radius -= Lenght;
+					Pos0 += VECTOR3(Vec.x * Radius, Vec.y * Radius, Vec.z * Radius);
+					SetPos(Pos0);
+				}
+			}
+		}
+		nCnt++;
+	}
+
+	/*CGame *game = (CGame*)CManager::GetMode();
 	vector<CPlayer*> sceneModel = game->GetPlayer();
 	for (int nCnt = 0; nCnt < game->GetPlayer().size(); nCnt++)
 	{
@@ -379,7 +422,7 @@ void CPlayer::CollisionDetection(void)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 //=============================================================================
