@@ -24,7 +24,7 @@
 class CScore : public CScene2DGL
 {
 public:
-	CScore(int priority = 2, OBJTYPE objtype = OBJTYPE_NONE);
+	CScore(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CScore();
 	
 	void	Init(VECTOR3 pos, VECTOR2 size, int figure);

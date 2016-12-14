@@ -24,13 +24,16 @@
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
+
+class CShadow;
+
 /******************************************************************************
 *	クラス
 ******************************************************************************/
 class CBullet : public CSceneBillboardGL
 {
 public:
-	CBullet(int priority = 1, OBJTYPE objType = OBJTYPE_BULLET);
+	CBullet(bool ifListAdd = true, int priority = PRIORITY_BULLET, OBJTYPE objType = OBJTYPE_BULLET);
 	~CBullet();
 
 	static CBullet * Create( VECTOR3 pos , VECTOR3 rot , float speed );
@@ -43,4 +46,6 @@ public:
 private:
 	int m_life;		//弾の寿命
 	float m_speed;
+	CShadow *m_myShadow;	//自分の影
+	unsigned int		*m_Texture;	// テクスチャ
 };

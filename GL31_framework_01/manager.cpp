@@ -20,15 +20,15 @@
 #include "cameraGL.h"
 #include "lightGL.h"
 #include "scene2DGL.h"
+#include "textureManager.h"
 
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 int			CManager::m_ModeState;		// モード情報
-CInput		*CManager::m_Input;			// 入力のインスタンス
+int			CManager::m_WhatPlayer = -1;
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
-CLightGL	*CManager::m_Light;			// ライトのインスタンス
 CRendererGL	*CManager::m_RendererGL;	// レンダラ(GL)
 
 //=============================================================================
@@ -45,19 +45,19 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 各種インスタンス生成
 	m_Mode			= new CTutorial();
-	m_Input			= new CInput();
 	m_Camera		= new CCameraGL();
-	m_Light			= new CLightGL();
 
 	// 初期化処理
 	m_Mode->Init();
 	CFade::Init();
-	m_Input->InitKeyboard(hInstance, hWnd);
+	CInput::InitKeyboard(hInstance, hWnd);
 	m_Camera->Init();
-	m_Light->Init();
+	CLightGL::Init();
 	CSound::Init();
 	CNetwork::Init();
 	CDebugProcGL::Init();
+
+	// サーバにエントリーメッセージを送る
 }
 
 //=============================================================================
@@ -68,12 +68,6 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //=============================================================================
 void CManager::Uninit(HWND hWnd)
 {
-	if(m_Input != NULL)
-	{
-		m_Input->UninitKeyboard();
-		delete m_Input;
-		m_Input = NULL;
-	}
 	if(m_RendererGL != NULL)
 	{
 		m_RendererGL->Uninit(hWnd);
@@ -87,7 +81,8 @@ void CManager::Uninit(HWND hWnd)
 		m_Camera = NULL;
 	}
 
-	CSceneGL::DeleteAll(true);
+	CSceneGL::DeleteAll();
+	CTextureManager::Uninit();
 	CSound::Uninit();
 	CNetwork::Uninit();
 }
@@ -100,9 +95,9 @@ void CManager::Uninit(HWND hWnd)
 //=============================================================================
 void CManager::Update(void)
 {
-	m_Input->UpdateKeyboard();
+	CInput::UpdateKeyboard();
 	m_Camera->Update();
-	m_Light->Update();
+	CLightGL::Update();
 	m_RendererGL->Update();
 
 	m_Mode->Update();
@@ -126,7 +121,7 @@ void CManager::Draw(void)
 	m_Camera->Set();
 
 	// ライトの設定
-	m_Light->Set();
+	CLightGL::Set();
 
 	// モード描画
 	m_Mode->Draw();
@@ -137,12 +132,14 @@ void CManager::Draw(void)
 	CNetwork::Draw();
 
 	// デバッグプロシージャ
+	CDebugProcGL::Draw();
 #ifdef _DEBUG
 	//int i = 12;	使用例
 	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
-	CDebugProcGL::Draw();
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 #endif
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 
 	// 描画シーケンス終了
 	m_RendererGL->End();

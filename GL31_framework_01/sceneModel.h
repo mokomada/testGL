@@ -48,15 +48,16 @@ typedef struct{
 	int	vtx;	// 頂点
 	int	tex;	// テクスチャ座標
 	int	nrm;	// 法線
+	void IdxRight(void) { vtx -= 1; tex -= 1; nrm -= 1; }
 } MODEL_INDEX;
 
 // モデル情報
 typedef struct{
-	VECTOR3		*Pos;	// 座標
-	VECTOR3		*Nrm;	// 法線
-	VECTOR2		*Tex;	// テクスチャ座標
+	vector<VECTOR3>	Vtx;	// 座標
+	vector<VECTOR3>	Nrm;	// 法線
+	vector<VECTOR2>	Tex;	// テクスチャ座標
 //	マテリアル
-	MODEL_INDEX	**Idx;// インデックス
+	vector<vector<MODEL_INDEX>> Idx;// インデックス
 } MODEL_DATA;
 
 // モデル情報
@@ -94,7 +95,7 @@ typedef struct{
 class CSceneModel : public CScene3DGL
 {
 public:
-	CSceneModel(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneModel(bool ifListAdd = false, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneModel();
 
 	void	Init(void){}
@@ -117,7 +118,7 @@ public:
 
 private:
 	int		m_Texture;		// テクスチャ
-	PARTS	*m_Parts;		// モデル情報
+	vector<PARTS>	m_Parts;		// モデル情報
 	MOTION	*m_Motion;		// モーション情報
 	int		m_nNumParts;	// パーツ数
 	VECTOR3	m_Scale;		// スケール
@@ -133,8 +134,6 @@ private:
 	bool m_FlgLowSpeed;
 
 	void CollisionDetection(void);
-	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
-	static bool CollisionDetectionBox(D3DXVECTOR3 Pos1, BOX_DATA* Box1, D3DXVECTOR3 Pos2, BOX_DATA* Box2);
 };
 
 #endif

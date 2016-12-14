@@ -21,25 +21,25 @@
 class CSceneBillboardGL : public CSceneGL
 {
 public:
-	CSceneBillboardGL(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneBillboardGL(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objType = OBJTYPE_NONE);
 	~CSceneBillboardGL();
 
-	void	Init(void){}
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 				VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 				char *texName = "./data/TEXTURE/sample_image.tga");
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
+	void	Draw( uint texture );
 
 	static CSceneBillboardGL	*Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 								VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 								char *texName = "./data/TEXTURE/sample_image.tga");
 	void	DrawPolygon(void);
 
-private:
+protected:
 	VECTOR2 m_Size;		// ポリゴンのサイズ
-	int		m_Texture;	// テクスチャ
+	uint		m_Texture;	// テクスチャ
 
 	MATRIX	m_mtxWorld;
 };

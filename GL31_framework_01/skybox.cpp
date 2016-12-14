@@ -23,7 +23,7 @@
 /********************************************
 ---------------コンストラクタ----------------
 *********************************************/
-CSkybox::CSkybox(int priority , OBJTYPE objType) : CScene3DGL( priority , objType )
+CSkybox::CSkybox(bool ifListAdd, int priority , OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
 }
 
@@ -63,12 +63,7 @@ void CSkybox::Init(void)
 ********************************************/
 void CSkybox::Update(void)
 {
-		m_rot += 0.02f;
 
-		if(m_rot >= 360)
-		{
-			m_rot -= 360;
-		}
 }
 
 /********************************************
@@ -83,14 +78,19 @@ void CSkybox::Draw(void)
 	
 	glDisable(GL_LIGHTING);
 
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
+
+	// 深度バッファ設定
+	glEnable(GL_DEPTH_TEST);
 
 	//ワールドマトリックス設定
 
 	glTranslatef(m_pos.x , m_pos.y ,m_pos.z);
-	glRotated(m_rot, 0.0, 1.0, 0.0);
+	glRotated(m_rot, 0.0, 0.0, 0.0);
 	glScalef(1.0f , 1.0f , 1.0f);
 
+	// 頂点色設定
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	//ポリゴン描画
@@ -102,22 +102,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 0.75f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 0.75f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f(-50000.0f , -50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -129,22 +125,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f , 1.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f(-50000.0f , -50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 2.0 / 3.0f - 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -154,24 +146,20 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0 / 3.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 0.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f(-50000.0f , 50000.0f , 50000.0f );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.01f);
 	glTexCoord2d(0.50f , 0.0f);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 	
 	glEnd();
@@ -181,22 +169,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 	
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.50f , 1.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 2.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f(-50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.5f , 2.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	glTexCoord2d(0.5f , 2.0 / 3.0f -  0.001);
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glEnd();
@@ -206,22 +190,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -231,29 +211,26 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( -50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 2.0 / 3.0f - 0.001);
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( -50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.00f , 2.0 / 3.0f - 0.001 );
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	glVertex3f( -50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glEnable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
 
 	//モデルビューマトリックス
 	glMatrixMode(GL_MODELVIEW);

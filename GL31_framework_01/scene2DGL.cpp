@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CScene2DGL::CScene2DGL(int priority, OBJTYPE objType)
+CScene2DGL::CScene2DGL(bool ifListAdd, int priority, OBJTYPE objType) : CSceneGL(ifListAdd, priority, objType)
 {
 	m_fLength	= 0.0f;
 	m_fAngle	= 0.0f;

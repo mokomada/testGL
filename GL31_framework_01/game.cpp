@@ -17,13 +17,15 @@
 #include "sceneGL.h"
 #include "scene2DGL.h"
 #include "scene3DGL.h"
-#include "sceneModel.h"
+#include "player.h"
 #include "sceneBillboardGL.h"
 #include "meshfield.h"
 #include "score.h"
 #include "trickgauge.h"
 #include "effect2D.h"
 #include "countdown.h"
+#include "wall.h"
+#include "textureManager.h"
 #include "skybox.h"
 //=============================================================================
 //	プロトタイプ
@@ -33,7 +35,7 @@
 //	静的メンバ変数
 //=============================================================================
 CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
-vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
+vector<CPlayer*>	CGame::m_Player;		// プレイヤーのインスタンス
 
 //=============================================================================
 //	関数名	:Init
@@ -43,17 +45,20 @@ vector<CSceneModel*>	CGame::m_Player;		// プレイヤーのインスタンス
 //=============================================================================
 void CGame::Init(void)
 {
+	CTextureManager::Init();
 	CSkybox::Create();
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Player.resize(4);
-	m_Player[0] = CSceneModel::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
-	m_Player[1] = CSceneModel::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));
-	m_Player[2] = CSceneModel::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
-	m_Player[3] = CSceneModel::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
+	m_Player[0] = CPlayer::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
+	m_Player[1] = CPlayer::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));
+	m_Player[2] = CPlayer::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
+	m_Player[3] = CPlayer::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
+
+	CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 50.0f, "./data/TEXTURE/主ちゃ.png");
 
 	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい
 //	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
@@ -75,6 +80,7 @@ void CGame::Init(void)
 void CGame::Uninit(void)
 {
 	CSceneGL::DeleteAll();
+	CTextureManager::Uninit();
 }
 
 //=============================================================================

@@ -21,10 +21,9 @@
 class CScene3DGL : public CSceneGL
 {
 public:
-	CScene3DGL(int priority = 1, OBJTYPE objType = OBJTYPE_NONE);
+	CScene3DGL(bool ifListAdd = true, int priority = 0, OBJTYPE objType = OBJTYPE_NONE);
 	~CScene3DGL();
 
-	void	Init(void){}
 	void	Init(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),
 				VECTOR2 size = VECTOR2(POLYGON3D_WIDTH, POLYGON3D_HEIGHT),
 				char *texName = "./data/TEXTURE/sample_image.tga");

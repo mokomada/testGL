@@ -21,7 +21,6 @@
 //	前方宣言
 //=============================================================================
 class CMode;
-class CInput;
 class CRendererGL;
 class CSceneGL;
 class CCameraGL;
@@ -39,23 +38,24 @@ public:
 	static void	Update(void);
 	static void	Draw(void);
 	
-	static CInput		*GetInput(void){ return m_Input; }
 	static CRendererGL	*GetRendererGL(void){ return m_RendererGL; }
 	static CCameraGL	*GetCamera(void){ return m_Camera; }
 
 	static CMode		*GetMode(void) { return m_Mode; }
 	static int			GetModeState(void) { return m_ModeState; }
+	static void			SetWhatPlayer(int playernumber) { m_WhatPlayer = playernumber; }
+	static int			GetWhatPlayer(void) { return m_WhatPlayer; }
+
 	static void			SetMode(CMode *mode, int modeState);
 
 
 private:
 	static CMode		*m_Mode;		// モードのインスタンス
-	static CInput		*m_Input;		// 入力のインスタンス
 	static CCameraGL	*m_Camera;		// カメラのインスタンス
-	static CLightGL		*m_Light;		// ライトのインスタンス
 	static CRendererGL	*m_RendererGL;	// レンダラ(GL)
 
 	static int	m_ModeState;
+	static int	m_WhatPlayer;	// 自分が何Pかどうか
 	
 	void	LoadScript(char *fileName);
 };

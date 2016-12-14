@@ -1,4 +1,0 @@
-﻿  sceneModel.cpp
-c:\users\hal12\desktop\glグループ制作\gl31_framework_01\scenemodel.cpp(343): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          e:\program files\visual studio 2010\vc\include\stdio.h(371) : 'sprintf' の宣言を確認してください。
-  GL31_20160630_01.vcxproj -> C:\Users\HAL12\Desktop\GLグループ制作\GL31_framework_01\Debug\GL31_framework_01.exe

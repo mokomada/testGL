@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "rendererGL.h"
 #include "effect2D.h"
+#include"textureManager.h"
 
 //=============================================================================
 //	関数名	:CSceneBillboard()
@@ -20,7 +21,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CEffect2D::CEffect2D(int priority, OBJTYPE objType)
+CEffect2D::CEffect2D(bool ifListAdd, int priority, OBJTYPE objType) : CScene2DGL(ifListAdd, priority, objType)
 {
 	glMatrixIdentity(&m_mtxWorld);
 }
@@ -32,9 +33,7 @@ CEffect2D::CEffect2D(int priority, OBJTYPE objType)
 //	説明	:デストラクタ。
 //=============================================================================
 CEffect2D::~CEffect2D()
-{
-
-}
+{}
 
 //=============================================================================
 //	関数名	:Init
@@ -44,50 +43,20 @@ CEffect2D::~CEffect2D()
 //=============================================================================
 void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 {
-	////	ローカル変数
+	////	各種変数初期設定
 	/////////////////////////////////////////////////////////////
-	CRendererGL	*renderer = CManager::GetRendererGL();
-
-	////	各種初期設定
-	/////////////////////////////////////////////////////////////
-	
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));	// 中心点座標
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));		// 回転角度
 	m_Size		= size;						// 拡大倍率
 	m_nAnimCntX = 0;						// 現在のアニメーションのXの位置	
 	m_nAnimCntY = 0;						// 現在のアニメーションのYの位置
+	m_nAnimChangeFrame = 0;					// アニメーション切り替えまでのフレーム数
 	m_nAnimChangeFrameCnt = 0;				// アニメーション切り替えまでのフレームカウンタ
 	m_bEndflug = false;						// 自殺フラグ
 
-	////	エフェクトタイプ別初期化処理
+	////	エフェクトタイプ別の初期化処理
 	/////////////////////////////////////////////////////////////
-	switch(etype)
-	{
-		// タイプなし
-		case ETYPE_NONE :
-			break;
-
-		// 爆発エフェクト 4x4 (テスト用)
-		case ETYPE_EXPLODE00 :
-			m_Texture = renderer->CreateTextureTGA(EXPLODE_TEXFILENAME000);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = EXPLODE00_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = EXPLODE00_Y;											// Yの分割数(ヘッダに定義)
-			break;
-
-		// 爆発エフェクト 7x1 (テスト用)
-		case ETYPE_EXPLODE01 :
-			m_Texture = renderer->CreateTextureTGA(EXPLODE_TEXFILENAME001);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = EXPLODE01_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = EXPLODE01_Y;											// Yの分割数(ヘッダに定義)
-			break;
-			
-		// 数字画像(横一列画像テスト用)
-		case ETYPE_NUMBER :
-			m_Texture = renderer->CreateTextureTGA(NUMBER_TEXFILENAME0000);	// 画像のアドレス(ヘッダに定義)
-			m_nAnimX = NUMBER_X;											// Xの分割数(ヘッダに定義)
-			m_nAnimY = NUMBER_Y;											// Yの分割数(ヘッダに定義)
-			break;
-	}
+	TypeInit(etype);
 }
 
 //=============================================================================
@@ -97,15 +66,7 @@ void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 //	説明	:終了処理を行う。
 //=============================================================================
 void CEffect2D::Uninit(bool isLast)
-{
-	////	テクスチャ削除
-	/////////////////////////////////////////////////////////////
-	if(m_Texture != NULL)
-	{
-		if(isLast)
-		glDeleteTextures(1, ((GLuint *)m_Texture));
-	}
-}
+{}
 
 //=============================================================================
 //	関数名	:Update
@@ -116,7 +77,7 @@ void CEffect2D::Uninit(bool isLast)
 void CEffect2D::Update(void)
 {
 	/* 一定フレーム数経過 */
-	if(m_nAnimChangeFrameCnt == ANIMATION_CHANGE_FRAME_COUNT)
+	if(m_nAnimChangeFrameCnt == m_nAnimChangeFrame)
 	{
 		////	アニメーション切り替え用フレームカウンタをリセット
 		/////////////////////////////////////////////////////////////////
@@ -156,6 +117,7 @@ void CEffect2D::Update(void)
 	{
 		// 終了処理
 		Release();
+		return;
 	}
 }
 
@@ -200,7 +162,7 @@ void CEffect2D::Draw(void)
 
 		////	各種描画設定
 		/////////////////////////////////////////////////////////
-		glBindTexture(GL_TEXTURE_2D, m_Texture);			// テクスチャバインド
+		glBindTexture(GL_TEXTURE_2D, *m_Texture);			// テクスチャバインド
 		glEnable(GL_TEXTURE_2D);							// テクスチャ有効化
 		glEnable(GL_DEPTH_TEST);							// 深度バッファ設定
 		glDisable(GL_LIGHTING);								// ライティングオフ
@@ -254,29 +216,75 @@ void CEffect2D::DrawPolygon(void)
 	/////////////////////////////////////////////////////////////
 
 	// 左上
-	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),								// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));						// テクスチャ座標X(V)
-	glVertex3f(-m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);	// 頂点座標
+	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),					// テクスチャ座標X(U)
+				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));			// テクスチャ座標X(V)
+	glVertex3f(-m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);					// 頂点座標
 
 	// 右上
-	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),							// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));						// テクスチャ座標X(V)
-	glVertex3f(m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);	// 頂点座標
+	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
+				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));			// テクスチャ座標X(V)
+	glVertex3f(m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);					// 頂点座標
 																						
 	// 左下
-	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),								// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));					// テクスチャ座標X(V)
-	glVertex3f(-m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);	// 頂点座標
+	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),					// テクスチャ座標X(U)
+				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
+	glVertex3f(-m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
 																						
 	// 右下
-	glNormal3f(0.0f, 1.0f, 0.0f);														// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),							// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));					// テクスチャ座標X(V)
-	glVertex3f(m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);	// 頂点座標
+	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
+				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
+	glVertex3f(m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
 }																						
+
+//=============================================================================
+//	関数名	:TypeInit
+//	引数	:EFFECTTYPE etype(エフェクト作成時のエフェクトタイプ)
+//	戻り値	:無し
+//	説明	:タイプ別で分岐する初期化処理を行う
+//=============================================================================
+void CEffect2D::TypeInit(EFFECTTYPE etype)
+{
+	////	ローカル変数
+	/////////////////////////////////////////////////////////////
+	CRendererGL	*renderer = CManager::GetRendererGL();
+
+	////	初期化処理
+	/////////////////////////////////////////////////////////////
+	switch(etype)
+	{
+		// タイプなし
+		case ETYPE_NONE :
+			break;
+
+		// 爆発エフェクト(白) 8x1 
+		case ETYPE_EXPLODE00 :
+			m_Texture = CTextureManager::GetTexture( TEXTURE_BULLETEXPLODE );	// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = EXPLODE00_X;												// Xの分割数(ヘッダに定義)
+			m_nAnimY = EXPLODE00_Y;												// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
+			break;
+
+		// 爆発エフェクト(赤) 7x1 
+		case ETYPE_EXPLODE01 :
+			m_Texture = CTextureManager::GetTexture( TEXTURE_PLAYEREXPLODE );	// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = EXPLODE01_X;												// Xの分割数(ヘッダに定義)
+			m_nAnimY = EXPLODE01_Y;												// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
+			break;
+			
+		// 土煙画像(白)		10x1
+		case ETYPE_SMOKE00 :
+			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE );		// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = SMOKE00_X;											// Xの分割数(ヘッダに定義)
+			m_nAnimY = SMOKE00_Y;											// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = SMOKE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
+			break;
+	}
+}
 
 //=============================================================================
 //	関数名	:Create
