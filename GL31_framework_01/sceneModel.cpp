@@ -214,6 +214,17 @@ void CSceneModel::LoadModel(char *fileName)
 			m_Parts[m_Parts.size() - 1].Move	= VEC3_ZERO;
 			m_Parts[m_Parts.size() - 1].RotMove	= VEC3_ZERO;
 		}
+		else if(strcmp(str, "o") == 0)
+		{// スプライン制御点を追加
+
+			m_Parts.resize((int)m_Parts.size() + 1);
+
+			m_Parts[m_Parts.size() - 1].Parents = -1;
+			m_Parts[m_Parts.size() - 1].Pos = VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].Rot = VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].Move = VEC3_ZERO;
+			m_Parts[m_Parts.size() - 1].RotMove = VEC3_ZERO;
+		}
 		else if(strcmp(str, "v") == 0)
 		{// 頂点座標を追加
 
