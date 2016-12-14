@@ -102,22 +102,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 0.75f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 0.75f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f(-50000.0f , -50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -129,22 +125,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f , 1.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f(-50000.0f , -50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 2.0 / 3.0f - 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -154,24 +146,20 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0 / 3.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 0.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f(-50000.0f , 50000.0f , 50000.0f );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.01f);
 	glTexCoord2d(0.50f , 0.0f);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 	
 	glEnd();
@@ -181,22 +169,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 	
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.50f , 1.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 2.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f(-50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glEnd();
@@ -206,22 +190,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 1.0 / 3.0f +  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( 50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.5f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.75f , 2.0 / 3.0f -  0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( 50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
@@ -231,22 +211,18 @@ void CSkybox::Draw(void)
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	//色(RGBA)
 	glVertex3f( -50000.0f , 50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f , 1.0 / 3.0f + 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( -50000.0f , 50000.0f , 50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.25f , 2.0 / 3.0f - 0.001);
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( -50000.0f , -50000.0f , -50000.0f );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.00f , 2.0 / 3.0f - 0.001 );
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
 	glVertex3f( -50000.0f , -50000.0f , 50000.0f );
 
 	glEnd();
