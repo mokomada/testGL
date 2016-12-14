@@ -117,6 +117,7 @@ void CEffect2D::Update(void)
 	{
 		// I—¹ˆ—
 		Release();
+		return;
 	}
 }
 

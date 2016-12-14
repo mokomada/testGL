@@ -76,9 +76,12 @@ void CSkybox::Draw(void)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();					//保存
 	
-	glEnable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 
 	glDisable(GL_CULL_FACE);
+
+	// 深度バッファ設定
+	glEnable(GL_DEPTH_TEST);
 
 	//ワールドマトリックス設定
 
@@ -86,6 +89,8 @@ void CSkybox::Draw(void)
 	glRotated(m_rot, 0.0, 0.0, 0.0);
 	glScalef(1.0f , 1.0f , 1.0f);
 
+	// 頂点色設定
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	//ポリゴン描画
@@ -248,7 +253,8 @@ void CSkybox::Draw(void)
 
 	glEnable(GL_CULL_FACE);
 
-	glDisable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
 
 	//モデルビューマトリックス
 	glMatrixMode(GL_MODELVIEW);
