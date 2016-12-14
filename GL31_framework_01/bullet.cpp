@@ -85,6 +85,8 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 	m_speed = speed;			//移動速度
 	m_life = BULLET_LIFE;	//弾の寿命
 
+	m_Radius = 10.0f;
+
 	// テクスチャ読込
 	m_Texture = CTextureManager::GetTexture( TEXTURE_BULLET );
 

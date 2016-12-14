@@ -71,9 +71,11 @@ public:
 	void		SetRot(VECTOR3 rot) { m_Rot = rot; }
 	void		SetRot(float x, float y, float z) { m_Rot = VECTOR3(x, y, z); }
 	void SetBox(BOX_DATA Box) { m_Box = Box; }
+	void SetRadius(float Radius) { m_Radius = Radius; }
 	VECTOR3	GetPos(void) { return m_Pos; }
 	VECTOR3	GetRot(void) { return m_Rot; }
 	BOX_DATA GetBox(void) { return m_Box; }
+	float GetRadius(void) { return m_Radius; }
 	
 	static void	glMatrixIdentity(MATRIX *matrix){	matrix->_11 = 1; matrix->_12 = 0; matrix->_13 = 0; matrix->_14 = 0;
 													matrix->_21 = 0; matrix->_22 = 1; matrix->_23 = 0; matrix->_24 = 0;
@@ -96,7 +98,8 @@ protected:
 
 	VECTOR3 m_Pos;		// 位置
 	VECTOR3 m_Rot;		// 回転角
-	BOX_DATA m_Box;
+	BOX_DATA m_Box;	//当たり判定用のボックス情報
+	float m_Radius;	//当たり判定用の半径情報
 };
 
 #endif
