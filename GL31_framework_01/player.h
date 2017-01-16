@@ -35,12 +35,14 @@
 #define	LOWBMOVE_SPEED		(0.1f)			// 低速中のプレイヤーの後方移動量
 #define	LOWFMOVE_SPEED		(0.2f)			// 低速中のプレイヤーの前方移動量
 
+#define	BLINK_TIME (4)						// 被弾時エフェクトの点滅の間隔
+
 
 //=============================================================================
 //	構造体
 //=============================================================================
 class CSceneModel;
-
+class CLife;
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -69,12 +71,16 @@ private:
 	bool	m_bJump;		// ジャンプフラグ
 	float m_Gauge;
 	bool m_FlgLowSpeed;
+	int m_HitEffectTime; // 被弾エフェクトの実行時間
+	bool m_DrawOnOffFlag; // 描画のONOFF設定
 
 	CSceneModel* Model;
-
+	CLife* m_pLife;
 	void CollisionDetection(void);
 	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
 	static bool CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2);
+	void HitEffect(void);
+	void SetHitEffectTime(int time);
 };
 
 #endif
