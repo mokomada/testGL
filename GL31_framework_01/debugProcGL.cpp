@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//	ƒ^ƒCƒgƒ‹	ƒ^ƒCƒgƒ‹ˆ—
-//	ƒtƒ@ƒCƒ‹–¼	debugProcGL.cpp
-//	ì¬ŽÒ		AT13A284_07 ’r“c’BÆ
-//	ì¬“ú		2016/07/12
+//	ã‚¿ã‚¤ãƒˆãƒ«	ã‚¿ã‚¤ãƒˆãƒ«å‡¦ç†
+//	ãƒ•ã‚¡ã‚¤ãƒ«å	debugProcGL.cpp
+//	ä½œæˆè€…		AT13A284_07 æ± ç”°é”å“‰
+//	ä½œæˆæ—¥		2016/07/12
 //
 //=============================================================================
 //=============================================================================
-//	ƒCƒ“ƒNƒ‹[ƒh
+//	ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 //=============================================================================
 #include "debugProcGL.h"
 #include <gl/glut.h>
@@ -15,57 +15,57 @@
 #include <mbstring.h>
 
 //=============================================================================
-//	Ã“Iƒƒ“ƒo•Ï”
+//	é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
 //=============================================================================
 HDC		CDebugProcGL::m_hDc;
 HFONT	CDebugProcGL::m_hFont;
 char	CDebugProcGL::m_aStrDebug[DEBUGSTR_MAX];
 
 //=============================================================================
-//	ŠÖ”–¼	:Init
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:‰Šú‰»ˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Init
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CDebugProcGL::Init(void)
 {
 	m_hFont = CreateFontW(
-		FONT_SIZE,					//ƒtƒHƒ“ƒg‚‚³
-		0,							//•¶Žš•
-		0,							//ƒeƒLƒXƒg‚ÌŠp“x
-		0,							//ƒx[ƒXƒ‰ƒCƒ“‚Æ‚˜Ž²‚Æ‚ÌŠp“x
-		FW_REGULAR,					//ƒtƒHƒ“ƒg‚Ì‘¾‚³
-		FALSE,						//ƒCƒ^ƒŠƒbƒN‘Ì
-		FALSE,						//ƒAƒ“ƒ_[ƒ‰ƒCƒ“
-		FALSE,						//‘Å‚¿Á‚µü
-		SHIFTJIS_CHARSET,			//•¶ŽšƒZƒbƒg
-		OUT_DEFAULT_PRECIS,			//o—Í¸“x
-		CLIP_DEFAULT_PRECIS,		//ƒNƒŠƒbƒsƒ“ƒO¸“x
-		ANTIALIASED_QUALITY,		//o—Í•iŽ¿
-		FIXED_PITCH | FF_MODERN,	//ƒsƒbƒ`‚Æƒtƒ@ƒ~ƒŠ[
-		L"‚l‚r–¾’©");				//‘‘Ì–¼
+		FONT_SIZE,					//ãƒ•ã‚©ãƒ³ãƒˆé«˜ã•
+		0,							//æ–‡å­—å¹…
+		0,							//ãƒ†ã‚­ã‚¹ãƒˆã®è§’åº¦
+		0,							//ãƒ™ãƒ¼ã‚¹ãƒ©ã‚¤ãƒ³ã¨ï½˜è»¸ã¨ã®è§’åº¦
+		FW_REGULAR,					//ãƒ•ã‚©ãƒ³ãƒˆã®å¤ªã•
+		FALSE,						//ã‚¤ã‚¿ãƒªãƒƒã‚¯ä½“
+		FALSE,						//ã‚¢ãƒ³ãƒ€ãƒ¼ãƒ©ã‚¤ãƒ³
+		FALSE,						//æ‰“ã¡æ¶ˆã—ç·š
+		SHIFTJIS_CHARSET,			//æ–‡å­—ã‚»ãƒƒãƒˆ
+		OUT_DEFAULT_PRECIS,			//å‡ºåŠ›ç²¾åº¦
+		CLIP_DEFAULT_PRECIS,		//ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°ç²¾åº¦
+		ANTIALIASED_QUALITY,		//å‡ºåŠ›å“è³ª
+		FIXED_PITCH | FF_MODERN,	//ãƒ”ãƒƒãƒã¨ãƒ•ã‚¡ãƒŸãƒªãƒ¼
+		L"ï¼­ï¼³æ˜Žæœ");				//æ›¸ä½“å
 
 	m_hDc = wglGetCurrentDC();
 	SelectObject(m_hDc, m_hFont);
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Uninit
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:I—¹ˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Uninit
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:çµ‚äº†å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CDebugProcGL::Uninit(void)
 {
-	// ƒtƒHƒ“ƒg”jŠüB 
+	// ãƒ•ã‚©ãƒ³ãƒˆç ´æ£„ã€‚ 
 	DeleteObject(m_hFont);
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Update
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:XVˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Update
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CDebugProcGL::Update(void)
 {
@@ -73,37 +73,37 @@ void CDebugProcGL::Update(void)
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Draw
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:•`‰æˆ—‚ðs‚¤B
+//	é–¢æ•°å	:Draw
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:æç”»å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CDebugProcGL::Draw(void)
 {
-/*	int Length = 0;
+	int Length = 0;
 	int list = 0;
-	std::vector<int> parag;					// ‰üsî•ñ
-	std::vector<int>::iterator itrParag;	// ƒCƒeƒŒ[ƒ^
-	std::vector<int> bytelen;				// ƒoƒCƒg’·î•ñ
-	std::vector<int>::iterator itrBytelen;	// ƒCƒeƒŒ[ƒ^
-	VECTOR2 pos = VECTOR2(DEBUGPROC_POSX, DEBUGPROC_POSY);	// •¶Žš•\Ž¦ˆÊ’u
+	std::vector<int> parag;					// æ”¹è¡Œæƒ…å ±
+	std::vector<int>::iterator itrParag;	// ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+	std::vector<int> bytelen;				// ãƒã‚¤ãƒˆé•·æƒ…å ±
+	std::vector<int>::iterator itrBytelen;	// ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
+	VECTOR2 pos = VECTOR2(DEBUGPROC_POSX, DEBUGPROC_POSY);	// æ–‡å­—è¡¨ç¤ºä½ç½®
 
-	// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è(“Š‰e•ÏŠ·)
+	// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š(æŠ•å½±å¤‰æ›)
 	glMatrixMode(GL_PROJECTION);
-	// ƒ}ƒgƒŠƒbƒNƒX‚Ì•Û‘¶
+	// ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®ä¿å­˜
 	glPushMatrix();
-	// •ÏŠ·s—ñ‚Ì‰Šú‰»
+	// å¤‰æ›è¡Œåˆ—ã®åˆæœŸåŒ–
 	glLoadIdentity();
 
-	// •½sŽË‰eor³ŽË‰e
+	// å¹³è¡Œå°„å½±oræ­£å°„å½±
 	glOrtho(0, (GLdouble)SCREEN_WIDTH, (GLdouble)SCREEN_HEIGHT, 0, -100.0, 100.0);
-	// ƒ[ƒ‹ƒhÀ•WŒn‚Ì•\Ž¦—Ìˆæ‚ðCƒrƒ…[ƒ|[ƒg‚Ì‘å‚«‚³‚É”ä—á‚³‚¹‚é
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã®è¡¨ç¤ºé ˜åŸŸã‚’ï¼Œãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®å¤§ãã•ã«æ¯”ä¾‹ã•ã›ã‚‹
 
-	// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
+	// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	glMatrixMode(GL_MODELVIEW);
-	// ƒ}ƒgƒŠƒbƒNƒX‚Ì•Û‘¶
+	// ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®ä¿å­˜
 	glPushMatrix();
-	// •ÏŠ·s—ñ‚Ì‰Šú‰»
+	// å¤‰æ›è¡Œåˆ—ã®åˆæœŸåŒ–
 	glLoadIdentity();
 
 	Length = strlen(m_aStrDebug);
@@ -111,13 +111,13 @@ void CDebugProcGL::Draw(void)
 
 	
 
-	// ƒrƒbƒgƒ}ƒbƒvƒCƒ[ƒWŽg—p‰ÓŠŽw’è
+	// ãƒ“ãƒƒãƒˆãƒžãƒƒãƒ—ã‚¤ãƒ¡ãƒ¼ã‚¸ä½¿ç”¨ç®‡æ‰€æŒ‡å®š
 	for(int i = 0; i < Length; i++)
 	{
-		// ‰üs”»’è
+		// æ”¹è¡Œåˆ¤å®š
 		if(m_aStrDebug[i] == (wchar_t)10)
 		{
-			// ‰üsˆÊ’u‚Ì‹L˜^
+			// æ”¹è¡Œä½ç½®ã®è¨˜éŒ²
 			parag.push_back(i);
 		}
 
@@ -129,15 +129,15 @@ void CDebugProcGL::Draw(void)
 	glPushAttrib(GL_ENABLE_BIT);
 	glDisable(GL_LIGHTING);
 
-	// •¶ŽšFÝ’è
+	// æ–‡å­—è‰²è¨­å®š
 	glColor3f(0.0f, 0.0f, 0.0f);
 
 	itrBytelen = bytelen.begin();
 
-	//ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg‚Å•`‰æ
+	//ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆã§æç”»
 	for(int i = 0 ; i < Length ; i++)
 	{
-		// ‰üs‚Ì’Ç‰Á
+		// æ”¹è¡Œã®è¿½åŠ 
 		for(itrParag = parag.begin() ; itrParag != parag.end() ; itrParag++)
 		{
 			if(*itrParag == i)
@@ -148,48 +148,48 @@ void CDebugProcGL::Draw(void)
 			}
 		}
 
-		// À•WŽw’è
+		// åº§æ¨™æŒ‡å®š
 		glRasterPos2i((int)pos.x, (int)pos.y);
 
-		// ƒfƒBƒXƒvƒŒƒCƒŠƒXƒgŽÀs
+		// ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆå®Ÿè¡Œ
 		glCallList(list + i);
 
-		// •¶ŽšŠÔŠu’²®
+		// æ–‡å­—é–“éš”èª¿æ•´
 		pos.x += (*itrBytelen == 1) ? (FONT_SIZE * 0.5f) : FONT_SIZE;
 
-		// ƒCƒeƒŒ[ƒ^‚ði‚ß‚é
+		// ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’é€²ã‚ã‚‹
 		itrBytelen++;
 	}
 
 	glEnable(GL_LIGHTING);
 
-	//ƒfƒBƒXƒvƒŒƒCƒŠƒXƒg”jŠü
+	//ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒªã‚¹ãƒˆç ´æ£„
 	glDeleteLists(list, Length);
 
 	list = 0;
 	Length = 0;
 
-	// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è(“Š‰e•ÏŠ·)
+	// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š(æŠ•å½±å¤‰æ›)
 	glMatrixMode(GL_PROJECTION);
-	// •Û‘¶ƒ}ƒgƒŠƒbƒNƒX‚ÌŽæ‚èo‚µ
+	// ä¿å­˜ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®å–ã‚Šå‡ºã—
 	glPopMatrix();
 
-	// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
+	// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	glMatrixMode(GL_MODELVIEW);
-	// •Û‘¶ƒ}ƒgƒŠƒbƒNƒX‚ÌŽæ‚èo‚µ
+	// ä¿å­˜ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®å–ã‚Šå‡ºã—
 	glPopMatrix();
 
 	glPopAttrib();
-	*/
-	// ƒƒ‚ƒŠ‰Šú‰»
+	
+	// ãƒ¡ãƒ¢ãƒªåˆæœŸåŒ–
 	memset(m_aStrDebug, 0, sizeof(m_aStrDebug));
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:DrawStringW
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:•¶Žš—ñ‚ð•`‰æ‚·‚éB
+//	é–¢æ•°å	:DrawStringW
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜Ž	:æ–‡å­—åˆ—ã‚’æç”»ã™ã‚‹ã€‚
 //=============================================================================
 void CDebugProcGL::DebugProc(char* format, ...)
 {
