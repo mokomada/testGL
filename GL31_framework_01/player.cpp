@@ -22,6 +22,8 @@
 #include "bullet.h"
 #include "debugProcGL.h"
 #include "shadow.h"
+
+#include "life.h"
 //=============================================================================
 //	関数名	:CScene3D()
 //	引数	:無し
@@ -75,6 +77,11 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
+
+	//これで風船を描画します
+	//Uninit,Update,Drawにて各関数を呼んでます。
+	//ダメージを受けたらCLife内のHitDamage関数を使ってください
+	m_pLife = CLife::Create( m_Pos , 0.0f , 1.0f , 1.0f , 1.0f , this );
 }
 
 //=============================================================================
@@ -85,6 +92,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(bool isLast)
 {
+	m_pLife->Uninit();
 	Model->Uninit();
 }
 
@@ -309,6 +317,9 @@ void CPlayer::Update(void)
 		CNetwork::SendData(str);
 	}
 
+	//風船更新
+	m_pLife->Update();
+
 	Model->Update();
 }
 
@@ -335,6 +346,9 @@ void CPlayer::Draw(void)
 
 	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
 	glPopMatrix();					// 保存マトリックスの取り出し
+
+	//風船描画
+	m_pLife->Draw();
 
 	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
