@@ -22,8 +22,9 @@
 #include "bullet.h"
 #include "debugProcGL.h"
 #include "shadow.h"
-
 #include "life.h"
+#include "collision.h"
+
 //=============================================================================
 //	ŠÖ”–¼	:CScene3D()
 //	ˆø”	:–³‚µ
@@ -240,7 +241,7 @@ void CPlayer::Update(void)
 
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
 	{
-		if (CollisionDetectionBox(m_Pos, &GetBox(), list->GetPos(), &list->GetBox()))
+		if (CCollision::GetInstance()->SphereToBox(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
 		{
 			CDebugProcGL::DebugProc("HitBox\n");
 		}
@@ -250,7 +251,7 @@ void CPlayer::Update(void)
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
 		{
-			if (CollisionDetectionSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
+			if (CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
 			{
 				if(m_HitEffectTime <= 0) {
 					m_HitEffectTime = 120;

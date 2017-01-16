@@ -137,7 +137,8 @@ void CSceneModel::Draw(void)
 	glEnable(GL_DEPTH_TEST);
 
 	// カリング無効化
-	glDisable(GL_CULL_FACE);
+//	glDisable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	
 	// 頂点色設定
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -152,7 +153,8 @@ void CSceneModel::Draw(void)
 	glDisable(GL_DEPTH_TEST);
 
 	// カリング有効化
-	glEnable(GL_CULL_FACE);
+//	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 
 	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
