@@ -81,6 +81,7 @@
     <ClInclude Include="balloon.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="countdown.h" />
     <ClInclude Include="debugProcGL.h" />
     <ClInclude Include="effect2D.h" />
@@ -121,6 +122,7 @@
     <ClCompile Include="balloon.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="countdown.cpp" />
     <ClCompile Include="debugProcGL.cpp" />
     <ClCompile Include="effect2D.cpp" />
