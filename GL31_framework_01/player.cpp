@@ -69,6 +69,8 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Gauge = 100.0f;	//ゲージの初期化
 	m_FlgLowSpeed = false;
 	m_Radius = 30.0f;
+	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
+	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
 
 	Model = CSceneModel::Create("./data/MODEL/car.obj");
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
@@ -242,8 +244,11 @@ void CPlayer::Update(void)
 		{
 			if (CollisionDetectionSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
 			{
-				Release();
-				return;
+				if(m_HitEffectTime <= 0) {
+					m_HitEffectTime = 120;
+				}
+//				Release();
+//				return;
 			}
 		}
 	}
@@ -299,6 +304,29 @@ void CPlayer::Update(void)
 		m_Move.y -= PLAYER_GRAVITY;
 	}
 
+
+	//*************************** 被弾エフェクト処理開始 ***************************
+
+	// テスト用 8～0キーで被弾エフェクト それぞれ長さが違う
+	// ※8の倍数-4～8の倍数-2に設定すると最初の点滅が3～1フレーム短くなるので注意。基本は4フレーム毎にONOFFを切り替える点滅
+	if(CInput::GetKeyboardTrigger(DIK_8) && m_HitEffectTime <= 0) {
+		m_HitEffectTime = 30;
+	}
+	else if(CInput::GetKeyboardTrigger(DIK_9) && m_HitEffectTime <= 0) {
+		m_HitEffectTime = 59;
+	}
+	else if(CInput::GetKeyboardTrigger(DIK_0) && m_HitEffectTime <= 0) {
+		m_HitEffectTime = 120;
+	}
+
+	// 被弾エフェクト処理を実行
+	if(m_HitEffectTime > 0) {
+		HitEffect( );
+	}
+
+	//*************************** 被弾エフェクト処理終了 ***************************
+
+
 	// 自プレイヤーの場合、位置を送信
 	if (m_ifMinePlayer)
 	{
@@ -320,21 +348,23 @@ void CPlayer::Update(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
-	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリクスの設定
-	glPushMatrix();					// マトリクスの退避
+	if(m_DrawOnOffFlag) {
+		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリクスの設定
+		glPushMatrix();					// マトリクスの退避
 
-	// ワールドマトリクスの設定
-	glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
-	glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// 回転マトリックスの設定、角度は度数法で
-	glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
-	glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
-	glScalef(m_Scale.x, m_Scale.y, m_Scale.z);
+		// ワールドマトリクスの設定
+		glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
+		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
+		glScalef(m_Scale.x, m_Scale.y, m_Scale.z);
 
-	// モデル描画
-	Model->Draw();
+		// モデル描画
+		Model->Draw();
 
-	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
-	glPopMatrix();					// 保存マトリックスの取り出し
+		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
+		glPopMatrix();					// 保存マトリックスの取り出し
+	}
 
 	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
@@ -474,4 +504,41 @@ bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, 
 	}
 
 	return HitBox;
+}
+
+
+//=============================================================================
+//	関数名	:HitEffect
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:被弾エフェクト
+//=============================================================================
+
+void CPlayer::HitEffect(void) {
+	if(m_HitEffectTime % (BLINK_TIME * 2) < BLINK_TIME ) {
+		m_DrawOnOffFlag = true;
+	}
+	else {
+		m_DrawOnOffFlag = false;
+	}
+
+	// エフェクト時間を減らす
+	m_HitEffectTime--;
+	// もしエフェクトの残り時間が0を下回った場合、時間を0にして描画フラグをONにする（起こり得ないはずだけど保険）
+	if(m_HitEffectTime < 0) {
+		m_HitEffectTime = 0;
+		m_DrawOnOffFlag = true;
+	}
+}
+
+
+//=============================================================================
+//	関数名	:SetHitEffectTime
+//	引数	:time エフェクト時間の長さ（フレーム単位）
+//	戻り値	:無し
+//	説明	:被弾エフェクト設定
+//=============================================================================
+
+void CPlayer::SetHitEffectTime(int time) {
+	m_HitEffectTime = time;
 }
