@@ -254,6 +254,7 @@ void CPlayer::Update(void)
 			{
 				if(m_HitEffectTime <= 0) {
 					m_HitEffectTime = 120;
+					m_pLife -> HitDamage();
 				}
 //				Release();
 //				return;
