@@ -40,7 +40,7 @@
 //	構造体
 //=============================================================================
 class CSceneModel;
-
+class CLife;
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -71,7 +71,7 @@ private:
 	bool m_FlgLowSpeed;
 
 	CSceneModel* Model;
-
+	CLife* m_pLife;
 	void CollisionDetection(void);
 	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
 	static bool CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2);
