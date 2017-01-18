@@ -69,8 +69,8 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Texture		= 0;
 	
 	
-	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/"MODEL_TEXFILENAME000);
-	LoadModel("./data/MODEL/"MODEL_FILENAME000);
+	m_Texture = renderer->CreateTextureTGA("./data/MODEL/wheel_frame.png");
+	LoadModel("./data/MODEL/car.obj");
 
 	// モーション生成
 	//m_Motion = new MOTION[MODEL_MOTION_NUM];
@@ -137,7 +137,8 @@ void CSceneModel::Draw(void)
 	glEnable(GL_DEPTH_TEST);
 
 	// カリング無効化
-	glDisable(GL_CULL_FACE);
+//	glDisable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	
 	// 頂点色設定
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -152,7 +153,8 @@ void CSceneModel::Draw(void)
 	glDisable(GL_DEPTH_TEST);
 
 	// カリング有効化
-	glEnable(GL_CULL_FACE);
+//	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 
 	glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
@@ -243,6 +245,9 @@ void CSceneModel::LoadModel(char *fileName)
 
 			// データ格納
 			fscanf_s(fp, " %f %f\n", &tex.x, &tex.y);
+
+			// V方向反転
+			tex.y = 1.0f - tex.y;
 
 			m_Parts[m_Parts.size() - 1].data.Tex.push_back(tex);
 		}

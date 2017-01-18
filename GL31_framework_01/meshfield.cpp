@@ -20,7 +20,7 @@
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CMeshfield::CMeshfield()
+CMeshfield::CMeshfield() : CScene3DGL(true, PRIORITY_FIELD, OBJTYPE_NONE)
 {
 	glMatrixIdentity(&m_mtxWorld);
 }

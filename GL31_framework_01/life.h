@@ -1,7 +1,7 @@
 /******************************************************************************
-*	ファイル：textureManager.h
+*	ファイル：
 *	作成者  ：庄司茜
-*	作成日  ：2016/12/05
+*	作成日  ：
 ******************************************************************************/
 /******************************************************************************
 *	ヘッダーファイルの多重インクルード防止
@@ -12,46 +12,41 @@
 /******************************************************************************
 *	インクルードファイル
 ******************************************************************************/
+#include "sceneGL.h"
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
+#define LIFE_NUM ( 1 )
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
-
-typedef enum
-{
-	TEXTURE_SHADOW = 0,
-	TEXTURE_BULLET,
-	TEXTURE_BULLETEXPLODE,	// プレイヤ爆発
-	TEXTURE_PLAYEREXPLODE,	// 球爆発
-	TEXTURE_SMOKE,			// プレイヤ土煙
-	TEXTURE_BALLOON,			// 風船	
-
-	TEXTURE_MAX
-}TEXTURE_LABEL;
-
-
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
+
+class CBalloon;
+class CSceneGL;
+
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CTextureManager
+class CLife : public CSceneGL
 {
 public:
-	CTextureManager();
-	~CTextureManager();
+	CLife(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
+	~CLife();
 
-	static HRESULT Init( void );
-	static void Uninit( void );
-	static uint *GetTexture( int texLabel ) { return &m_Texture[ texLabel ]; }
+	static CLife * Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent );
 
+	void Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent );
+	void Uninit( void );
 	void Update( void );
 	void Draw( void );
 
+	void HitDamage( void );	//ダメージを受けたら
+
 private:
-	static uint m_Texture[ TEXTURE_MAX ];		// テクスチャ
-	static char *m_texName[ TEXTURE_MAX ];		//テクスチャの名前
+	CBalloon *m_balloon;
+	CSceneGL *m_parent;	//親のアドレス
+	int m_life;
 };

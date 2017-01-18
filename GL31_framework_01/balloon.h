@@ -1,7 +1,7 @@
 /******************************************************************************
-*	ファイル：textureManager.h
+*	ファイル：
 *	作成者  ：庄司茜
-*	作成日  ：2016/12/05
+*	作成日  ：
 ******************************************************************************/
 /******************************************************************************
 *	ヘッダーファイルの多重インクルード防止
@@ -12,46 +12,48 @@
 /******************************************************************************
 *	インクルードファイル
 ******************************************************************************/
+#include "sceneBillboardGL.h"
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
-
-typedef enum
-{
-	TEXTURE_SHADOW = 0,
-	TEXTURE_BULLET,
-	TEXTURE_BULLETEXPLODE,	// プレイヤ爆発
-	TEXTURE_PLAYEREXPLODE,	// 球爆発
-	TEXTURE_SMOKE,			// プレイヤ土煙
-	TEXTURE_BALLOON,			// 風船	
-
-	TEXTURE_MAX
-}TEXTURE_LABEL;
-
-
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CTextureManager
+class CBalloon
 {
 public:
-	CTextureManager();
-	~CTextureManager();
+	CBalloon();
+	~CBalloon();
 
-	static HRESULT Init( void );
-	static void Uninit( void );
-	static uint *GetTexture( int texLabel ) { return &m_Texture[ texLabel ]; }
+	static CBalloon * Create( VECTOR3 pos , float r , float g , float b , float a );
 
+	void Init( VECTOR3 pos , float r , float g , float b , float a );
+	void Uninit( void );
 	void Update( void );
 	void Draw( void );
+	void DrawPolygon( void );
+
+	VECTOR3 GetPos( void ) { return m_Pos; }
+	void SetPos( VECTOR3 pos ) { m_Pos = pos; }
+	void SetRot( VECTOR3 rot ) { m_Rot = rot; }
+	void SetUV( float u ) { m_u += u; }
+	void SetDeleteFlag() { m_deleteFlag = true; }
 
 private:
-	static uint m_Texture[ TEXTURE_MAX ];		// テクスチャ
-	static char *m_texName[ TEXTURE_MAX ];		//テクスチャの名前
+	VECTOR3 m_Pos;		// 位置
+	VECTOR3 m_Rot;		// 回転角
+	VECTOR2 m_Size;		// ポリゴンのサイズ
+	float m_r;
+	float m_g;
+	float m_b;
+	float m_Alpha;			//アルファ値
+	unsigned int *m_Texture;	// テクスチャ
+	float m_u;
+	bool m_deleteFlag;
 };
