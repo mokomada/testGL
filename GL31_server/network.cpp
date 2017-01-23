@@ -137,7 +137,7 @@ uint __stdcall CNetwork::ReceiveThread(void *p)
 	{
 		if(m_ifInitialize)
 		{
-			while(m_PlayerNum < 1)
+			while(m_PlayerNum < 4)
 			{
 				// クライアント情報
 				sockaddr_in client;

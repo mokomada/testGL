@@ -382,7 +382,7 @@ void CPlayer::Draw(void)
 	//•—‘D•`‰æ
 	m_pLife->Draw();
 
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================

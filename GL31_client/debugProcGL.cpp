@@ -192,7 +192,7 @@ void CDebugProcGL::Draw(void)
 //	説明	:文字列を描画する。
 //=============================================================================
 void CDebugProcGL::DebugProc(char* format, ...)
-{/*
+{
 	va_list list;
 	char str[256];
 
@@ -202,5 +202,5 @@ void CDebugProcGL::DebugProc(char* format, ...)
 
 	strcat_s(m_aStrDebug, str);
 
-	va_end(list);*/
+	va_end(list);
 }
