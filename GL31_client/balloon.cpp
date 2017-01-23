@@ -210,3 +210,17 @@ void CBalloon::DrawPolygon( void )
 	glTexCoord2d( m_u + 0.33f , 1.0f );
 	glVertex3f(( (m_Size.x * 0.5f)), (- (m_Size.y * 0.5f)), 0.0f);
 }
+
+/******************************************************************************
+*	関数名：void CBalloon::SetColor( float r , float g , float b , float a )
+*	引数  ：なし
+*	戻り値：なし
+*	説明  ：
+******************************************************************************/
+void CBalloon::SetColor( float r , float g , float b , float a )
+{
+	m_r = r;
+	m_g = g;
+	m_b = b;
+	m_Alpha = a;
+}

@@ -84,7 +84,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	//これで風船を描画します
 	//Uninit,Update,Drawにて各関数を呼んでます。
 	//ダメージを受けたらCLife内のHitDamage関数を使ってください
-	m_pLife = CLife::Create( m_Pos , 0.0f , 1.0f , 1.0f , 1.0f , this );
+	m_pLife = CLife::Create( m_Pos , this );
 }
 
 //=============================================================================
