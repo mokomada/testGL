@@ -153,7 +153,6 @@ void CLife::Uninit( void )
 void CLife::Update( void )
 {
 	CPlayer* player = ( CPlayer* )m_parent;
-	SetBalloonColor();
 
 	//‰¼‚Ìˆ—
 	if( player->m_ifMinePlayer )
@@ -167,6 +166,8 @@ void CLife::Update( void )
 
 	if( m_balloon != NULL )
 	{
+		SetBalloonColor();
+
 		VECTOR3 playerPos = m_parent->GetPos();	
 		VECTOR3 playerRot = m_parent->GetRot();
 		VECTOR3 pos = m_balloon->GetPos();
