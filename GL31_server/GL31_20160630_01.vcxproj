@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{82B4BF33-1BBD-447A-9DF7-378979E5A501}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GL31_20160630_01</RootNamespace>
+    <ProjectName>GL31_server</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="balloon.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="cameraGL.h" />
+    <ClInclude Include="collision.h" />
+    <ClInclude Include="countdown.h" />
+    <ClInclude Include="debugProcGL.h" />
+    <ClInclude Include="effect2D.h" />
+    <ClInclude Include="fade.h" />
+    <ClInclude Include="life.h" />
+    <ClInclude Include="network.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="score.h" />
+    <ClInclude Include="meshfield.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="lightGL.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="manager.h" />
+    <ClInclude Include="matrix.h" />
+    <ClInclude Include="mode.h" />
+    <ClInclude Include="number.h" />
+    <ClInclude Include="readfile.h" />
+    <ClInclude Include="rendererGL.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="result.h" />
+    <ClInclude Include="scene2DGL.h" />
+    <ClInclude Include="scene3DGL.h" />
+    <ClInclude Include="sceneBillboardGL.h" />
+    <ClInclude Include="sceneGL.h" />
+    <ClInclude Include="sceneModel.h" />
+    <ClInclude Include="shadow.h" />
+    <ClInclude Include="skybox.h" />
+    <ClInclude Include="sound.h" />
+    <ClInclude Include="textureManager.h" />
+    <ClInclude Include="title.h" />
+    <ClInclude Include="trickgauge.h" />
+    <ClInclude Include="tutorial.h" />
+    <ClInclude Include="vector.h" />
+    <ClInclude Include="wall.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="balloon.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="cameraGL.cpp" />
+    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="countdown.cpp" />
+    <ClCompile Include="debugProcGL.cpp" />
+    <ClCompile Include="effect2D.cpp" />
+    <ClCompile Include="fade.cpp" />
+    <ClCompile Include="life.cpp" />
+    <ClCompile Include="network.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="score.cpp" />
+    <ClCompile Include="meshfield.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="lightGL.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="manager.cpp" />
+    <ClCompile Include="number.cpp" />
+    <ClCompile Include="readfile.cpp" />
+    <ClCompile Include="rendererGL.cpp" />
+    <ClCompile Include="result.cpp" />
+    <ClCompile Include="scene2DGL.cpp" />
+    <ClCompile Include="scene3DGL.cpp" />
+    <ClCompile Include="sceneBillboardGL.cpp" />
+    <ClCompile Include="sceneGL.cpp" />
+    <ClCompile Include="sceneModel.cpp" />
+    <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="textureManager.cpp" />
+    <ClCompile Include="title.cpp" />
+    <ClCompile Include="trickgauge.cpp" />
+    <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="wall.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GL31_server.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
