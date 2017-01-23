@@ -67,7 +67,7 @@ void CGame::Init(void)
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
-	CTrickGauge::Create( );
+	//CTrickGauge::Create( );
 
 	// BGMçƒê∂
 	CSound::Play(SOUNDLABEL_BGM000);
