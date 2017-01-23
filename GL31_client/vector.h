@@ -93,7 +93,7 @@ typedef struct VECTOR3 : public VECTOR
 public:
 	VECTOR3() {};
 	VECTOR3(const float *vec) { x = *vec; vec++; y = *vec; vec++; z = *vec; }
-	VECTOR3(const VECTOR& vec) { x = vec.x; y = vec.y; }				// copy constructor
+	VECTOR3(const VECTOR3& vec) { x = vec.x; y = vec.y; z = vec.z;}		// copy constructor
 	VECTOR3(float nx, float ny, float nz) { x = nx; y = ny; z = nz; }	// initialize on value
 	
 	// casting(キャスト演算子(未実装))
@@ -131,9 +131,6 @@ public:
 	VECTOR3& normalize() { float mag = magnitude(); if(mag > 0.0f) { x /= mag; y /= mag; z /= mag; } return *this; }
 
 	// memory zero sets(メモリ初期化)
-    static inline VECTOR3 zero(void) { return VECTOR3(0.0f, 0.0f, 0.0f); }
-
-	// memory zero sets(メモリ初期化)
     inline void zeromem(void) { x = 0.0f; y = 0.0f; z = 0.0f; }
 
 	// distance of 2 points(2つのベクトルの距離)
@@ -152,5 +149,66 @@ public:
 #else //!__cplusplus
 typedef struct _VECTOR VECTOR3;
 #endif //!__cplusplus
+
+
+//=============================================================================
+//	class VECTOR4
+//=============================================================================
+#ifdef __cplusplus
+typedef struct VECTOR4
+{
+public:
+	VECTOR4() {};
+	VECTOR4(const float *vec) { x = *vec; vec++; y = *vec; vec++; z = *vec; vec++; w = *vec; }
+	VECTOR4(const VECTOR4& vec) { x = vec.x; y = vec.y; z = vec.z; w = vec.w;}				// copy constructor
+	VECTOR4(float nx, float ny, float nz, float nw) { x = nx; y = ny; z = nz; w = nw; }		// initialize on value
+
+	// casting(キャスト演算子(未実装))
+	//operator float* ();
+	//operator const float* () const;
+
+	// assignment operators(代入演算子)
+	VECTOR4& operator = (const VECTOR4& vec) { x=vec.x; y=vec.y; z=vec.z; w=vec.w;	return *this; }		// assign
+	VECTOR4& operator += (const VECTOR4& vec) { x+=vec.x; y+=vec.y; z+=vec.z; w+=vec.w; return *this; }	// addition and assign(加算代入)
+	VECTOR4& operator -= (const VECTOR4& vec) { x-=vec.x; y-=vec.y; z-=vec.z; w-=vec.w; return *this; }	// subtraction and assign(減算代入)
+	VECTOR4& operator *= (float pow) { x*=pow; y*=pow; z*=pow; w*=pow; return *this; }					// multiplication and assign(乗算代入)
+	VECTOR4& operator /= (float pow) {
+		if(pow != 0) { x /= pow; y /= pow; z /= pow; w /= pow; return *this; }
+		else { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; return *this; }
+	}		// division and assign(除算代入)
+
+	// unary operators(単項演算子)
+	//VECTOR4 operator + () const;
+	VECTOR4 operator - () const { return VECTOR4(-x, -y, -z, -w); }
+
+	// binary operators(二項演算子)
+	VECTOR4 operator + (const VECTOR4& vec) const { return VECTOR4((x+vec.x), (y+vec.y), (z+vec.z), (w+vec.w)); }	// addition(加算)
+	VECTOR4 operator - (const VECTOR4& vec) const { return VECTOR4((x-vec.x), (y-vec.y), (z-vec.z), (w-vec.w)); }	// subtraction(減算)
+	VECTOR4 operator * (float pow) const { return VECTOR4((x * pow), (y * pow), (z * pow), (w * pow)); }			// multiplication(乗算)
+	VECTOR4 operator / (float pow) const { return (pow!=0) ? VECTOR4((x/pow), (y/pow), (z/pow), (w/pow)) : VECTOR4(0.0f, 0.0f, 0.0f, 0.0f); } // division(除算)
+
+	friend VECTOR4 operator * (float pow, const struct VECTOR4& vec) { return VECTOR4((vec.x*pow), (vec.y*pow), (vec.z*pow), (vec.w*pow)); }
+
+	// logical operators(論理演算子)
+	bool operator == (const VECTOR4& vec) const { return ((x==vec.x) && (y==vec.y) && (z==vec.z) && (w==vec.w)); }	// logical operation of equal(一致)
+	bool operator != (const VECTOR4& vec) const { return ((x!=vec.x) || (y!=vec.y) || (z!=vec.z) || (z!=vec.z)); }	// logical operation of not equal(不一致)
+
+	// vector magnitude(ベクトルの大きさ)
+	float magnitude() const { return sqrt((x * x) + (y * y) + (z * z) + (w * w)); }
+
+	// vector normalizing(ベクトルの正規化)
+	VECTOR4& normalize() { float mag = magnitude(); if(mag > 0.0f) { x /= mag; y /= mag; z /= mag; w /= mag; } return *this; }
+
+	// memory zero sets(メモリ初期化)
+	inline void zeromem(void) { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; }
+		
+public:
+#endif //__cplusplus
+	float x, y, z, w;
+} VECTOR4;
+
+#define	VEC2_ZERO			(VECTOR2(0.0f, 0.0f))				// 2Dベクトルの0
+#define	VEC3_ZERO			(VECTOR3(0.0f, 0.0f, 0.0f))			// 3Dベクトルの0
+#define	VEC4_ZERO			(VECTOR4(0.0f, 0.0f, 0.0f, 0.0f))	// 4Dベクトルの0
 
 #endif
