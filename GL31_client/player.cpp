@@ -75,7 +75,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
 	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
 
-	Model = CSceneModel::Create("./data/MODEL/car.obj");
+	Model = CSceneModel::Create("./data/MODEL/car.obj", VECTOR3(0.0f, -25.0f, 0.0f));
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
@@ -239,6 +239,8 @@ void CPlayer::Update(void)
 		}
 	}
 
+
+	//当たり判定
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
 	{
 		if (CCollision::GetInstance()->SphereToBox(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
@@ -303,9 +305,9 @@ void CPlayer::Update(void)
 	}
 
 	// プレイヤーの高さを設定
-	if (m_Pos.y < 20.0f)
+	if (m_Pos.y < 40.0f)
 	{
-		m_Pos.y = 20.0f;
+		m_Pos.y = 40.0f;
 		m_bJump = false;
 	}
 	else
@@ -335,22 +337,22 @@ void CPlayer::Update(void)
 	}
 
 	//*************************** 被弾エフェクト処理終了 ***************************
-	
+
+
+	// 自プレイヤーの場合、位置を送信
+	if (m_ifMinePlayer)
+	{
+		char str[1024] = { NULL };
+
+		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
+
+		CNetwork::SendData(str);
+	}
+
 	//風船更新
 	m_pLife->Update();
 
 	Model->Update();
-
-	// 自プレイヤーの場合、位置を送信
-	if(m_ifMinePlayer && (CManager::m_Frame % 60 == 0))
-	{
-		// データ送信
-		CNetwork::SendData("player, %d, POS(%.1f %.1f %.1f), ROT(%.1f %.1f %.1f), VEC(%.1f %.1f %.1f)", CManager::GetWhatPlayer(),
-			m_Pos.x, m_Pos.y, m_Pos.z,
-			m_Rot.x, m_Rot.y, m_Rot.z,
-			m_Move.x, m_Move.y, m_Move.z
-		);
-	}
 }
 
 //=============================================================================
@@ -382,7 +384,7 @@ void CPlayer::Draw(void)
 	//風船描画
 	m_pLife->Draw();
 
-	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================
