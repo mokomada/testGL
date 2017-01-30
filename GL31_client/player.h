@@ -73,6 +73,7 @@ private:
 	bool m_FlgLowSpeed;
 	int m_HitEffectTime; // 被弾エフェクトの実行時間
 	bool m_DrawOnOffFlag; // 描画のONOFF設定
+	bool m_DeadFlag;
 
 	CSceneModel* Model;
 	CLife* m_pLife;
