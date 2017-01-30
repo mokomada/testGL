@@ -36,14 +36,15 @@ public:
 	CLife(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 	~CLife();
 
-	static CLife * Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent );
+	static CLife * Create( VECTOR3 pos , CSceneGL *parent );
 
-	void Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent );
+	void Init( VECTOR3 pos , CSceneGL *parent );
 	void Uninit( void );
 	void Update( void );
 	void Draw( void );
 
 	void HitDamage( void );	//É_ÉÅÅ[ÉWÇéÛÇØÇΩÇÁ
+	void SetBalloonColor( void );
 
 private:
 	CBalloon *m_balloon;

@@ -44,7 +44,7 @@ public:
 	void SetRot( VECTOR3 rot ) { m_Rot = rot; }
 	void SetUV( float u ) { m_u += u; }
 	void SetDeleteFlag() { m_deleteFlag = true; }
-
+	void SetColor( float r , float g , float b , float a );
 private:
 	VECTOR3 m_Pos;		// ˆÊ’u
 	VECTOR3 m_Rot;		// ‰ñ“]Šp

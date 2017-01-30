@@ -112,6 +112,7 @@
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="square.h" />
     <ClInclude Include="textureManager.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="trickgauge.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="square.cpp" />
     <ClCompile Include="textureManager.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="trickgauge.cpp" />
