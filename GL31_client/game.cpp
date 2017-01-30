@@ -101,12 +101,6 @@ void CGame::Update(void)
 	{
 		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
 	}
-
-	//	エフェクト表示テスト
-	if(KT_E)
-	{
-		CEffect2D::Create(VECTOR3(0.0f,100.0f,0.0f),VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
-	}
 }
 
 //=============================================================================

@@ -24,6 +24,7 @@
 #include "shadow.h"
 #include "life.h"
 #include "collision.h"
+#include "particle.h"
 
 //=============================================================================
 //	関数名	:CScene3D()
@@ -86,6 +87,9 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	//Uninit,Update,Drawにて各関数を呼んでます。
 	//ダメージを受けたらCLife内のHitDamage関数を使ってください
 	m_pLife = CLife::Create( m_Pos , this );
+
+	// パーティクルオブジェクト生成
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
 }
 
 //=============================================================================
@@ -98,6 +102,7 @@ void CPlayer::Uninit(bool isLast)
 {
 	m_pLife->Uninit();
 	Model->Uninit();
+	m_pParticle->Uninit();
 }
 
 //=============================================================================
@@ -378,6 +383,12 @@ void CPlayer::Update(void)
 
 	//風船更新
 	m_pLife->Update();
+
+	// 煙パーティクル発生
+	if(m_DeadFlag)
+	{
+		m_pParticle->Update();
+	}
 
 	Model->Update();
 }
