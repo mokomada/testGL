@@ -92,7 +92,7 @@ void CParticle::Update(void)
 	}
 
 	// ƒJƒEƒ“ƒ^‰ÁŽZ
-		m_Particle.nGenerateTime++;
+	m_Particle.nGenerateTime++;
 }
 
 //=============================================================================
