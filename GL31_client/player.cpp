@@ -74,6 +74,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_Radius = 30.0f;
 	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
 	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
+	m_DeadFlag = false; // 死亡フラグをOFFに
 
 	Model = CSceneModel::Create("./data/MODEL/car.obj");
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
@@ -108,68 +109,15 @@ void CPlayer::Uninit(bool isLast)
 void CPlayer::Update(void)
 {
 	CCameraGL	*camera = CManager::GetCamera();	// カメラ
+	int life = m_pLife -> GetLife( );
 
 	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
 	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
 
-	// 自プレイヤーの場合にのみ処理
-	if (m_ifMinePlayer)
-	{
-		if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
-		{
-			if (CInput::GetKeyboardPress(DIK_A))				// 左周り
-			{
-				//回転量の加算
-				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
-			}
-			if (CInput::GetKeyboardPress(DIK_D))				// 右回り
-			{
-				//回転量の加算
-				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
-			}
-
-			// 移動量を設定
-			if (m_FlgLowSpeed == true)
-			{
-				m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
-			}
-			if (m_FlgLowSpeed == false)
-			{
-				m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
-			}
-		}
-		if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
-		{
-			if (CInput::GetKeyboardPress(DIK_A))				// 左周り
-			{
-				//回転量の加算
-				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
-			}
-			if (CInput::GetKeyboardPress(DIK_D))				// 右回り
-			{
-				//回転量の加算
-				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
-			}
-
-			// 移動量を設定
-			if (m_FlgLowSpeed == true)
-			{
-				m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
-			}
-			if (m_FlgLowSpeed == false)
-			{
-				m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
-			}
-		}
-		if (m_bJump == true)
+	// ライフが0以下ならば操作を受け付けない
+	if(life > 0) {
+		// 自プレイヤーの場合にのみ処理
+		if (m_ifMinePlayer)
 		{
 			if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 			{
@@ -185,8 +133,20 @@ void CPlayer::Update(void)
 					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
 					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
+
+				// 移動量を設定
+				if (m_FlgLowSpeed == true)
+				{
+					m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
+				}
+				if (m_FlgLowSpeed == false)
+				{
+					m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
+				}
 			}
-			else if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
+			if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 			{
 				if (CInput::GetKeyboardPress(DIK_A))				// 左周り
 				{
@@ -200,43 +160,102 @@ void CPlayer::Update(void)
 					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
 					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
+
+				// 移動量を設定
+				if (m_FlgLowSpeed == true)
+				{
+					m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
+				}
+				if (m_FlgLowSpeed == false)
+				{
+					m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
+				}
 			}
-			else
+			if (m_bJump == true)
 			{
-				if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+				if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 				{
-					//回転量の加算
-					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
 				}
-				if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+				else if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 				{
-					//回転量の加算
-					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
 				}
-			}
+				else
+				{
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
+				}
 			
+			}
+
+			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+
+			camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
+			camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
+
+			// ジャンプ
+			if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+			{
+				m_Move.y += PLAYER_JUMP;
+
+				m_bJump = true;
+			}
+			// 弾発射
+			if (CInput::GetKeyboardTrigger(DIK_L))
+			{
+				CBullet::Create( m_Pos , m_Rot , 10.0f );
+			}
 		}
-
-		camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-		camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-
-		camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
-		camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
-
-		// ジャンプ
-		if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+		// 回転量補正
+		if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
 		{
-			m_Move.y += PLAYER_JUMP;
-
-			m_bJump = true;
+			// 回転量を逆方向に
+			m_Rot.y -= (PI * 2.0f);
 		}
-		// 弾発射
-		if (CInput::GetKeyboardTrigger(DIK_L))
+		else if (m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
 		{
-			CBullet::Create( m_Pos , m_Rot , 10.0f );
+			// 回転量を逆方向に
+			m_Rot.y += (PI * 2.0f);
 		}
+
+		// 回転量を設定
+		m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
 	}
 
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
@@ -254,8 +273,8 @@ void CPlayer::Update(void)
 			if (CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
 			{
 				if(m_HitEffectTime <= 0) {
-					m_HitEffectTime = 120;
 					m_pLife -> HitDamage();
+					if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
 				}
 //				Release();
 //				return;
@@ -263,20 +282,24 @@ void CPlayer::Update(void)
 		}
 	}
 
-	// 回転量補正
-	if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
-	{
-		// 回転量を逆方向に
-		m_Rot.y -= (PI * 2.0f);
-	}
-	else if (m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
-	{
-		// 回転量を逆方向に
-		m_Rot.y += (PI * 2.0f);
+
+	//************* HP0時演出テストここから *****************//
+
+	if(life <= 0 && !m_DeadFlag) {
+		m_Move.y += PLAYER_JUMP * 3;
+		m_RotMove.x = (rand() % 40) * 0.01f;
+		m_RotMove.y = (rand() % 40) * 0.01f;
+		m_RotMove.z = (rand() % 40) * 0.01f;
+		m_bJump = true;
+		m_DeadFlag = true;
 	}
 
-	// 回転量を設定
-	m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
+	m_Rot.x += m_RotMove.x;
+	m_Rot.y += m_RotMove.y;
+	m_Rot.z += m_RotMove.z;
+
+	//************* HP0時演出テストここまで *****************//
+
 
 	// 移動量反映
 	m_Pos.x += m_Move.x;
@@ -303,9 +326,12 @@ void CPlayer::Update(void)
 	}
 
 	// プレイヤーの高さを設定
-	if (m_Pos.y < 20.0f)
+	if (m_Pos.y < 5.0f)
 	{
-		m_Pos.y = 20.0f;
+		m_Pos.y = 5.0f;
+		m_RotMove.x = 0;
+		m_RotMove.y = 0;
+		m_RotMove.z = 0;
 		m_bJump = false;
 	}
 	else
