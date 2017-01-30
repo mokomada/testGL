@@ -1,6 +1,6 @@
 //=============================================================================
 //
-//	タイトル	表彰台
+//	タイトル	四角形
 //	ファイル名	podium.cpp
 //	作成者		AT13A284_02 秋田京
 //	作成日		2016/12/07
@@ -44,12 +44,20 @@ void CSquare::Init(VECTOR3 pos , VECTOR3 size , char* TexName, VECTOR4 color)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
-
 	//初期位置
 	m_Pos = pos;
 
+	
+
 	//大きさを指定
-	m_Ranking.pos = VECTOR3(size.x * 0.5, size.y * 0.5, size.z *0.5 );
+	m_Square.pos = VECTOR3(size.x * 0.5, size.y * 0.5, size.z *0.5 );
+
+	CSquare::m_Box.width = size.x;
+	CSquare::m_Box.height = size.y;
+	CSquare::m_Box.depth = size.z;
+
+
+
 
 	//色の指定
 	m_Color = color;
@@ -97,22 +105,22 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f(-m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glEnd();
 
@@ -124,22 +132,22 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f(-m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glEnd();
 
@@ -149,24 +157,24 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f(-m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f(-m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.01f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 	
 	glEnd();
 
@@ -176,22 +184,22 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 	
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f(-m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glEnd();
 
@@ -201,22 +209,22 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glEnd();
 
@@ -226,22 +234,22 @@ void CSquare::Draw(void)
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f , 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(0.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , -m_Ranking.pos.y , -m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d(1.0f, 1.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
-	glVertex3f( -m_Ranking.pos.x , -m_Ranking.pos.y , m_Ranking.pos.z );
+	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glEnd();
 
