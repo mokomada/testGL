@@ -329,9 +329,9 @@ void CPlayer::Update(void)
 
 	// プレイヤーの高さを設定
 
-	if (m_Pos.y < 5.0f)
+	if (m_Pos.y < 25.0f)
 	{
-		m_Pos.y = 5.0f;
+		m_Pos.y = 25.0f;
 		m_RotMove.x = 0;
 		m_RotMove.y = 0;
 		m_RotMove.z = 0;
