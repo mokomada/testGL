@@ -279,16 +279,15 @@ bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA
 		// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
 		if (pos[count] < min[count])
 		{
-			length += (pos[count] - min[count]);
+			length += (pos[count] - min[count]) * (pos[count] - min[count]);
 		}
 		if (pos[count] > max[count])
 		{
-			length += (pos[count] - max[count]);
+			length += (pos[count] - max[count]) * (pos[count] - max[count]);
 		}
 	}
 
-	length = length * length;
-	Radius = Radius * Radius;
+	length = sqrt(length);
 	if (length <= Radius)
 	{
 		VECTOR3 Sub = Pos - _Pos;
