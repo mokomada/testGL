@@ -290,8 +290,9 @@ bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA
 	length = sqrt(length);
 	if (length <= Radius)
 	{
-		VECTOR3 Sub = Pos - _Pos;
-		Pos += Sub.normalize() * (Radius - length);
+		/*VECTOR3 Sub = Pos - _Pos;
+		Pos += Sub.normalize() * (Radius - length);*/
+		SphereToBox(Pos, Radius, _Pos, _Box);
 		return true;
 	}
 
