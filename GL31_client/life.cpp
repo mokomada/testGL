@@ -123,7 +123,7 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 		}
 	}
 
-	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 60.0f , pos.z ) , r , g , b , a );
+	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 40.0f , pos.z ) , r , g , b , a );
 
 	m_life = 3;
 }
@@ -172,7 +172,7 @@ void CLife::Update( void )
 		VECTOR3 playerRot = m_parent->GetRot();
 		VECTOR3 pos = m_balloon->GetPos();
 
-		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 60.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
+		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
 		m_balloon->Update();
 	}
 
