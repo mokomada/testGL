@@ -62,7 +62,7 @@ CWall::~CWall( )
 void CWall::Init(char *texName)
 {
 	CRendererGL	*renderer = CManager::GetRendererGL( );
-	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/Žå‚¿‚á.png");
+	m_Texture = renderer->CreateTextureTGA("./data/TEXTURE/test.png");
 	CScene3DGL::Init(m_Pos, VECTOR2(m_Box.width, m_Box.height),"renderer->CreateTextureTGA(texName);");
 
 }
