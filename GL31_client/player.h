@@ -43,6 +43,8 @@
 //=============================================================================
 class CSceneModel;
 class CLife;
+class CParticle;
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -73,9 +75,12 @@ private:
 	bool m_FlgLowSpeed;
 	int m_HitEffectTime; // 被弾エフェクトの実行時間
 	bool m_DrawOnOffFlag; // 描画のONOFF設定
+	bool m_DeadFlag;
 
 	CSceneModel* Model;
 	CLife* m_pLife;
+	CParticle*	m_pParticle;
+
 	void CollisionDetection(void);
 	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
 	static bool CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2);
