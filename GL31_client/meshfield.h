@@ -19,7 +19,7 @@ typedef struct {
 //=============================================================================
 //	マクロ定義
 //=============================================================================
-#define	MESHFIELD_TEX_FILENAME000	"./data/TEXTURE/field000.tga"	// テクスチャファイル名
+#define	MESHFIELD_TEX_FILENAME000	"./data/TEXTURE/rock.tga"	// テクスチャファイル名
 
 #define	MESHFIELD_VERTICAL		(5)				// メッシュフィールドの縦ブロック数
 #define	MESHFIELD_HORIZONTAL	(5)				// メッシュフィールドの横ブロック数
