@@ -9,10 +9,13 @@
 //
 //=============================================================================
 #include "number.h"
+#include "bullet.h"
 
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+const int PLAYER_NUM		= 4;
+const int BULLET_NUM_MAX	= 100;
 
 //=============================================================================
 //	構造体
@@ -38,7 +41,7 @@ typedef struct {
 class CNetwork
 {
 public:
-	static uint __stdcall ReceiveThread(void *);
+	static uint __stdcall ReceiveThread(void*);
 
 	static void	Init(void);
 	static void	Uninit(void);
@@ -51,22 +54,29 @@ public:
 	static bool	m_ifInitialize;	// Init()が終了したかどうか
 
 private:
+	static void Matching(void);
+	static void	SetPlayerData(void);
+	static void	CreateBullet(void);
+	static void	DeleteBullet(void);
 	static void RemoveDataTag(char* data);
-	static void	ReadConnetProtocol(CONNECT_PROTOCOL *cp);
-	static void	SetPlayerData(char *str);
+	static void	ReadConnetProtocol(CONNECT_PROTOCOL* cp);
 
 	static int			m_PlayerNum;	// プレイヤー数
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
-	static SOCKET		m_SockSend;			// UDPソケット
-	static SOCKET		m_SockRecv;			// UDPソケット
-	static sockaddr_in	m_AddrClient[4];	// 送信アドレス情報
-	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
+	static SOCKET		m_SockSend;					// UDPソケット
+	static SOCKET		m_SockRecv;					// UDPソケット
+	static sockaddr_in	m_AddrClient[PLAYER_NUM];	// 送信アドレス情報
+	static sockaddr_in	m_RecvClient;				// 受信したデータの送信元情報
+	static char			m_ReceiveData[1024];		// 受信データ
+	static char			m_LastMessage[1024];		// 最後に送信されてきたデータ
 
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1
 
 	static int m_ifBindSuccess;
+
+	static list<CBullet*> m_BulletInstance[PLAYER_NUM];
 };
 
 #endif
