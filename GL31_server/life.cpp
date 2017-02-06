@@ -38,7 +38,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CLife::CLife(PRIORITY priority, OBJTYPE objType) : CSceneGL(priority, objType)
+CLife::CLife(bool ifListAdd, PRIORITY priority, OBJTYPE objType) : CSceneGL(ifListAdd, priority, objType)
 {
 }
 /******************************************************************************
@@ -107,7 +107,7 @@ void CLife::Update( void )
 	CPlayer* player = ( CPlayer* )m_parent;
 
 	//仮の処理
-	if( player->m_ifMinePlayer )
+	if( player->GetPlayerNum() )
 	{
 		if (CInput::GetKeyboardTrigger(DIK_O))	
 		{
