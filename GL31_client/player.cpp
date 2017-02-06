@@ -623,3 +623,15 @@ void CPlayer::HitEffect(void) {
 void CPlayer::SetHitEffectTime(int time) {
 	m_HitEffectTime = time;
 }
+
+
+//=============================================================================
+//	関数名	:GetPlayerLife
+//	引数	:time エフェクト時間の長さ（フレーム単位）
+//	戻り値	:無し
+//	説明	:被弾エフェクト設定
+//=============================================================================
+
+int CPlayer::GetPlayerLife(void) {
+	return m_pLife -> GetLife( );
+}
