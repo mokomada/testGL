@@ -33,7 +33,7 @@ class CSceneGL;
 class CLife : public CSceneGL
 {
 public:
-	CLife(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
+	CLife(bool ifListAdd = true, PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 	~CLife();
 
 	static CLife * Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent );
