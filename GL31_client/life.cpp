@@ -123,7 +123,7 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 		}
 	}
 
-	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 40.0f , pos.z ) , r , g , b , a );
+	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 60.0f , pos.z ) , r , g , b , a  , parent );
 
 	m_life = 3;
 }
@@ -136,12 +136,7 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 ******************************************************************************/
 void CLife::Uninit( void )
 {
-	if( m_balloon != NULL )
-	{
-		m_balloon->Uninit();
-		delete m_balloon;
-		m_balloon = NULL;
-	}
+	m_balloon = NULL;
 }
 
 /******************************************************************************
