@@ -95,7 +95,7 @@ typedef struct{
 class CSceneModel : public CScene3DGL
 {
 public:
-	CSceneModel(bool ifListAdd = false, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_NONE);
+	CSceneModel( bool ifListAdd = false , int priority = PRIORITY_PLAYER , OBJTYPE objType = OBJTYPE_NONE );
 	~CSceneModel();
 
 	void	Init(void){}

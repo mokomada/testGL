@@ -14,7 +14,6 @@
 #include "sceneModel.h"
 #include "game.h"
 #include "textureManager.h"
-#include "player.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -35,7 +34,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CShadow::CShadow()
+CShadow::CShadow( bool ifListAdd , int priority , OBJTYPE objType ) : CScene3DGL( ifListAdd , priority , objType )
 {
 }
 
@@ -111,9 +110,7 @@ void CShadow::Update( void )
 	VECTOR3 rot = m_parent->GetRot();
 
 	SetPos( VECTOR3( pos.x , 0.1f , pos.z ) );
-	if( m_parent -> GetObjtype() != OBJTYPE_PLAYER || ( (CPlayer*)m_parent) -> GetPlayerLife() > 0 ) {
-		SetRot( rot );
-	}
+	SetRot( rot );
 
 	if( m_deleteFlag )
 	{
@@ -185,7 +182,7 @@ void CShadow::Draw( void )
 	// 各種設定引き戻し
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);
