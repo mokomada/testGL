@@ -14,6 +14,7 @@
 #include "sceneModel.h"
 #include "game.h"
 #include "textureManager.h"
+#include "player.h"
 
 /******************************************************************************
 *	ƒ}ƒNƒ’è‹`
@@ -110,7 +111,9 @@ void CShadow::Update( void )
 	VECTOR3 rot = m_parent->GetRot();
 
 	SetPos( VECTOR3( pos.x , 0.1f , pos.z ) );
-	SetRot( rot );
+	if( m_parent -> GetObjtype() != OBJTYPE_PLAYER || ( (CPlayer*)m_parent) -> GetPlayerLife() > 0 ) {
+		SetRot( rot );
+	}
 
 	if( m_deleteFlag )
 	{

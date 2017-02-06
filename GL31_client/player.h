@@ -51,7 +51,7 @@ class CParticle;
 class CPlayer : public CScene3DGL
 {
 public:
-	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_NONE);
+	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_PLAYER);
 	~CPlayer();
 
 	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
@@ -64,6 +64,7 @@ public:
 	float GetGauge(void) { return m_Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	bool	m_ifMinePlayer;
+	int GetPlayerLife(void);
 
 private:
 	VECTOR3	m_Scale;		// ÉXÉPÅ[Éã
