@@ -1,5 +1,5 @@
 /******************************************************************************
-*	ファイル：弾
+*	ファイル：
 *	作成者  ：庄司茜
 *	作成日  ：
 ******************************************************************************/
@@ -10,20 +10,12 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
-#include "bullet.h"
-#include "game.h"
-#include "sceneModel.h"
-#include "effect2D.h"
-#include "shadow.h"
 #include "textureManager.h"
 #include "effect.h"
 
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
-
-#define BULLET_LIFE ( 120 )
-
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
@@ -40,9 +32,8 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBullet::CBullet()
+CEffect::CEffect( bool ifListAdd , int priority , OBJTYPE objType ) : CSceneBillboardGL( ifListAdd , priority , objType )
 {
-	m_speed = 0;
 }
 /******************************************************************************
 *	関数名：
@@ -50,31 +41,28 @@ CBullet::CBullet()
 *	戻り値：なし
 *	説明  ：デストラクタ
 ******************************************************************************/
-CBullet::~CBullet()
+CEffect::~CEffect()
 {
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
+CEffect * CEffect::Create( VECTOR3 pos , int playerNumber)
 {
-	CBullet *bullet = new CBullet();
-	bullet->Init( pos , rot , speed );
-
-	return bullet;
+	CEffect * effect = new CEffect;
+	effect->Init( pos , playerNumber );
+	return effect;
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
+void CEffect::Init( VECTOR3 pos , int playerNumber )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
@@ -82,17 +70,19 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Size = VECTOR2( 25.0f , 25.0f );
-	m_Rot = rot;				//発射角度
-	m_speed = speed;			//移動速度
-	m_life = BULLET_LIFE;	//弾の寿命
-	m_playerNumber = CManager::GetWhatPlayer();
+
+	float r , g , b ,a;
+
+	playerNumber == 0 ? r = 1.0f : r = 0.5f;
+	playerNumber == 1 ? b = 1.0f : b = 0.5f;
+	playerNumber == 2 ? g = 1.0f : g = 0.5f;
+	playerNumber == 3 ? r = 1.0f , g = 1.0f : a = 0;
+
+	m_color = VECTOR4( r , g , b , 1.0f );
 	m_Radius = 10.0f;
 
 	// テクスチャ読込
-	m_Texture = CTextureManager::GetTexture( TEXTURE_BULLET );
-
-	//影
-	m_myShadow = CShadow::Create( m_Pos , 25.0f , 25.0f , this );
+	m_Texture = CTextureManager::GetTexture( TEXTURE_EFFECT );
 }
 
 /******************************************************************************
@@ -101,42 +91,102 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 *	戻り値：なし
 *	説明  ：終了処理
 ******************************************************************************/
-void CBullet::Uninit( void )
+void CEffect::Uninit( void )
 {
 	CSceneBillboardGL::Uninit();
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：なし
 *	戻り値：なし
 *	説明  ：更新処理
 ******************************************************************************/
-void CBullet::Update( void )
+void CEffect::Update( void )
 {
-	//エフェクトを生成
-	CEffect::Create( m_Pos , m_playerNumber );
+	m_color.w -= 0.03f;
+	m_Size.x -= 0.4f;
+	m_Size.y -= 0.4f;
 
-	m_life--;
-
-	m_Pos.x -= -sinf( m_Rot.y ) * m_speed;
-	m_Pos.z -= -cosf( m_Rot.y ) * m_speed;
-
-	if( m_life <= 0 )	//寿命が尽きたら削除
+	if( m_color.w < 0.0f )
 	{
-		CEffect2D::Create( m_Pos , VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );
-		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
 		CSceneGL::Release();
 	}
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：なし
 *	戻り値：なし
 *	説明  ：描画処理
 ******************************************************************************/
-void CBullet::Draw( void )
+void CEffect::Draw( void )
 {
-	CSceneBillboardGL::Draw( *m_Texture );
+	// モデルビュー変換行列の操作用
+	GLdouble m[16];
+
+	// モデルビューマトリクスの設定
+	glMatrixMode(GL_MODELVIEW);
+	// マトリクスの退避
+	glPushMatrix();
+
+
+	// ワールドマトリクスの設定
+	glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
+	glScalef(1.0f, 1.0f, 1.0f);
+
+	// 現在のモデルビュー変換行列を取り出す
+	glGetDoublev(GL_MODELVIEW_MATRIX, m);
+
+	// 左上 3x3 要素を単位行列にする
+	m[0] = m[5] = m[10] = 1.0;
+	m[1] = m[2] = m[4] = m[6] = m[8] = m[9] = 0.0;
+
+	// 書き換えた行列を書き戻す
+	glLoadMatrixd(m);
+
+
+	// 描画処理ここから
+	glBindTexture( GL_TEXTURE_2D , *m_Texture );
+	glEnable(GL_TEXTURE_2D);
+
+	//// 深度バッファ設定
+	//glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glAlphaFunc(GL_GEQUAL, 0.1 );
+	glEnable( GL_ALPHA_TEST );
+	glDepthMask( GL_FALSE );
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glEnable(GL_BLEND);
+
+
+	//// ライティングオフ
+	glDisable(GL_LIGHTING);
+
+
+
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	glBegin(GL_TRIANGLE_STRIP);
+	{
+		// 頂点色設定
+		glColor4f( m_color.x , m_color.y , m_color.z , m_color.w );
+
+		DrawPolygon();
+	}
+	glEnd();
+
+	glDisable(GL_ALPHA_TEST);
+
+	// 各種設定引き戻し
+	glEnable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glDisable( GL_ALPHA_TEST );
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glDepthMask( TRUE );
+	glDepthMask(GL_TRUE);
+	// モデルビューマトリックスの設定
+	glMatrixMode(GL_MODELVIEW);
+	// 保存マトリックスの取り出し
+	glPopMatrix();
 }

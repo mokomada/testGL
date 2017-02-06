@@ -28,7 +28,6 @@ public:
 	bool SphereToBox(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box);
 	bool SphereToPolygon(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3);
 	bool SphereToLine(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3);
-	bool SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box);
 
 private:
 	static CCollision *Instance;	//インスタンス

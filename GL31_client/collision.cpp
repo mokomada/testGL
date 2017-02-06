@@ -263,39 +263,3 @@ bool CCollision::SphereToLine(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTO
 
 	return false;
 }
-
-//=============================================================================
-//	球とAABB(軸に平行なボックス)の当たり判定
-//=============================================================================
-bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box)
-{
-	float WidthHalf = _Box->width * 0.5f, HightHalf = _Box->height * 0.5f, DepthHalf = _Box->depth * 0.5f;
-	float pos[3] = { Pos.x, Pos.y, Pos.z },
-		min[3] = { _Pos.x - WidthHalf, _Pos.y - HightHalf, _Pos.z - DepthHalf },
-		max[3] = { _Pos.x + WidthHalf, _Pos.y + HightHalf, _Pos.z + DepthHalf }, length = 0.0f;
-
-	for (int count = 0; count<3; count++)
-	{
-		// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
-		if (pos[count] < min[count])
-		{
-			length += (pos[count] - min[count]) * (pos[count] - min[count]);
-		}
-		if (pos[count] > max[count])
-		{
-			length += (pos[count] - max[count]) * (pos[count] - max[count]);
-		}
-	}
-
-	length = sqrt(length);
-	if (length <= Radius)
-	{
-		/*VECTOR3 Sub = Pos - _Pos;
-		Pos += Sub.normalize() * (Radius - length);*/
-		SphereToBox(Pos, Radius, _Pos, _Box);
-		return true;
-	}
-
-	return false;
-}
-
