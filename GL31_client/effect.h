@@ -1,5 +1,5 @@
 /******************************************************************************
-*	ファイル：
+*	ファイル：エフェクト（バレッド用）
 *	作成者  ：庄司茜
 *	作成日  ：
 ******************************************************************************/
@@ -12,9 +12,7 @@
 /******************************************************************************
 *	インクルードファイル
 ******************************************************************************/
-
-#include "scene3DGL.h"
-
+#include "sceneBillboardGL.h"
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
@@ -24,31 +22,23 @@
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
-class CSceneGL;
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CShadow : public CScene3DGL
+class CEffect : public CSceneBillboardGL
 {
 public:
-	CShadow(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objType = OBJTYPE_NONE);
-	~CShadow();
+	CEffect(bool ifListAdd = true, int priority = PRIORITY_EFFECT, OBJTYPE objType = OBJTYPE_NONE);
+	~CEffect();
 
-	static CShadow * Create( VECTOR3 pos , float width , float height , CSceneGL *parent );
+	static CEffect * Create( VECTOR3 pos , int playerNumber );
 
-	void Init( VECTOR3 pos , float width , float height , CSceneGL *parent );
-	void Uninit( bool isLast );
+	void Init(  VECTOR3 pos , int playerNumber );
+	void Uninit( void );
 	void Update( void );
 	void Draw( void );
 
-	void DeleteFlag( bool flag ) { m_deleteFlag = flag; }
-
 private:
-	VECTOR2 m_Size;		// ポリゴンのサイズ
-	uint		*m_Texture;	// テクスチャ
-
-	MATRIX	m_mtxWorld; // ワールドマトリックス
-	CSceneGL *m_parent;	//親のアドレス
-	bool m_deleteFlag;	//削除のフラグ
-
+	unsigned int *m_Texture;	// テクスチャ
+	VECTOR4 m_color;
 };

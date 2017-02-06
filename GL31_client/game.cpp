@@ -53,9 +53,9 @@ void CGame::Init(void)
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Player.resize(4);
 	m_Player[0] = CPlayer::Create(true, VECTOR3(0.0f, 50.0f, 0.0f));
-	m_Player[1] = CPlayer::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));
-	m_Player[2] = CPlayer::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
-	m_Player[3] = CPlayer::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
+	//m_Player[1] = CPlayer::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f));
+	//m_Player[2] = CPlayer::Create(false, VECTOR3(100.0f, 50.0f, 0.0f));
+	//m_Player[3] = CPlayer::Create(false, VECTOR3(0.0f, 50.0f, 100.0f));
 
 	CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/Žå‚¿‚á.png");
 

@@ -40,6 +40,7 @@
 ******************************************************************************/
 CLife::CLife(PRIORITY priority, OBJTYPE objType) : CSceneGL(priority, objType)
 {
+	m_balloon = NULL;
 }
 /******************************************************************************
 *	ŠÖ”–¼F
@@ -123,7 +124,7 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 		}
 	}
 
-	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 60.0f , pos.z ) , r , g , b , a );
+	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 60.0f , pos.z ) , r , g , b , a  , parent );
 
 	m_life = 3;
 }
@@ -136,12 +137,7 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 ******************************************************************************/
 void CLife::Uninit( void )
 {
-	if( m_balloon != NULL )
-	{
-		m_balloon->Uninit();
-		delete m_balloon;
-		m_balloon = NULL;
-	}
+	m_balloon = NULL;
 }
 
 /******************************************************************************
@@ -152,30 +148,7 @@ void CLife::Uninit( void )
 ******************************************************************************/
 void CLife::Update( void )
 {
-	CPlayer* player = ( CPlayer* )m_parent;
-
-	//‰¼‚Ìˆ—
-	if( player->m_ifMinePlayer )
-	{
-		if (CInput::GetKeyboardTrigger(DIK_O))	
-		{
-			this->HitDamage();
-		}
-	}
-	/////////////////////////////////////////
-
-	if( m_balloon != NULL )
-	{
-		SetBalloonColor();
-
-		VECTOR3 playerPos = m_parent->GetPos();	
-		VECTOR3 playerRot = m_parent->GetRot();
-		VECTOR3 pos = m_balloon->GetPos();
-
-		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 60.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
-		m_balloon->Update();
-	}
-
+	SetBalloonColor();
 }
 
 /******************************************************************************
@@ -186,10 +159,6 @@ void CLife::Update( void )
 ******************************************************************************/
 void CLife::Draw( void )
 {
-	if( m_balloon != NULL )
-	{
-		m_balloon->Draw();
-	}
 }
 
 /******************************************************************************
@@ -208,9 +177,7 @@ void CLife::HitDamage( void )
 	}
 	else
 	{
-		m_balloon->Uninit();
-		delete m_balloon;
-		m_balloon = NULL;
+		m_balloon->SetColor( 1.0f , 1.0f , 1.0f , 0.0f );
 	}
 }
 
@@ -238,16 +205,16 @@ void CLife::SetBalloonColor( void )
 		case 1:
 		{
 			r = 0.0f;
-			g = 1.0f;
-			b = 0.0f;
+			g = 0.0f;
+			b = 1.0f;
 			a = 1.0f;
 			break;
 		}
 		case 2:
 		{
 			r = 0.0f;
-			g = 0.0f;
-			b = 1.0f;
+			g = 1.0f;
+			b = 0.0f;
 			a = 1.0f;
 			break;
 		}

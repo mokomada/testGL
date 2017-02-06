@@ -34,7 +34,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CShadow::CShadow()
+CShadow::CShadow( bool ifListAdd , int priority , OBJTYPE objType ) : CScene3DGL( ifListAdd , priority , objType )
 {
 }
 
@@ -182,7 +182,7 @@ void CShadow::Draw( void )
 	// 各種設定引き戻し
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);

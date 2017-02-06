@@ -33,7 +33,7 @@ class CShadow;
 class CBullet : public CSceneBillboardGL
 {
 public:
-	CBullet(bool ifListAdd = true, int priority = PRIORITY_BULLET, OBJTYPE objType = OBJTYPE_BULLET);
+	CBullet();
 	~CBullet();
 
 	static CBullet * Create( VECTOR3 pos , VECTOR3 rot , float speed );
@@ -44,6 +44,7 @@ public:
 	void Draw( void );
 
 private:
+	int m_playerNumber;	//ƒvƒŒƒCƒ„[‚ª‰½P‚©‚ğ•Û‘¶
 	int m_life;		//’e‚Ìõ–½
 	float m_speed;
 	CShadow *m_myShadow;	//©•ª‚Ì‰e

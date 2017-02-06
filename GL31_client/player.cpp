@@ -361,6 +361,9 @@ void CPlayer::Update(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
+		// 深度バッファ有効化
+	glEnable(GL_DEPTH_TEST);
+
 	if(m_DrawOnOffFlag) {
 		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリクスの設定
 		glPushMatrix();					// マトリクスの退避
@@ -372,6 +375,9 @@ void CPlayer::Draw(void)
 		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
 		glScalef(m_Scale.x, m_Scale.y, m_Scale.z);
 
+		// 深度バッファ有効化
+		glEnable(GL_DEPTH_TEST);
+
 		// モデル描画
 		Model->Draw();
 
@@ -379,6 +385,8 @@ void CPlayer::Draw(void)
 		glPopMatrix();					// 保存マトリックスの取り出し
 	}
 
+		// 深度バッファ有効化
+	glDisable(GL_DEPTH_TEST);
 	//風船描画
 	m_pLife->Draw();
 
