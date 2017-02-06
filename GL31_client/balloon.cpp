@@ -39,7 +39,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBalloon::CBalloon(PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(priority, objType)
+CBalloon::CBalloon()
 {
 	m_deleteFlag = false;
 	m_u = 0.0f;
@@ -60,10 +60,10 @@ CBalloon::~CBalloon()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a  , CSceneGL * parent )
+CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a )
 {
 	CBalloon *balloon = new CBalloon;
-	balloon->Init( pos , r , g , b , a , parent );
+	balloon->Init( pos , r , g , b , a );
 
 	return balloon;
 }
@@ -74,7 +74,7 @@ CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent )
+void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
@@ -86,7 +86,6 @@ void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a , CScen
 	m_Size = VECTOR2( 60.0f , 60.0f );
 	m_deleteFlag = false;
 	m_u = 0.0f;
-	m_parent = parent;
 
 	// テクスチャ読込
 	m_Texture = CTextureManager::GetTexture( TEXTURE_BALLOON );
@@ -110,15 +109,6 @@ void CBalloon::Uninit( void )
 ******************************************************************************/
 void CBalloon::Update( void )
 {
-	CPlayer* player = ( CPlayer* )m_parent;
-
-	/////////////////////////////////////////
-
-	VECTOR3 playerPos = m_parent->GetPos();	
-	VECTOR3 playerRot = m_parent->GetRot();
-
-	SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 60.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
-
 }
 
 /******************************************************************************
@@ -154,6 +144,7 @@ void CBalloon::Draw( void )
 	// 書き換えた行列を書き戻す
 	glLoadMatrixd(m);
 
+
 	// 描画処理ここから
 	glBindTexture(GL_TEXTURE_2D, *m_Texture);
 	glEnable(GL_TEXTURE_2D);
@@ -164,8 +155,8 @@ void CBalloon::Draw( void )
 	// ライティングオフ
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
-	glAlphaFunc(GL_GEQUAL, 0.1 );
-	glEnable( GL_ALPHA_TEST );
+	glAlphaFunc(GL_GEQUAL, 0.5);
+	glEnable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glDepthMask( FALSE );
 	glBegin(GL_TRIANGLE_STRIP);
@@ -180,7 +171,7 @@ void CBalloon::Draw( void )
 	// 各種設定引き戻し
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glDepthMask( TRUE );
