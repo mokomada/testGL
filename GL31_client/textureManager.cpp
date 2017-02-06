@@ -33,7 +33,6 @@ char * CTextureManager::m_texName[ TEXTURE_MAX ] = 				//テクスチャの名前
 	{"./data/TEXTURE/EFFECT/Effect_Explosion01.tga"},	// 赤い爆発(機体用)
 	{"./data/TEXTURE/EFFECT/Effect_Smoke00.tga"},		// 土煙テスト用
 	{"./data/TEXTURE/balloon.png"},							// 風船
-	{"./data/TEXTURE/effect000.png"}							//エフェクト
 };
 /******************************************************************************
 *	関数名：

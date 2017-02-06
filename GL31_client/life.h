@@ -33,7 +33,7 @@ class CSceneGL;
 class CLife : public CSceneGL
 {
 public:
-	CLife(PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
+	CLife(PRIORITY priority = PRIORITY_NONE, OBJTYPE objType = OBJTYPE_NONE);
 	~CLife();
 
 	static CLife * Create( VECTOR3 pos , CSceneGL *parent );
@@ -45,6 +45,7 @@ public:
 
 	void HitDamage( void );	//ダメージを受けたら
 	void SetBalloonColor( void );
+	int GetLife( void ); // HP残量の取得
 
 private:
 	CBalloon *m_balloon;

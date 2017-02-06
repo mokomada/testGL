@@ -31,7 +31,7 @@ class CSceneGL;
 class CShadow : public CScene3DGL
 {
 public:
-	CShadow(bool ifListAdd = true, int priority = PRIORITY_3D, OBJTYPE objType = OBJTYPE_NONE);
+	CShadow();
 	~CShadow();
 
 	static CShadow * Create( VECTOR3 pos , float width , float height , CSceneGL *parent );
