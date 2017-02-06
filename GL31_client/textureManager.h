@@ -25,9 +25,9 @@ typedef enum
 	TEXTURE_BULLET,
 	TEXTURE_BULLETEXPLODE,	// プレイヤ爆発
 	TEXTURE_PLAYEREXPLODE,	// 球爆発
-	TEXTURE_SMOKE,				// プレイヤ土煙
+	TEXTURE_SMOKE,			// プレイヤ土煙
 	TEXTURE_BALLOON,			// 風船	
-	TEXTURE_EFFECT,			//エフェクト
+
 	TEXTURE_MAX
 }TEXTURE_LABEL;
 

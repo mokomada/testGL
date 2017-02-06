@@ -6,7 +6,7 @@ typedef struct
 		VECTOR3 pos;
 		float rot;
 
-}RANKING;
+}SQUARE;
 
 class CSquare : public CScene3DGL
 {
@@ -22,11 +22,9 @@ class CSquare : public CScene3DGL
 		static CSquare *Create(VECTOR3 pos , VECTOR3 size, char* TexName = "", VECTOR4 color = VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	private:
-		//VECTOR3 m_pos;
 
 		VECTOR4 m_Color;
-		RANKING m_Ranking;
-		//float	m_rot;
+		SQUARE m_Square;
 
 		int m_Texture;
 

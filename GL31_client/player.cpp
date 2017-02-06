@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//	�^�C�g��	�v���C���[
-//	�t�@�C����	player.cpp
-//	�쐬��		AT13A284_10 �΋���
-//	�쐬��		2016/12/5
+//	タイトル	プレイヤー
+//	ファイル名	player.cpp
+//	作成者		AT13A284_10 石橋拓巳
+//	作成日		2016/12/5
 //
 //=============================================================================
 //=============================================================================
-//	�C���N���[�h
+//	インクルード
 //=============================================================================
 #include <stdio.h>
 #include "main.h"
@@ -24,12 +24,13 @@
 #include "shadow.h"
 #include "life.h"
 #include "collision.h"
+#include "particle.h"
 
 //=============================================================================
-//	�֐���	:CScene3D()
-//	����	:����
-//	�߂�l	:����
-//	����	:�R���X�g���N�^�B
+//	関数名	:CScene3D()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:コンストラクタ。
 //=============================================================================
 CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
@@ -37,10 +38,10 @@ CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifL
 }
 
 //=============================================================================
-//	�֐���	:~CScene3D()
-//	����	:����
-//	�߂�l	:����
-//	����	:�f�X�g���N�^�B
+//	関数名	:~CScene3D()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:デストラクタ。
 //=============================================================================
 CPlayer::~CPlayer()
 {
@@ -48,19 +49,19 @@ CPlayer::~CPlayer()
 }
 
 //=============================================================================
-//	�֐���	:Init
-//	����	:VECTOR3 pos(�����ʒu)
-//	�߂�l	:����
-//	����	:�������������s���Ƌ��ɁA�����ʒu��ݒ肷��B
+//	関数名	:Init
+//	引数	:VECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
 void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 	
-	// ���v���C���[���ǂ����Z�b�g
+	// 自プレイヤーかどうかセット
 	m_ifMinePlayer = ifMinePlayer;
 
-	// �e�평����
+	// 各種初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
@@ -69,179 +70,204 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_bJump			= false;
 	m_Scale			= VECTOR3(1.0f, 1.0f, 1.0f);
 
-	m_Gauge = 100.0f;	//�Q�[�W�̏�����
+	m_Gauge = 100.0f;	//ゲージの初期化
 	m_FlgLowSpeed = false;
 	m_Radius = 30.0f;
-	m_HitEffectTime = 0; // ��e�G�t�F�N�g���Ԃ̏�����
-	m_DrawOnOffFlag = true; // �`�揈����ONOFF�t���O��ON��
+	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
+	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
+	m_DeadFlag = false; // 死亡フラグをOFFに
 
-	Model = CSceneModel::Create("./data/MODEL/car.obj");
+	Model = CSceneModel::Create("./data/MODEL/car.obj", VECTOR3(0.0f, -25.0f, 0.0f));
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
 
-	//����ŕ��D��`�悵�܂�
-	//Uninit,Update,Draw�ɂĊe�֐����Ă�ł܂��B
-	//�_���[�W���󂯂���CLife����HitDamage�֐����g���Ă�������
+	//これで風船を描画します
+	//Uninit,Update,Drawにて各関数を呼んでます。
+	//ダメージを受けたらCLife内のHitDamage関数を使ってください
 	m_pLife = CLife::Create( m_Pos , this );
+
+	// パーティクルオブジェクト生成
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
 }
 
 //=============================================================================
-//	�֐���	:Uninit
-//	����	:����
-//	�߂�l	:����
-//	����	:�I���������s���B
+//	関数名	:Uninit
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:終了処理を行う。
 //=============================================================================
 void CPlayer::Uninit(bool isLast)
 {
 	m_pLife->Uninit();
 	Model->Uninit();
+	m_pParticle->Uninit();
 }
 
 //=============================================================================
-//	�֐���	:Update
-//	����	:����
-//	�߂�l	:����
-//	����	:�X�V�������s���B
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
 //=============================================================================
 void CPlayer::Update(void)
 {
-	CCameraGL	*camera = CManager::GetCamera();	// �J����
+	CCameraGL	*camera = CManager::GetCamera();	// カメラ
+	int life = m_pLife -> GetLife( );
 
 	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
 	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
 
-	// ���v���C���[�̏ꍇ�ɂ̂ݏ���
-	if (m_ifMinePlayer)
-	{
-		if (CInput::GetKeyboardPress(DIK_W))				// �ړ������Ɉړ�
+	// ライフが0以下ならば操作を受け付けない
+	if(life > 0) {
+		// 自プレイヤーの場合にのみ処理
+		if (m_ifMinePlayer)
 		{
-			if (CInput::GetKeyboardPress(DIK_A))				// ������
+			if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 			{
-				//��]�ʂ̉��Z
-				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
-			}
-			if (CInput::GetKeyboardPress(DIK_D))				// �E���
-			{
-				//��]�ʂ̉��Z
-				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
-			}
+				if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+				{
+					//回転量の加算
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+				}
+				if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+				{
+					//回転量の加算
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+				}
 
-			// �ړ��ʂ�ݒ�
-			if (m_FlgLowSpeed == true)
-			{
-				m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
+				// 移動量を設定
+				if (m_FlgLowSpeed == true)
+				{
+					m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
+				}
+				if (m_FlgLowSpeed == false)
+				{
+					m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
+				}
 			}
-			if (m_FlgLowSpeed == false)
+			if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 			{
-				m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
-			}
-		}
-		if (CInput::GetKeyboardPress(DIK_S))		// �ړ������Ɉړ��̔��΂Ɉړ�
-		{
-			if (CInput::GetKeyboardPress(DIK_A))				// ������
-			{
-				//��]�ʂ̉��Z
-				if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
-			}
-			if (CInput::GetKeyboardPress(DIK_D))				// �E���
-			{
-				//��]�ʂ̉��Z
-				if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-				else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
-			}
+				if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+				{
+					//回転量の加算
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+				}
+				if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+				{
+					//回転量の加算
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+				}
 
-			// �ړ��ʂ�ݒ�
-			if (m_FlgLowSpeed == true)
-			{
-				m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
-			}
-			if (m_FlgLowSpeed == false)
-			{
-				m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
-				m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
-			}
-		}
-		if (m_bJump == true)
-		{
-			if (CInput::GetKeyboardPress(DIK_W))				// �ړ������Ɉړ�
-			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ������
+				// 移動量を設定
+				if (m_FlgLowSpeed == true)
 				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
 				}
-				if (CInput::GetKeyboardPress(DIK_D))				// �E���
+				if (m_FlgLowSpeed == false)
 				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
+					m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 				}
 			}
-			else if (CInput::GetKeyboardPress(DIK_S))		// �ړ������Ɉړ��̔��΂Ɉړ�
+			if (m_bJump == true)
 			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ������
+				if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
 				}
-				if (CInput::GetKeyboardPress(DIK_D))				// �E���
+				else if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
 				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
 				}
-			}
-			else
-			{
-				if (CInput::GetKeyboardPress(DIK_A))				// ������
+				else
 				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					if (CInput::GetKeyboardPress(DIK_A))				// 左周り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					}
+					if (CInput::GetKeyboardPress(DIK_D))				// 右回り
+					{
+						//回転量の加算
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					}
 				}
-				if (CInput::GetKeyboardPress(DIK_D))				// �E���
-				{
-					//��]�ʂ̉��Z
-					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
-				}
-			}
 			
+			}
+
+			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
+
+			camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
+			camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
+
+			// ジャンプ
+			if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+			{
+				m_Move.y += PLAYER_JUMP;
+
+				m_bJump = true;
+			}
+			// 弾発射
+			if (CInput::GetKeyboardTrigger(DIK_L))
+			{
+				CBullet::Create( m_Pos , m_Rot , 10.0f );
+			}
 		}
-
-		camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-		camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
-
-		camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
-		camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
-
-		// �W�����v
-		if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+		// 回転量補正
+		if (m_Rot.y - m_MoveDirection.y > PI)				// 回転量がプラス方向に逆向きの場合
 		{
-			m_Move.y += PLAYER_JUMP;
-
-			m_bJump = true;
+			// 回転量を逆方向に
+			m_Rot.y -= (PI * 2.0f);
 		}
-		// �e����
-		if (CInput::GetKeyboardTrigger(DIK_L))
+		else if (m_Rot.y - m_MoveDirection.y < -PI)			// 回転量がマイナス方向に逆向きの場合
 		{
-			CBullet::Create( m_Pos , m_Rot , 10.0f );
+			// 回転量を逆方向に
+			m_Rot.y += (PI * 2.0f);
 		}
+
+		// 回転量を設定
+		m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
 	}
 
+
+	//当たり判定
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
 	{
-		if (CCollision::GetInstance()->SphereToBox(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
+		if (CCollision::GetInstance()->SphereToAabb(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
 		{
 			CDebugProcGL::DebugProc("HitBox\n");
 		}
@@ -254,8 +280,8 @@ void CPlayer::Update(void)
 			if (CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
 			{
 				if(m_HitEffectTime <= 0) {
-					m_HitEffectTime = 120;
 					m_pLife -> HitDamage();
+					if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
 				}
 //				Release();
 //				return;
@@ -263,26 +289,30 @@ void CPlayer::Update(void)
 		}
 	}
 
-	// ��]�ʕ␳
-	if (m_Rot.y - m_MoveDirection.y > PI)				// ��]�ʂ��v���X�����ɋt�����̏ꍇ
-	{
-		// ��]�ʂ��t������
-		m_Rot.y -= (PI * 2.0f);
-	}
-	else if (m_Rot.y - m_MoveDirection.y < -PI)			// ��]�ʂ��}�C�i�X�����ɋt�����̏ꍇ
-	{
-		// ��]�ʂ��t������
-		m_Rot.y += (PI * 2.0f);
+
+	//************* HP0時演出テストここから *****************//
+
+	if(life <= 0 && !m_DeadFlag) {
+		m_Move.y += PLAYER_JUMP * 3;
+		m_RotMove.x = (rand() % 40) * 0.01f;
+		m_RotMove.y = (rand() % 40) * 0.01f;
+		m_RotMove.z = (rand() % 40) * 0.01f;
+		m_bJump = true;
+		m_DeadFlag = true;
 	}
 
-	// ��]�ʂ�ݒ�
-	m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
+	m_Rot.x += m_RotMove.x;
+	m_Rot.y += m_RotMove.y;
+	m_Rot.z += m_RotMove.z;
 
-	// �ړ��ʔ��f
+	//************* HP0時演出テストここまで *****************//
+
+
+	// 移動量反映
 	m_Pos.x += m_Move.x;
 	m_Pos.z += m_Move.z;
 
-	//�ړ��ʂ̌���
+	//移動量の減衰
 	if (m_bJump == true)
 	{
 		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
@@ -294,7 +324,7 @@ void CPlayer::Update(void)
 		m_Move += (-m_Move * MODEL_SPEED_DOWN);
 	}
 
-	// �W�����v�ʂ̔��f
+	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
 	if (m_ifMinePlayer)
@@ -302,23 +332,27 @@ void CPlayer::Update(void)
 		CollisionDetection();
 	}
 
-	// �v���C���[�̍�����ݒ�
-	if (m_Pos.y < 20.0f)
+	// プレイヤーの高さを設定
+
+	if (m_Pos.y < 25.0f)
 	{
-		m_Pos.y = 20.0f;
+		m_Pos.y = 25.0f;
+		m_RotMove.x = 0;
+		m_RotMove.y = 0;
+		m_RotMove.z = 0;
 		m_bJump = false;
 	}
 	else
 	{
-		// �W�����v�ʂ̌���
+		// ジャンプ量の減衰
 		m_Move.y -= PLAYER_GRAVITY;
 	}
 
 
-	//*************************** ��e�G�t�F�N�g�����J�n ***************************
+	//*************************** 被弾エフェクト処理開始 ***************************
 
-	// �e�X�g�p 8�`0�L�[�Ŕ�e�G�t�F�N�g ���ꂼ�꒷�����Ⴄ
-	// ��8�̔{��-4�`8�̔{��-2�ɐݒ肷��ƍŏ��̓_�ł�3�`1�t���[���Z���Ȃ�̂Œ��ӁB��{��4�t���[������ONOFF��؂�ւ���_��
+	// テスト用 8～0キーで被弾エフェクト それぞれ長さが違う
+	// ※8の倍数-4～8の倍数-2に設定すると最初の点滅が3～1フレーム短くなるので注意。基本は4フレーム毎にONOFFを切り替える点滅
 	if(CInput::GetKeyboardTrigger(DIK_8) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 30;
 	}
@@ -329,75 +363,73 @@ void CPlayer::Update(void)
 		m_HitEffectTime = 120;
 	}
 
-	// ��e�G�t�F�N�g���������s
+	// 被弾エフェクト処理を実行
 	if(m_HitEffectTime > 0) {
 		HitEffect( );
 	}
 
-	//*************************** ��e�G�t�F�N�g�����I�� ***************************
-	
-	//���D�X�V
+	//*************************** 被弾エフェクト処理終了 ***************************
+
+
+	// 自プレイヤーの場合、位置を送信
+	if (m_ifMinePlayer)
+	{
+		char str[1024] = { NULL };
+
+		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
+
+		CNetwork::SendData(str);
+	}
+
+	//風船更新
 	m_pLife->Update();
 
-	Model->Update();
-
-	// ���v���C���[�̏ꍇ�A�ʒu�𑗐M
-	if(m_ifMinePlayer && (CManager::m_Frame % 60 == 0))
+	// 煙パーティクル発生
+	if(m_DeadFlag)
 	{
-		// �f�[�^���M
-		CNetwork::SendData("player, %d, POS(%.1f %.1f %.1f), ROT(%.1f %.1f %.1f), VEC(%.1f %.1f %.1f)", CManager::GetWhatPlayer(),
-			m_Pos.x, m_Pos.y, m_Pos.z,
-			m_Rot.x, m_Rot.y, m_Rot.z,
-			m_Move.x, m_Move.y, m_Move.z
-		);
+		m_pParticle->Update();
 	}
+
+	Model->Update();
 }
 
 //=============================================================================
-//	�֐���	:Draw
-//	����	:����
-//	�߂�l	:����
-//	����	:�`�揈�����s���B
+//	関数名	:Draw
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:描画処理を行う。
 //=============================================================================
 void CPlayer::Draw(void)
 {
-		// �[�x�o�b�t�@�L����
-	glEnable(GL_DEPTH_TEST);
-
 	if(m_DrawOnOffFlag) {
-		glMatrixMode(GL_MODELVIEW);		// ���f���r���[�}�g���N�X�̐ݒ�
-		glPushMatrix();					// �}�g���N�X�̑ޔ�
+		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリクスの設定
+		glPushMatrix();					// マトリクスの退避
 
-		// ���[���h�}�g���N�X�̐ݒ�
+		// ワールドマトリクスの設定
 		glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
-		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// ��]�}�g���b�N�X�̐ݒ�A�p�x�͓x���@��
-		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// ��]�}�g���b�N�X�̐ݒ�A�p�x�͓x���@��
-		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// ��]�}�g���b�N�X�̐ݒ�A�p�x�͓x���@��
+		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
 		glScalef(m_Scale.x, m_Scale.y, m_Scale.z);
 
-		// �[�x�o�b�t�@�L����
-		glEnable(GL_DEPTH_TEST);
-
-		// ���f���`��
+		// モデル描画
 		Model->Draw();
 
-		glMatrixMode(GL_MODELVIEW);		// ���f���r���[�}�g���b�N�X�̐ݒ�
-		glPopMatrix();					// �ۑ��}�g���b�N�X�̎��o��
+		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
+		glPopMatrix();					// 保存マトリックスの取り出し
 	}
 
-		// �[�x�o�b�t�@�L����
-	glDisable(GL_DEPTH_TEST);
-	//���D�`��
+	//風船描画
 	m_pLife->Draw();
 
-	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================
-//	�֐���	:Create
-//	����	:VECTOR3 pos(�����ʒu)
-//	�߂�l	:����
-//	����	:�C���X�^���X�������s���Ƌ��ɁA�����ʒu��ݒ肷��B
+//	関数名	:Create
+//	引数	:VECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
 CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 {
@@ -411,10 +443,10 @@ CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 }
 
 //=============================================================================
-//	�֐���	:Update
-//	����	:����
-//	�߂�l	:����
-//	����	:�X�V�������s���B
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
 //=============================================================================
 void CPlayer::CollisionDetection(void)
 {
@@ -480,10 +512,10 @@ void CPlayer::CollisionDetection(void)
 }
 
 //=============================================================================
-//	�֐���	:Update
-//	����	:����
-//	�߂�l	:����
-//	����	:�X�V�������s���B
+//	関数名	:Update
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:更新処理を行う。
 //=============================================================================
 bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1)
 {
@@ -500,10 +532,10 @@ bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1
 
 
 //=============================================================================
-//	�֐���	:CollisionDetectionBox
-//	����	:����
-//	�߂�l	:����
-//	����	:�{�b�N�X�̓����蔻��
+//	関数名	:CollisionDetectionBox
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ボックスの当たり判定
 //=============================================================================
 bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2)
 {
@@ -532,10 +564,10 @@ bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, 
 
 
 //=============================================================================
-//	�֐���	:HitEffect
-//	����	:����
-//	�߂�l	:����
-//	����	:��e�G�t�F�N�g
+//	関数名	:HitEffect
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:被弾エフェクト
 //=============================================================================
 
 void CPlayer::HitEffect(void) {
@@ -546,9 +578,9 @@ void CPlayer::HitEffect(void) {
 		m_DrawOnOffFlag = false;
 	}
 
-	// �G�t�F�N�g���Ԃ����炷
+	// エフェクト時間を減らす
 	m_HitEffectTime--;
-	// �����G�t�F�N�g�̎c�莞�Ԃ�0����������ꍇ�A���Ԃ�0�ɂ��ĕ`��t���O��ON�ɂ���i�N���蓾�Ȃ��͂������Ǖی��j
+	// もしエフェクトの残り時間が0を下回った場合、時間を0にして描画フラグをONにする（起こり得ないはずだけど保険）
 	if(m_HitEffectTime < 0) {
 		m_HitEffectTime = 0;
 		m_DrawOnOffFlag = true;
@@ -557,12 +589,24 @@ void CPlayer::HitEffect(void) {
 
 
 //=============================================================================
-//	�֐���	:SetHitEffectTime
-//	����	:time �G�t�F�N�g���Ԃ̒����i�t���[���P�ʁj
-//	�߂�l	:����
-//	����	:��e�G�t�F�N�g�ݒ�
+//	関数名	:SetHitEffectTime
+//	引数	:time エフェクト時間の長さ（フレーム単位）
+//	戻り値	:無し
+//	説明	:被弾エフェクト設定
 //=============================================================================
 
 void CPlayer::SetHitEffectTime(int time) {
 	m_HitEffectTime = time;
+}
+
+
+//=============================================================================
+//	関数名	:GetPlayerLife
+//	引数	:time エフェクト時間の長さ（フレーム単位）
+//	戻り値	:無し
+//	説明	:被弾エフェクト設定
+//=============================================================================
+
+int CPlayer::GetPlayerLife(void) {
+	return m_pLife -> GetLife( );
 }
