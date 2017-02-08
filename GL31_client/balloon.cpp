@@ -110,6 +110,12 @@ void CBalloon::Uninit( void )
 ******************************************************************************/
 void CBalloon::Update( void )
 {
+	CPlayer* player = ( CPlayer* )m_parent;
+	VECTOR3 playerPos = m_parent->GetPos();	
+	VECTOR3 playerRot = m_parent->GetRot();
+
+
+	SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
 }
 
 /******************************************************************************

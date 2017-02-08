@@ -159,17 +159,8 @@ void CLife::Update( void )
 	}
 	/////////////////////////////////////////
 
-	if( m_balloon != NULL )
-	{
-		SetBalloonColor();
+	SetBalloonColor();
 
-		VECTOR3 playerPos = m_parent->GetPos();	
-		VECTOR3 playerRot = m_parent->GetRot();
-		VECTOR3 pos = m_balloon->GetPos();
-
-		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
-		m_balloon->Update();
-	}
 
 }
 
@@ -181,12 +172,11 @@ void CLife::Update( void )
 ******************************************************************************/
 void CLife::Draw( void )
 {
-	if( m_balloon != NULL )
-	{
-		m_balloon->Draw();
-	}
+	//if( m_balloon != NULL )
+	//{
+	//	m_balloon->Draw();
+	//}
 }
-
 /******************************************************************************
 *	ŠÖ”–¼Fvoid CLife::HitDamage( void )
 *	ˆø”  F‚È‚µ
@@ -203,9 +193,8 @@ void CLife::HitDamage( void )
 	}
 	else
 	{
-		m_balloon->Uninit();
-		delete m_balloon;
-		m_balloon = NULL;
+		m_balloon->SetColor( 1.0f , 1.0f , 1.0f , 0.0f ); 
+
 	}
 }
 

@@ -78,12 +78,15 @@ HRESULT CTextureManager::Init( void )
 ******************************************************************************/
 void CTextureManager::Uninit( void )
 {
-	for( int i = 0; i < TEXTURE_MAX; i++ )
+	int i;
+	for( i = 0; i < TEXTURE_MAX; i++ )
 	{
 		// テクスチャ削除
 		if(m_Texture[ i ] != NULL)
 		{
 			glDeleteTextures( 1 , &m_Texture[ i ] );
+			m_Texture[ i ] = NULL;
 		}
 	}
+	int test;
 }

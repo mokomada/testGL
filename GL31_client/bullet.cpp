@@ -40,7 +40,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBullet::CBullet()
+CBullet::CBullet(bool ifListAdd, int priority, OBJTYPE objType ) : CSceneBillboardGL(ifListAdd, priority , objType)
 {
 	m_speed = 0;
 }
