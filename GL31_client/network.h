@@ -58,8 +58,9 @@ private:
 
 	static SOCKET		m_SockSend;				// UDPソケット
 	static SOCKET		m_SockRecv;				// UDPソケット
-	static sockaddr_in	m_AddrServer;		// サーバのアドレス
-	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
+	static sockaddr_in	m_AddrServer;			// サーバのアドレス
+	static char			m_ReceiveData[65535];	// 受信データ
+	static char			m_LastMessage[65535];	// 最後に送信されてきたデータ
 
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1

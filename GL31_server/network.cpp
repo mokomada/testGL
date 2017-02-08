@@ -29,8 +29,8 @@ SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
 sockaddr_in	CNetwork::m_RecvClient;
-char		CNetwork::m_ReceiveData[1024] = "NO DATA";
-char		CNetwork::m_LastMessage[1024] = "NO DATA";
+char		CNetwork::m_ReceiveData[65535] = "NO DATA";
+char		CNetwork::m_LastMessage[65535] = "NO DATA";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 bool		CNetwork::m_ifInitialize = false;
@@ -119,7 +119,29 @@ void CNetwork::Uninit(void)
 //=============================================================================
 void CNetwork::Update(void)
 {
-	
+	if(CManager::GetModeState() == MODE_GAME)
+	{
+		SendData("1, POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
+
+			CGame::GetPlayer()[0]->GetPos().x, CGame::GetPlayer()[0]->GetPos().y, CGame::GetPlayer()[0]->GetPos().z,
+			CGame::GetPlayer()[0]->GetRot().x, CGame::GetPlayer()[0]->GetRot().y, CGame::GetPlayer()[0]->GetRot().z,
+			CGame::GetPlayer()[0]->GetVec().x, CGame::GetPlayer()[0]->GetVec().y, CGame::GetPlayer()[0]->GetVec().z,
+
+			CGame::GetPlayer()[1]->GetPos().x, CGame::GetPlayer()[1]->GetPos().y, CGame::GetPlayer()[1]->GetPos().z,
+			CGame::GetPlayer()[1]->GetRot().x, CGame::GetPlayer()[1]->GetRot().y, CGame::GetPlayer()[1]->GetRot().z,
+			CGame::GetPlayer()[1]->GetVec().x, CGame::GetPlayer()[1]->GetVec().y, CGame::GetPlayer()[1]->GetVec().z,
+
+			CGame::GetPlayer()[2]->GetPos().x, CGame::GetPlayer()[2]->GetPos().y, CGame::GetPlayer()[2]->GetPos().z,
+			CGame::GetPlayer()[2]->GetRot().x, CGame::GetPlayer()[2]->GetRot().y, CGame::GetPlayer()[2]->GetRot().z,
+			CGame::GetPlayer()[2]->GetVec().x, CGame::GetPlayer()[2]->GetVec().y, CGame::GetPlayer()[2]->GetVec().z,
+
+			CGame::GetPlayer()[3]->GetPos().x, CGame::GetPlayer()[3]->GetPos().y, CGame::GetPlayer()[3]->GetPos().z,
+			CGame::GetPlayer()[3]->GetRot().x, CGame::GetPlayer()[3]->GetRot().y, CGame::GetPlayer()[3]->GetRot().z,
+			CGame::GetPlayer()[3]->GetVec().x, CGame::GetPlayer()[3]->GetVec().y, CGame::GetPlayer()[3]->GetVec().z);
+	}
 }
 
 //=============================================================================
@@ -167,7 +189,7 @@ uint __stdcall CNetwork::ReceiveThread(void* p)
 void CNetwork::SendData(char* format, ...)
 {
 	va_list list;
-	char str[1024];
+	char str[65535];
 
 	// フォーマット変換
 	va_start(list, format);
@@ -253,7 +275,7 @@ void CNetwork::Matching(void)
 	{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
 
 		// 重複しているプレイヤー番号をセット
-		sprintf(buff, "matching %d", i);
+		sprintf(buff, "0, %d", i);
 
 		// プレイヤー番号を送信
 		sendto(m_SockSend, buff, strlen(buff), 0, (sockaddr*)&m_AddrClient[i], sizeof(m_AddrClient));
@@ -290,7 +312,7 @@ void CNetwork::SetPlayerData(void)
 	VECTOR3				vec = VEC3_ZERO;
 
 
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	for(int i = 0 ; i < (int)player.size() ; i++)
 	{
 		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
 		{

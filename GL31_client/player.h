@@ -79,6 +79,7 @@ private:
 	bool m_DeadFlag;
 
 	CSceneModel* Model;
+	CScene3DGL* Scene3D[2];
 	CLife* m_pLife;
 	CParticle*	m_pParticle;
 
