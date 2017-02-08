@@ -68,8 +68,8 @@ private:
 	static SOCKET		m_SockRecv;					// UDPソケット
 	static sockaddr_in	m_AddrClient[PLAYER_NUM];	// 送信アドレス情報
 	static sockaddr_in	m_RecvClient;				// 受信したデータの送信元情報
-	static char			m_ReceiveData[1024];		// 受信データ
-	static char			m_LastMessage[1024];		// 最後に送信されてきたデータ
+	static char			m_ReceiveData[65535];		// 受信データ
+	static char			m_LastMessage[65535];		// 最後に送信されてきたデータ
 
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1
