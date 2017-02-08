@@ -376,8 +376,7 @@ void CPlayer::Update(void)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
 
 		CNetwork::SendData(str);
 	}
@@ -598,16 +597,4 @@ void CPlayer::HitEffect(void) {
 
 void CPlayer::SetHitEffectTime(int time) {
 	m_HitEffectTime = time;
-}
-
-
-//=============================================================================
-//	関数名	:GetPlayerLife
-//	引数	:time エフェクト時間の長さ（フレーム単位）
-//	戻り値	:無し
-//	説明	:被弾エフェクト設定
-//=============================================================================
-
-int CPlayer::GetPlayerLife(void) {
-	return m_pLife -> GetLife( );
 }

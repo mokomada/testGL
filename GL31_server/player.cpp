@@ -53,12 +53,12 @@ CPlayer::~CPlayer()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
+void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 	
 	// 自プレイヤーかどうかセット
-	m_PlayerNumber = whatPlayer;
+	m_ifMinePlayer = ifMinePlayer;
 
 	// 各種初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
@@ -75,24 +75,7 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
 	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
 
-	switch(m_PlayerNumber)
-	{
-	case 0:
-		Model = CSceneModel::Create("./data/MODEL/car1.obj");
-		break;
-	case 1:
-		Model = CSceneModel::Create("./data/MODEL/car2.obj");
-		break;
-	case 2:
-		Model = CSceneModel::Create("./data/MODEL/car3.obj");
-		break;
-	case 3:
-		Model = CSceneModel::Create("./data/MODEL/car4.obj");
-		break;
-	default:
-		Model = CSceneModel::Create("./data/MODEL/car1.obj");
-		break;
-	}
+	Model = CSceneModel::Create("./data/MODEL/car.obj");
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
@@ -130,7 +113,7 @@ void CPlayer::Update(void)
 	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
 
 	// 自プレイヤーの場合にのみ処理
-	if (m_PlayerNumber == CManager::GetWhatPlayer())
+	if (m_ifMinePlayer)
 	{
 		if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 		{
@@ -264,7 +247,7 @@ void CPlayer::Update(void)
 		}
 	}
 
-	if (m_PlayerNumber != CManager::GetWhatPlayer())
+	if (!m_ifMinePlayer)
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
 		{
@@ -314,7 +297,7 @@ void CPlayer::Update(void)
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
-	if (m_PlayerNumber == CManager::GetWhatPlayer())
+	if (m_ifMinePlayer)
 	{
 		CollisionDetection();
 	}
@@ -355,7 +338,7 @@ void CPlayer::Update(void)
 
 
 	// 自プレイヤーの場合、位置を送信
-	if (m_PlayerNumber == CManager::GetWhatPlayer())
+	if (m_ifMinePlayer)
 	{
 		char str[1024] = { NULL };
 
@@ -408,13 +391,13 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
+CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 {
 	CPlayer *player;
 
 	player = new CPlayer;
 
-	player->Init(whatPlayer, pos);
+	player->Init(ifMinePlayer, pos);
 
 	return player;
 }
@@ -434,7 +417,7 @@ void CPlayer::CollisionDetection(void)
 		if (list != NULL)
 		{
 			CPlayer* player = (CPlayer*)list;
-			if (player->m_PlayerNumber != CManager::GetWhatPlayer())
+			if (player->m_ifMinePlayer == false)
 			{
 				VECTOR3 sub = GetPos() - player->GetPos();
 				float distance = VECTOR3::dot(sub, sub);
@@ -464,7 +447,7 @@ void CPlayer::CollisionDetection(void)
 	{
 		if (sceneModel[nCnt] != NULL)
 		{
-			if (sceneModel[nCnt]->m_PlayerNumber == false)
+			if (sceneModel[nCnt]->m_ifMinePlayer == false)
 			{
 				VECTOR3 sub = GetPos() - sceneModel[nCnt]->GetPos();
 				float distance = VECTOR3::dot(sub, sub);

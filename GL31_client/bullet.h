@@ -44,7 +44,6 @@ public:
 	void Draw( void );
 
 private:
-	int m_playerNumber;	//ƒvƒŒƒCƒ„[‚ª‰½P‚©‚ğ•Û‘¶
 	int m_life;		//’e‚Ìõ–½
 	float m_speed;
 	CShadow *m_myShadow;	//©•ª‚Ì‰e

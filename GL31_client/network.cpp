@@ -30,8 +30,7 @@ bool		CNetwork::m_ifMatched		= false;
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrServer;
-char		CNetwork::m_ReceiveData[65535] = "NO DATA";
-char		CNetwork::m_LastMessage[65535] = "NO DATA";
+char		CNetwork::m_LastMessage[1024] = "NO DATA";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 
@@ -90,14 +89,12 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr(m_ConnectProtocol.pAddr);
-	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.6");
+	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.2");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
-	// マッチング登録
-	sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-		
+	
 	// 初期化終了告知
 	m_ifInitialize = true;
 }
@@ -145,14 +142,47 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 {
 	// データ受信
 	while(1)
-	{		
+	{
+		if(m_ifInitialize && !m_ifMatched)
+		{
+			char data[1024] = { NULL };
+
+			// クライアント情報のサイズセット
+			int len = sizeof(m_AddrServer);
+
+			while(!strcmp(data, ""))
+			{
+				in_addr serv;
+				memset(data, 0, sizeof(data));
+
+				// マッチング登録
+				sendto(m_SockSend, "match", strlen("match") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+
+				// データ受信
+				recvfrom(m_SockRecv, data, sizeof(data), 0, (sockaddr*)&serv, &len);
+
+				// タグ取り外し
+				RemoveDataTag(data);
+
+				// プレイヤー番号セット
+				if(strcmp(data, ""))
+				{
+					int whatplayer = -1;
+					sscanf(data, "%d", &whatplayer);
+					if(whatplayer >= 0)
+					{
+						CManager::SetWhatPlayer(whatplayer);
+
+						m_ifMatched = true;
+					}
+				}
+			}
+		}
+
 		// 初期化が終了している場合のみ処理
 		if(m_ifInitialize)
 		{
-			while(1)
-			{
-				ReceiveData();
-			}
+			ReceiveData();
 		}
 	}
 
@@ -168,7 +198,7 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 void CNetwork::SendData(char* format, ...)
 {
 	va_list list;
-	char str[65535];
+	char str[256];
 
 	// フォーマット変換
 	va_start(list, format);
@@ -188,39 +218,28 @@ void CNetwork::SendData(char* format, ...)
 //=============================================================================
 void CNetwork::ReceiveData(void)
 {
-	// サーバアドレスのサイズセット
-	int len = sizeof(m_AddrServer);
+	char		data[1024] = { NULL };	// 受信データ
 
+	
 	// データ受信
-	recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_AddrServer, &len);
+	recv(m_SockSend, data, strlen(data), 0);
 	
 	// データが送信されてきた場合記録
-	if(strcmp(m_ReceiveData, ""))
+	if(strcmp(data, ""))
 	{
-		strcpy(m_LastMessage, m_ReceiveData);
+		strcpy(m_LastMessage, data);
 	}
 	
 	DATA_TAG dataTag = DT_MAX;
 
-	sscanf(m_ReceiveData, "%d, ", &dataTag);
-	RemoveDataTag(m_ReceiveData);
+	sscanf(data, "%d, ", &dataTag);
+	RemoveDataTag(data);
 
 	int whatPlayer = -1;
 
 	switch(dataTag)
 	{
-	case 0:	// マッチング
-		if(!m_ifMatched)
-		{
-			int whatplayer = -1;
-			sscanf(m_ReceiveData, "%d", &whatplayer);
-			if(whatplayer >= 0)
-			{
-				CManager::SetWhatPlayer(whatplayer);
-
-				m_ifMatched = true;
-			}
-		}
+	case DT_PLAYER_NUM:
 		break;
 
 	default:

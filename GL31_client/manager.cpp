@@ -27,7 +27,7 @@
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 int			CManager::m_ModeState;		// モード情報
-int			CManager::m_WhatPlayer = 0;
+int			CManager::m_WhatPlayer = -1;
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
 CRendererGL	*CManager::m_RendererGL;	// レンダラ(GL)
 int			CManager::m_Frame = 0;			// 起動からのフレーム数
