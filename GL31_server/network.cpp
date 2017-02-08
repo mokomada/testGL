@@ -323,7 +323,7 @@ void CNetwork::SetPlayerData(void)
 			// 取得したデータをセット
 			player[i]->SetPos(pos);
 			player[i]->SetRot(rot);
-			player[i]->SetVec(vec);
+			//player[i]->SetVec(vec);
 		}
 	}
 }
