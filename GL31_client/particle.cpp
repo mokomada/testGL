@@ -73,7 +73,9 @@ void CParticle::Update(void)
 	// 位置更新
 	CPlayer* player = ( CPlayer* )m_Parent;
 	m_Particle.pos = m_Parent->GetPos();
-	m_Particle.pos.y = -100.0f;
+	//m_Particle.pos.y = 0.0f;
+	
+	m_Particle.m_Size = VECTOR2(100.0f,100.0f);
 
 	//	一定フレーム数に達したら
 	if(m_Particle.nGenerateTime >= GENERATE_TIME)
@@ -82,13 +84,14 @@ void CParticle::Update(void)
 		int RandHosei = rand()%40 - 20;
 		
 		// パーティクル生成
-		CEffect2D::Create(VECTOR3(m_Particle.pos.x + RandHosei,m_Particle.pos.y,m_Particle.pos.z),m_Particle.m_Size,ETYPE_SMOKE00);
+		CEffect2D::Create(VECTOR3(m_Particle.pos.x + RandHosei,m_Particle.pos.y,m_Particle.pos.z),m_Particle.m_Size,ETYPE_SMOKE01);
 		
 		// カウンタ初期化
 		m_Particle.nGenerateTime = 0;
 
 		// ライフを減らす
 		m_Particle.nLife--;
+
 	}
 
 	// カウンタ加算

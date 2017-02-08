@@ -48,6 +48,7 @@ CPlayer::~CPlayer()
 
 }
 
+VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //=============================================================================
 //	関数名	:Init
 //	引数	:VECTOR3 pos(初期位置)
@@ -89,7 +90,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_pLife = CLife::Create( m_Pos , this );
 
 	// パーティクルオブジェクト生成
-	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
 }
 
 //=============================================================================
@@ -282,6 +283,9 @@ void CPlayer::Update(void)
 				if(m_HitEffectTime <= 0) {
 					m_pLife -> HitDamage();
 					if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+					// 球ヒットエフェクト生成
+					CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
 				}
 //				Release();
 //				return;
@@ -304,6 +308,28 @@ void CPlayer::Update(void)
 	m_Rot.x += m_RotMove.x;
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
+
+		////	爆風エフェクト生成(上昇中のみ毎フレーム爆発エフェクトを呼ぶ)
+		///////////////////////////////////////////////////////////
+		//	死んでる　＋　空中　＋　上に移動中
+		if(m_DeadFlag && m_bJump && g_PosOld.y < m_Pos.y)
+		{
+			// 前回の位置に今回の位置を入れる
+			g_PosOld.y = m_Pos.y;
+		
+			// 火柱方向
+			float test = (float)(rand()%50 - 100.0f);
+
+			// エフェクト生成
+			CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
+		}
+
+		// 以下(else if)は同期設定次第で後で消す。
+		else if(m_DeadFlag && !m_bJump)
+		{
+			// 前回の位置を0.0fに
+			g_PosOld.y = 0.0f;
+		}
 
 	//************* HP0時演出テストここまで *****************//
 
