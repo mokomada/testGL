@@ -48,7 +48,7 @@ vector<CPlayer*>	CGame::m_Player;		// プレイヤーのインスタンス
 void CGame::Init(void)
 {
 	CTextureManager::Init();
-//	CSkybox::Create();
+	CSkybox::Create();
 	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
