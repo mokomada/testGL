@@ -50,7 +50,7 @@ public:
 private:
 	static void RemoveDataTag(char* data);
 	static void	ReadConnetProtocol(CONNECT_PROTOCOL *cp);
-	static void	SetPlayerData(char *str);
+	static void	SetPlayerData(void);
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// ‘—Mæî•ñ
 
 	static bool	m_ifInitialize;	// Init()‚ªI—¹‚µ‚½‚©‚Ç‚¤‚©
