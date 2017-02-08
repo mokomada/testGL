@@ -49,7 +49,7 @@ void CGame::Init(void)
 {
 	CTextureManager::Init();
 	CSkybox::Create();
-	m_Meshfield	= CMeshfield::Create();
+//	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
@@ -108,7 +108,7 @@ void CGame::Init(void)
 
 	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい
 //	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
-	CConfetti::MasterCreate( );
+//	CConfetti::MasterCreate( );
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
@@ -128,6 +128,7 @@ void CGame::Uninit(void)
 {
 	CSceneGL::DeleteAll();
 	CTextureManager::Uninit();
+	m_Player.clear();
 }
 
 //=============================================================================
