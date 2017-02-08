@@ -376,7 +376,8 @@ void CPlayer::Update(void)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
+		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
 	}
