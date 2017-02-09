@@ -1,5 +1,5 @@
 /******************************************************************************
-*	ファイル：風船
+*	ファイル：
 *	作成者  ：庄司茜
 *	作成日  ：
 ******************************************************************************/
@@ -10,19 +10,12 @@
 #include "main.h"
 #include "manager.h"
 #include "rendererGL.h"
-#include "balloon.h"
-#include "game.h"
-#include "sceneModel.h"
-#include "effect2D.h"
-#include "shadow.h"
 #include "textureManager.h"
+#include "effect.h"
 
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
-
-#define BULLET_LIFE ( 120 )
-
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
@@ -39,10 +32,8 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBalloon::CBalloon(PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(priority, objType)
+CEffect::CEffect( bool ifListAdd , int priority , OBJTYPE objType ) : CSceneBillboardGL( ifListAdd , priority , objType )
 {
-	m_deleteFlag = false;
-	m_u = 0.0f;
 }
 /******************************************************************************
 *	関数名：
@@ -50,46 +41,48 @@ CBalloon::CBalloon(PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(prior
 *	戻り値：なし
 *	説明  ：デストラクタ
 ******************************************************************************/
-CBalloon::~CBalloon()
+CEffect::~CEffect()
 {
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent )
+CEffect * CEffect::Create( VECTOR3 pos , int playerNumber)
 {
-	CBalloon *balloon = new CBalloon;
-	balloon->Init( pos , r , g , b , a , parent );
-
-	return balloon;
+	CEffect * effect = new CEffect;
+	effect->Init( pos , playerNumber );
+	return effect;
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent )
+void CEffect::Init( VECTOR3 pos , int playerNumber )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
-	m_Pos = pos;
-	m_r = r;
-	m_g = g;
-	m_b = b;
-	m_Alpha = a;
-	m_Size = VECTOR2( 60.0f , 60.0f );
-	m_deleteFlag = false;
-	m_u = 0.0f;
-	m_parent = parent;
-	
+	// 各種初期化
+	SetPos(VECTOR3(pos.x, pos.y, pos.z));
+	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Size = VECTOR2( 25.0f , 25.0f );
+
+	float r , g , b ,a;
+
+	playerNumber == 0 ? r = 1.0f : r = 0.5f;
+	playerNumber == 1 ? b = 1.0f : b = 0.5f;
+	playerNumber == 2 ? g = 1.0f : g = 0.5f;
+	playerNumber == 3 ? r = 1.0f , g = 1.0f : a = 0;
+
+	m_color = VECTOR4( r , g , b , 1.0f );
+	m_Radius = 10.0f;
+
 	// テクスチャ読込
-	m_Texture = CTextureManager::GetTexture( TEXTURE_BALLOON );
+	m_Texture = CTextureManager::GetTexture( TEXTURE_EFFECT );
 }
 
 /******************************************************************************
@@ -98,33 +91,34 @@ void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a , CScen
 *	戻り値：なし
 *	説明  ：終了処理
 ******************************************************************************/
-void CBalloon::Uninit( void )
+void CEffect::Uninit( void )
 {
+	CSceneBillboardGL::Uninit();
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：なし
 *	戻り値：なし
 *	説明  ：更新処理
 ******************************************************************************/
-void CBalloon::Update( void )
+void CEffect::Update( void )
 {
-	CPlayer* player = ( CPlayer* )m_parent;
-	VECTOR3 playerPos = m_parent->GetPos();	
-	VECTOR3 playerRot = m_parent->GetRot();
+	m_color.w -= 0.03f;
+	m_Size.x -= 0.4f;
+	m_Size.y -= 0.4f;
 
-
-	SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
+	if( m_color.w < 0.0f )
+	{
+		CSceneGL::Release();
+	}
 }
-
 /******************************************************************************
 *	関数名：
 *	引数  ：なし
 *	戻り値：なし
 *	説明  ：描画処理
 ******************************************************************************/
-void CBalloon::Draw( void )
+void CEffect::Draw( void )
 {
 	// モデルビュー変換行列の操作用
 	GLdouble m[16];
@@ -134,11 +128,9 @@ void CBalloon::Draw( void )
 	// マトリクスの退避
 	glPushMatrix();
 
+
 	// ワールドマトリクスの設定
 	glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
-	glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// 回転マトリックスの設定、角度は度数法で
-	glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
-	glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
 	glScalef(1.0f, 1.0f, 1.0f);
 
 	// 現在のモデルビュー変換行列を取り出す
@@ -153,81 +145,48 @@ void CBalloon::Draw( void )
 
 
 	// 描画処理ここから
-	glBindTexture(GL_TEXTURE_2D, *m_Texture);
+	glBindTexture( GL_TEXTURE_2D , *m_Texture );
 	glEnable(GL_TEXTURE_2D);
 
-	// 深度バッファ設定
+	//// 深度バッファ設定
+	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);
-
-	// ライティングオフ
-	glDisable(GL_LIGHTING);
+	glAlphaFunc(GL_GEQUAL, 0.1 );
+	glEnable( GL_ALPHA_TEST );
+	glDepthMask( GL_FALSE );
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glEnable(GL_BLEND);
-	glAlphaFunc(GL_GEQUAL, 0.5);
-	glEnable(GL_ALPHA_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glDepthMask( FALSE );
+
+
+	//// ライティングオフ
+	glDisable(GL_LIGHTING);
+
+
+
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
 	glBegin(GL_TRIANGLE_STRIP);
 	{
 		// 頂点色設定
-		glColor4f( m_r , m_g , m_b , m_Alpha );
+		glColor4f( m_color.x , m_color.y , m_color.z , m_color.w );
 
 		DrawPolygon();
 	}
 	glEnd();
 
+	glDisable(GL_ALPHA_TEST);
+
 	// 各種設定引き戻し
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
+	glDisable( GL_ALPHA_TEST );
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glDepthMask( TRUE );
+	glDepthMask(GL_TRUE);
 	// モデルビューマトリックスの設定
 	glMatrixMode(GL_MODELVIEW);
 	// 保存マトリックスの取り出し
 	glPopMatrix();
-}
-
-/******************************************************************************
-*	関数名：
-*	引数  ：なし
-*	戻り値：なし
-*	説明  ：描画処理
-******************************************************************************/
-void CBalloon::DrawPolygon( void )
-{
-	// 描画用の法線・テクスチャ座標・頂点座標設定
-	// 左上
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d( m_u , 0.0f );
-	glVertex3f(( - (m_Size.x * 0.5f)), ((m_Size.y * 0.5f)), 0.0f);
-
-	// 右上
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d( m_u + 0.33f , 0.0f );
-	glVertex3f(((m_Size.x * 0.5f)), ( (m_Size.y * 0.5f)), 0.0f);
-
-	// 左下
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d( m_u , 1.0f );
-	glVertex3f(( - (m_Size.x * 0.5f)), ( - (m_Size.y * 0.5f)), 0.0f);
-
-	// 右下
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d( m_u + 0.33f , 1.0f );
-	glVertex3f(( (m_Size.x * 0.5f)), (- (m_Size.y * 0.5f)), 0.0f);
-}
-
-/******************************************************************************
-*	関数名：void CBalloon::SetColor( float r , float g , float b , float a )
-*	引数  ：なし
-*	戻り値：なし
-*	説明  ：
-******************************************************************************/
-void CBalloon::SetColor( float r , float g , float b , float a )
-{
-	m_r = r;
-	m_g = g;
-	m_b = b;
-	m_Alpha = a;
 }
