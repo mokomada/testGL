@@ -18,8 +18,10 @@ typedef enum
 	PRIORITY_NONE = 0,
 	PRIORITY_2D,
 	PRIORITY_3D,
-	PRIORITY_PLAYER,
+	PRIORITY_EFFECT,
+	PRIORITY_BALLOON,
 	PRIORITY_BULLET,
+	PRIORITY_PLAYER,
 	PRIORITY_WALL,
 	PRIORITY_FIELD,
 	PRIORITY_MAX,
@@ -77,6 +79,7 @@ public:
 	VECTOR3	GetRot(void) { return m_Rot; }
 	BOX_DATA GetBox(void) { return m_Box; }
 	float GetRadius(void) { return m_Radius; }
+	OBJTYPE GetObjtype(void) { return m_ObjType; }
 	
 	static void	glMatrixIdentity(MATRIX *matrix){	matrix->_11 = 1; matrix->_12 = 0; matrix->_13 = 0; matrix->_14 = 0;
 													matrix->_21 = 0; matrix->_22 = 1; matrix->_23 = 0; matrix->_24 = 0;

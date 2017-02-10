@@ -52,18 +52,24 @@ public:
 	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_NONE);
 	~CPlayer();
 
-	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CPlayer	*Create(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+
+	void		SetVec(VECTOR3 rot) { m_Move = rot; }
+	void		SetVec(float x, float y, float z) { m_Move = VECTOR3(x, y, z); }
+	VECTOR3		GetVec(void) { return m_Move; }
 
 	float GetGauge(void) { return m_Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
-	bool	m_ifMinePlayer;
+	uint GetPlayerNum(void) { return m_PlayerNumber; }
 
 private:
+	uint	m_PlayerNumber;	// プレイヤー番号
+
 	VECTOR3	m_Scale;		// スケール
 	VECTOR3	m_Move;			// 移動量
 	VECTOR3	m_RotMove;		// 回転量

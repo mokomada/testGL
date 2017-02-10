@@ -88,6 +88,7 @@
     <ClInclude Include="confetti.h" />
     <ClInclude Include="countdown.h" />
     <ClInclude Include="debugProcGL.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="effect2D.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="life.h" />
@@ -133,6 +134,7 @@
     <ClCompile Include="confetti.cpp" />
     <ClCompile Include="countdown.cpp" />
     <ClCompile Include="debugProcGL.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="effect2D.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="life.cpp" />

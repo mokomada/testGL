@@ -12,7 +12,7 @@
 #include "network.h"
 #include "main.h"
 #include "game.h"
-#include "sceneModel.h"
+#include "player.h"
 #include <process.h>
 #include <mbstring.h>
 
@@ -30,7 +30,8 @@ bool		CNetwork::m_ifMatched		= false;
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrServer;
-char		CNetwork::m_LastMessage[1024] = "NO DATA";
+char		CNetwork::m_ReceiveData[65535] = "NO DATA";
+char		CNetwork::m_LastMessage[65535] = "NO DATA";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 
@@ -89,12 +90,14 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr(m_ConnectProtocol.pAddr);
-	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.2");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.1.169");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
-	
+	// マッチング登録
+	sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+		
 	// 初期化終了告知
 	m_ifInitialize = true;
 }
@@ -142,47 +145,14 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 {
 	// データ受信
 	while(1)
-	{
-		if(m_ifInitialize && !m_ifMatched)
-		{
-			char data[1024] = { NULL };
-
-			// クライアント情報のサイズセット
-			int len = sizeof(m_AddrServer);
-
-			while(!strcmp(data, ""))
-			{
-				in_addr serv;
-				memset(data, 0, sizeof(data));
-
-				// マッチング登録
-				sendto(m_SockSend, "match", strlen("match") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-
-				// データ受信
-				recvfrom(m_SockRecv, data, sizeof(data), 0, (sockaddr*)&serv, &len);
-
-				// タグ取り外し
-				RemoveDataTag(data);
-
-				// プレイヤー番号セット
-				if(strcmp(data, ""))
-				{
-					int whatplayer = -1;
-					sscanf(data, "%d", &whatplayer);
-					if(whatplayer >= 0)
-					{
-						CManager::SetWhatPlayer(whatplayer);
-
-						m_ifMatched = true;
-					}
-				}
-			}
-		}
-
+	{		
 		// 初期化が終了している場合のみ処理
 		if(m_ifInitialize)
 		{
-			ReceiveData();
+			while(1)
+			{
+				ReceiveData();
+			}
 		}
 	}
 
@@ -198,7 +168,7 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 void CNetwork::SendData(char* format, ...)
 {
 	va_list list;
-	char str[256];
+	char str[65535];
 
 	// フォーマット変換
 	va_start(list, format);
@@ -218,28 +188,42 @@ void CNetwork::SendData(char* format, ...)
 //=============================================================================
 void CNetwork::ReceiveData(void)
 {
-	char		data[1024] = { NULL };	// 受信データ
+	// サーバアドレスのサイズセット
+	int len = sizeof(m_AddrServer);
 
-	
 	// データ受信
-	recv(m_SockSend, data, strlen(data), 0);
+	recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_AddrServer, &len);
 	
 	// データが送信されてきた場合記録
-	if(strcmp(data, ""))
+	if(strcmp(m_ReceiveData, ""))
 	{
-		strcpy(m_LastMessage, data);
+		strcpy(m_LastMessage, m_ReceiveData);
 	}
 	
 	DATA_TAG dataTag = DT_MAX;
 
-	sscanf(data, "%d, ", &dataTag);
-	RemoveDataTag(data);
+	sscanf(m_ReceiveData, "%d, ", &dataTag);
+	RemoveDataTag(m_ReceiveData);
 
 	int whatPlayer = -1;
 
 	switch(dataTag)
 	{
-	case DT_PLAYER_NUM:
+	case 0:	// マッチング
+		if(!m_ifMatched)
+		{
+			int whatplayer = -1;
+			sscanf(m_ReceiveData, "%d", &whatplayer);
+			if(whatplayer >= 0)
+			{
+				CManager::SetWhatPlayer(whatplayer);
+
+				m_ifMatched = true;
+			}
+		}
+		break;
+	case 1:
+		SetPlayerData();
 		break;
 
 	default:
@@ -253,20 +237,38 @@ void CNetwork::ReceiveData(void)
 //	戻り値	:無し
 //	説明	:受信したプレイヤーのデータをセットする。
 //=============================================================================
-void CNetwork::SetPlayerData(char *str)
-{/*
-	CSceneModel	*player2 = CGame::GetPlayer2();
-	VECTOR3		pos = VECTOR3::zero();
+void CNetwork::SetPlayerData(void)
+{
+	vector<CPlayer*>	player = CGame::GetPlayer();
+	VECTOR3 pos[4];
+	VECTOR3 rot[4];
+	VECTOR3 vec[4];
 
 	// ゲームモードの時のみ処理
 	if(CManager::GetModeState() == MODE_GAME)
 	{
 		// 受信データからプレイヤー座標を取得
-		sscanf(str, "1, %f, %f, %f", &pos.x, &pos.y, &pos.z);
+		sscanf(m_ReceiveData,
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
+			&pos[0].x, &pos[0].y, &pos[0].z, &rot[0].x, &rot[0].y, &rot[0].z, &vec[0].x, &vec[0].y, &vec[0].z,
+			&pos[1].x, &pos[1].y, &pos[1].z, &rot[1].x, &rot[1].y, &rot[1].z, &vec[1].x, &vec[1].y, &vec[1].z,
+			&pos[2].x, &pos[2].y, &pos[2].z, &rot[2].x, &rot[2].y, &rot[2].z, &vec[2].x, &vec[2].y, &vec[2].z,
+			&pos[3].x, &pos[3].y, &pos[3].z, &rot[3].x, &rot[3].y, &rot[3].z, &vec[3].x, &vec[3].y, &vec[3].z);
 
 		// 取得した座標をセット
-		player2->SetPos(pos);
-	}*/
+		for(int i = 0 ; i < 4 ; i++)
+		{
+			if(i != CManager::GetWhatPlayer())
+			{
+				player[i]->SetPos(pos[i]);
+				player[i]->SetRot(rot[i]);
+				//player[i]->SetVec(vec[i]);
+			}
+		}
+	}
 }
 
 //=============================================================================

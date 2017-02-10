@@ -50,7 +50,7 @@ public:
 private:
 	static void RemoveDataTag(char* data);
 	static void	ReadConnetProtocol(CONNECT_PROTOCOL *cp);
-	static void	SetPlayerData(char *str);
+	static void	SetPlayerData(void);
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
 	static bool	m_ifInitialize;	// Init()が終了したかどうか
@@ -58,8 +58,9 @@ private:
 
 	static SOCKET		m_SockSend;				// UDPソケット
 	static SOCKET		m_SockRecv;				// UDPソケット
-	static sockaddr_in	m_AddrServer;		// サーバのアドレス
-	static char			m_LastMessage[1024];	// 最後に送信されてきたデータ
+	static sockaddr_in	m_AddrServer;			// サーバのアドレス
+	static char			m_ReceiveData[65535];	// 受信データ
+	static char			m_LastMessage[65535];	// 最後に送信されてきたデータ
 
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1

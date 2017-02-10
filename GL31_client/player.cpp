@@ -100,9 +100,17 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(bool isLast)
 {
-	m_pLife->Uninit();
-	Model->Uninit();
-	m_pParticle->Uninit();
+	m_pLife = NULL;
+
+	if(Model != NULL) {
+		Model->Uninit();
+		Model = NULL;
+	}
+
+	if(m_pParticle != NULL) {
+		m_pParticle->Uninit();
+		m_pParticle = NULL;
+	}
 }
 
 //=============================================================================
@@ -294,7 +302,7 @@ void CPlayer::Update(void)
 	}
 
 
-	//************* HP0時演出テストここから *****************//
+	//************* HP0時演出テストここから *****************
 
 	if(life <= 0 && !m_DeadFlag) {
 		m_Move.y += PLAYER_JUMP * 3;
@@ -309,7 +317,7 @@ void CPlayer::Update(void)
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
 
-	//************* HP0時演出テストここまで *****************//
+	//************* HP0時演出テストここまで *****************
 
 
 	// 移動量反映
@@ -380,7 +388,8 @@ void CPlayer::Update(void)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f", m_Pos.x, m_Pos.y, m_Pos.z);
+		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
 	}
@@ -447,7 +456,7 @@ CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
 }
 
 //=============================================================================
-//	関数名	:Update
+//	関数名	:
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:更新処理を行う。
@@ -516,7 +525,7 @@ void CPlayer::CollisionDetection(void)
 }
 
 //=============================================================================
-//	関数名	:Update
+//	関数名	:
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:更新処理を行う。
@@ -601,4 +610,16 @@ void CPlayer::HitEffect(void) {
 
 void CPlayer::SetHitEffectTime(int time) {
 	m_HitEffectTime = time;
+}
+
+
+//=============================================================================
+//	関数名	:GetPlayerLife
+//	引数	:time エフェクト時間の長さ（フレーム単位）
+//	戻り値	:無し
+//	説明	:被弾エフェクト設定
+//=============================================================================
+
+int CPlayer::GetPlayerLife(void) {
+	return m_pLife -> GetLife( );
 }
