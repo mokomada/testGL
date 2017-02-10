@@ -29,6 +29,8 @@
 #include "wall.h"
 #include "textureManager.h"
 #include "skybox.h"
+#include "bulletgauge.h"
+
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -60,7 +62,7 @@ void CGame::Init(void)
 
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 	CSquare::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(50.0f, 100.0f, 50.0f), "./data/TEXTURE/主ちゃ.png" , VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-
+	CBulletGauge::Create( );
 	//CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 50.0f, "./data/TEXTURE/主ちゃ.png");
 
 	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい

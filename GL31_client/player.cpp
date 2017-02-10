@@ -244,7 +244,11 @@ void CPlayer::Update(void)
 			// 弾発射
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
-				CBullet::Create( m_Pos , m_Rot , 10.0f );
+				if( m_Gauge > 100 )
+				{
+					CBullet::Create(m_Pos, m_Rot, 10.0f);
+					AddGauge(-100);
+				}
 			}
 		}
 		// 回転量補正

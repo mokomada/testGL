@@ -20,7 +20,6 @@
 
 #define	MODEL_MOVEMENT	(0.5f)					// テクスチャのファイル名
 #define	MODEL_ROT_STEP	(8)					// プレイヤーの回転ステップ
-#define	GAUGE_MAX		(300.0f)			// プレイヤーのゲージマックス
 
 #define	MODEL_SPEED_DOWN	(0.1f)			// プレイヤーの回転ステップ
 #define	MODEL_SPEED_DOWNJ	(0.25f)			// プレイヤーの回転ステップ
@@ -62,7 +61,7 @@ public:
 	static CPlayer	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 
 	float GetGauge(void) { return m_Gauge; }
-	void SetGauge(float Gauge) { m_Gauge = Gauge; }
+	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	bool	m_ifMinePlayer;
 
 private:

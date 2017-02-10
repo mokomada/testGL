@@ -24,6 +24,7 @@ class CTrickGauge :public CScene2DGL
 		void Draw(void);
 		static CTrickGauge *Create( );
 	private://自分しか使えない
+	protected://継承先クラスでは使える
 		int	m_Texture;	// テクスチャ
 		VECTOR3 m_StrPos;//開始位置
 		int m_Size;		//サイズ
@@ -32,6 +33,5 @@ class CTrickGauge :public CScene2DGL
 		float m_GaugeMax;
 		//現在のゲージ
 		float m_Gauge;
-	protected://継承先クラスでは使える
 };
 #endif

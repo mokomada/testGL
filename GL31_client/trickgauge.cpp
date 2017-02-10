@@ -71,7 +71,7 @@ void CTrickGauge::Init(void)
 	//テクスチャ指定
 	m_Texture = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
 	m_StrPos = VECTOR3( 0.0f,0.0f,0.0f );
-	m_GaugeMax = GAUGE_MAX;
+	m_GaugeMax = 300;
 }
 
 /******************************************************************************
@@ -82,33 +82,33 @@ void CTrickGauge::Init(void)
 ******************************************************************************/
 void CTrickGauge::Update(void)
 {
-	CRendererGL	*renderer = CManager::GetRendererGL();
-	CGame *game;
-	game = (CGame*)CManager::GetMode( );
-	vector<CPlayer*> sceneModel = game->GetPlayer();
-	//現在のゲージ
-	m_Gauge = sceneModel[0]->GetGauge( );
-	m_Pa = m_Gauge / m_GaugeMax;
-	if ( CInput::GetKeyboardPress(DIK_K) )
-	{
-		m_Gauge++;
-		sceneModel[0]->SetGauge(m_Gauge);
-	}
-	if ( CInput::GetKeyboardPress(DIK_M) )
-	{
-		m_Gauge--;
-		sceneModel[0]->SetGauge(m_Gauge);
-	}
-	if ( m_Gauge < 0 )
-	{
-		m_Gauge = 0;
-		sceneModel[0]->SetGauge(m_Gauge);
-	}
-	if ( m_Gauge > GAUGE_MAX )
-	{
-		m_Gauge = GAUGE_MAX;
-		sceneModel[0]->SetGauge(m_Gauge);
-	}
+	//CRendererGL	*renderer = CManager::GetRendererGL();
+	//CGame *game;
+	//game = (CGame*)CManager::GetMode( );
+	//vector<CPlayer*> sceneModel = game->GetPlayer();
+	////現在のゲージ
+	//m_Gauge = sceneModel[0]->GetGauge( );
+	//m_Pa = m_Gauge / m_GaugeMax;
+	//if ( CInput::GetKeyboardPress(DIK_K) )
+	//{
+	//	m_Gauge++;
+	//	sceneModel[0]->SetGauge(m_Gauge);
+	//}
+	//if ( CInput::GetKeyboardPress(DIK_M) )
+	//{
+	//	m_Gauge--;
+	//	sceneModel[0]->SetGauge(m_Gauge);
+	//}
+	//if ( m_Gauge < 0 )
+	//{
+	//	m_Gauge = 0;
+	//	sceneModel[0]->SetGauge(m_Gauge);
+	//}
+	//if ( m_Gauge > 300 )
+	//{
+	//	m_Gauge = 300;
+	//	sceneModel[0]->SetGauge(m_Gauge);
+	//}
 }
 
 /******************************************************************************
@@ -183,7 +183,7 @@ void CTrickGauge::Draw(void)
 	// テクスチャマッピング無効化
 	glDisable(GL_TEXTURE_2D);
 
-	// ブレンド無効化
+	//ブレンド無効化
 	glDisable(GL_BLEND);
 
 	// ライト有効化
@@ -198,7 +198,7 @@ void CTrickGauge::Draw(void)
 	glMatrixMode(GL_MODELVIEW);
 	// 保存マトリックスの取り出し
 	glPopMatrix( );
-}
+} 
 
 /******************************************************************************
 関数名:CTrickGauge CTrickGauge::*Create( void )
