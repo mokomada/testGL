@@ -41,6 +41,7 @@ typedef struct {
 class CNetwork
 {
 public:
+	static uint __stdcall MatchThread(void*);
 	static uint __stdcall ReceiveThread(void*);
 
 	static void	Init(void);
@@ -71,6 +72,8 @@ private:
 	static char			m_ReceiveData[65535];		// 受信データ
 	static char			m_LastMessage[65535];		// 最後に送信されてきたデータ
 
+	static uint			m_thIDMatch;	// スレッドID1
+	static HANDLE		m_hThMatch;	// スレッドハンドル1
 	static uint			m_thID;	// スレッドID1
 	static HANDLE		m_hTh;	// スレッドハンドル1
 

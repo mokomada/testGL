@@ -29,10 +29,10 @@ void CTutorial::Init(void)
 {
 	m_TutorialBG = CScene2DGL::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f),
 		VECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT),
-		".\\data\\TEXTURE\\tutorial000.tga");
-	m_PushEnter = CScene2DGL::Create(VECTOR3(SCREEN_WIDTH_HALF, (SCREEN_HEIGHT * 0.8f), 0.0f),
-		VECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)),
-		".\\data\\TEXTURE\\pushbutton000.tga");
+		".\\data\\TEXTURE\\tutorial000.png");
+	//m_PushEnter = CScene2DGL::Create(VECTOR3(SCREEN_WIDTH_HALF, (SCREEN_HEIGHT * 0.8f), 0.0f),
+	//	VECTOR2((SCREEN_WIDTH * 0.4f), (SCREEN_HEIGHT * 0.05f)),
+	//	".\\data\\TEXTURE\\pushbutton000.tga");
 
 	m_Alpha = 0.0f;
 }

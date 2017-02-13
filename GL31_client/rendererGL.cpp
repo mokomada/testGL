@@ -200,9 +200,38 @@ int CRendererGL::CreateTextureTGA(char *filename)
 			byteperpixel = bpp / 8;
 
 			image	= new GLubyte[ width * height * byteperpixel ];
-			for(int y = 0 ; y < (int)height ; y++)
+
+		// ã‰º¶‰E‚Ì”½“]Šm”F
+		int heightStart, heightEnd, heightAdd;
+		int widthStart, widthEnd, widthAdd;
+
+		// ¶‰E”½“]Ý’è
+		if(header[17] & 0x10) {
+			widthStart = (int)width - 1;
+			widthEnd  = -1;
+			widthAdd = -1;
+		}
+		else {
+			widthStart = 0;
+			widthEnd = (int)width;
+			widthAdd = 1;
+		}
+
+		// ã‰º”½“]Ý’è
+		if(header[17] & 0x20) {
+			heightStart = 0;
+			heightEnd = (int)height;
+			heightAdd = 1;
+		}
+		else {
+			heightStart = (int)height - 1;
+			heightEnd = -1;
+			heightAdd = -1;
+		}
+
+			for(int y = heightStart ; y != heightEnd ; y += heightAdd)
 			{
-				for(int x = 0 ; x < (int)width ; x++)
+				for(int x = widthStart ; x != widthEnd ; x += widthAdd)
 				{
 					if(byteperpixel == 4)		// RGBA
 					{

@@ -31,6 +31,8 @@ sockaddr_in	CNetwork::m_AddrClient[4];
 sockaddr_in	CNetwork::m_RecvClient;
 char		CNetwork::m_ReceiveData[65535] = "NO DATA";
 char		CNetwork::m_LastMessage[65535] = "NO DATA";
+uint		CNetwork::m_thIDMatch;
+HANDLE		CNetwork::m_hThMatch;
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 bool		CNetwork::m_ifInitialize = false;
@@ -76,8 +78,16 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 
 	// ソケット生成
-	m_SockSend = socket(AF_INET, SOCK_DGRAM, 0);
-	m_SockRecv = socket(AF_INET, SOCK_DGRAM, 0);
+	if(1)
+	{
+		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
+		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
+	}
+	else
+	{
+		m_SockSend = socket(AF_INET, SOCK_DGRAM, 0);
+		m_SockRecv = socket(AF_INET, SOCK_DGRAM, 0);
+	}
 
 	// アドレスタイプ設定
 	addr.sin_family	= AF_INET;
@@ -91,8 +101,46 @@ void CNetwork::Init(void)
 	// バインド
 	m_ifBindSuccess = bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 
+	// 同時接続クライアント数設定
+	listen(m_SockRecv, 5);
+
 	// 初期化終了告知
 	m_ifInitialize = true;
+
+	// †スレッド起動†
+	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
+}
+
+//=============================================================================
+//	関数名	:ReceiveThread
+//	引数	:void* p
+//	戻り値	:無し
+//	説明	:データ受信スレッド。
+//=============================================================================
+uint __stdcall CNetwork::MatchThread(void* p)
+{
+	SOCKET sock;
+	SOCKADDR_IN client;
+	int len;
+
+	while(m_PlayerNum < PLAYER_NUM)
+	{
+		len = sizeof(client);
+		sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
+
+		char buff[1024] ={ NULL };
+
+		// 現在のプレイヤー番号をセット
+		sprintf(buff, "%d", m_PlayerNum);
+
+		send(sock, buff, strlen(buff), 0);
+
+		closesocket(sock);
+
+		m_PlayerNum++;
+	}
+
+	return 0;
 }
 
 //=============================================================================
@@ -260,7 +308,7 @@ void CNetwork::Matching(void)
 {
 	// 同じ接続先の場合カウントしない
 	int i = 0;
-	for(i = 0 ; i < 4 ; i++)
+	for(i = 0 ; i < PLAYER_NUM ; i++)
 	{
 		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
 		{
@@ -323,7 +371,7 @@ void CNetwork::SetPlayerData(void)
 			// 取得したデータをセット
 			player[i]->SetPos(pos);
 			player[i]->SetRot(rot);
-			player[i]->SetVec(vec);
+			//player[i]->SetVec(vec);
 		}
 	}
 }
