@@ -243,21 +243,21 @@ void CSceneBillboardGL::DrawPolygon(void)
 	// 描画用の法線・テクスチャ座標・頂点座標設定
 	// 左上
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0, 1.0);
+	glTexCoord2d(0.0, 0.0);
 	glVertex3f(( - (m_Size.x * 0.5f)), ((m_Size.y * 0.5f)), 0.0f);
 
 	// 右上
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(1.0, 1.0);
+	glTexCoord2d(1.0, 0.0);
 	glVertex3f(((m_Size.x * 0.5f)), ( (m_Size.y * 0.5f)), 0.0f);
 
 	// 左下
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0, 0.0);
+	glTexCoord2d(0.0, 1.0);
 	glVertex3f(( - (m_Size.x * 0.5f)), ( - (m_Size.y * 0.5f)), 0.0f);
 
 	// 右下
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(1.0, 0.0);
+	glTexCoord2d(1.0, 1.0);
 	glVertex3f(( (m_Size.x * 0.5f)), (- (m_Size.y * 0.5f)), 0.0f);
 }

@@ -367,7 +367,7 @@ void CPlayer::Update(void)
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
-	if (m_PlayerNumber == CManager::GetWhatPlayer())
+	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		CollisionDetection();
 	}
