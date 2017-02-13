@@ -475,7 +475,6 @@ void CPlayer::CollisionDetection(void)
 				VECTOR3 sub = GetPos() - player->GetPos();
 				float distance = VECTOR3::dot(sub, sub);
 				float radius = m_Radius + player->m_Radius;
-
 				if (distance <= radius * radius)
 				{
 					CDebugProcGL::DebugProc("Hit%d\n", nCnt);

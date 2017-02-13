@@ -55,12 +55,10 @@ void CGame::Init(void)
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
-<<<<<<< HEAD
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/主ちゃ.png");
 	CSquare::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(50.0f, 100.0f, 50.0f), "./data/TEXTURE/主ちゃ.png" , VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 	CBulletGauge::Create( );
 	//CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 50.0f, "./data/TEXTURE/主ちゃ.png");
-=======
 	m_Player.push_back(CPlayer::Create(true, VECTOR3(0.0f, 50.0f, -100.0f)));
 	m_Player.push_back(CPlayer::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f)));
 	m_Player.push_back(CPlayer::Create(false, VECTOR3(100.0f, 50.0f, 0.0f)));
@@ -113,7 +111,6 @@ void CGame::Init(void)
 	CSquare::Create(VECTOR3(-2000.0f, 50.0f, -2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 50.0f, "./data/TEXTURE/rock.png");
->>>>>>> b834682c8543b98ab95ee5423639a7e91c021b2a
 
 	// カウントダウン。起動する度にカウントダウンされると煩わしいためコメントアウト。タイマーが残り5秒になったらこれ呼んで下さい
 //	CCountDown::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.5f, 0.0f), VECTOR2(200.0f, 100.0f), 1) ->SetCountDown( 9 );
