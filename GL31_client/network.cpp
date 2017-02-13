@@ -12,7 +12,7 @@
 #include "network.h"
 #include "main.h"
 #include "game.h"
-#include "sceneModel.h"
+#include "player.h"
 #include <process.h>
 #include <mbstring.h>
 
@@ -90,7 +90,7 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr(m_ConnectProtocol.pAddr);
-	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.6");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.1.169");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
@@ -222,6 +222,9 @@ void CNetwork::ReceiveData(void)
 			}
 		}
 		break;
+	case 1:
+		SetPlayerData();
+		break;
 
 	default:
 		break;
@@ -234,20 +237,38 @@ void CNetwork::ReceiveData(void)
 //	戻り値	:無し
 //	説明	:受信したプレイヤーのデータをセットする。
 //=============================================================================
-void CNetwork::SetPlayerData(char *str)
-{/*
-	CSceneModel	*player2 = CGame::GetPlayer2();
-	VECTOR3		pos = VECTOR3::zero();
+void CNetwork::SetPlayerData(void)
+{
+	vector<CPlayer*>	player = CGame::GetPlayer();
+	VECTOR3 pos[4];
+	VECTOR3 rot[4];
+	VECTOR3 vec[4];
 
 	// ゲームモードの時のみ処理
 	if(CManager::GetModeState() == MODE_GAME)
 	{
 		// 受信データからプレイヤー座標を取得
-		sscanf(str, "1, %f, %f, %f", &pos.x, &pos.y, &pos.z);
+		sscanf(m_ReceiveData,
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
+			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
+			&pos[0].x, &pos[0].y, &pos[0].z, &rot[0].x, &rot[0].y, &rot[0].z, &vec[0].x, &vec[0].y, &vec[0].z,
+			&pos[1].x, &pos[1].y, &pos[1].z, &rot[1].x, &rot[1].y, &rot[1].z, &vec[1].x, &vec[1].y, &vec[1].z,
+			&pos[2].x, &pos[2].y, &pos[2].z, &rot[2].x, &rot[2].y, &rot[2].z, &vec[2].x, &vec[2].y, &vec[2].z,
+			&pos[3].x, &pos[3].y, &pos[3].z, &rot[3].x, &rot[3].y, &rot[3].z, &vec[3].x, &vec[3].y, &vec[3].z);
 
 		// 取得した座標をセット
-		player2->SetPos(pos);
-	}*/
+		for(int i = 0 ; i < 4 ; i++)
+		{
+			if(i != CManager::GetWhatPlayer())
+			{
+				player[i]->SetPos(pos[i]);
+				player[i]->SetRot(rot[i]);
+				//player[i]->SetVec(vec[i]);
+			}
+		}
+	}
 }
 
 //=============================================================================

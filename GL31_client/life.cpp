@@ -150,7 +150,7 @@ void CLife::Update( void )
 	CPlayer* player = ( CPlayer* )m_parent;
 
 	//‰¼‚Ìˆ—
-	if( player->m_ifMinePlayer )
+	//if( player->m_ifMinePlayer )
 	{
 		if (CInput::GetKeyboardTrigger(DIK_O))	
 		{
