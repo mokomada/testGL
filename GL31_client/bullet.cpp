@@ -17,6 +17,7 @@
 #include "shadow.h"
 #include "textureManager.h"
 #include "effect.h"
+#include "collision.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -60,10 +61,10 @@ CBullet::~CBullet()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
+CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed , int color )
 {
 	CBullet *bullet = new CBullet();
-	bullet->Init( pos , rot , speed );
+	bullet->Init( pos , rot , speed , color );
 
 	return bullet;
 }
@@ -74,7 +75,7 @@ CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed )
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
+void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed , int color )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
@@ -85,7 +86,7 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed )
 	m_Rot = rot;				//発射角度
 	m_speed = speed;			//移動速度
 	m_life = BULLET_LIFE;	//弾の寿命
-	m_playerNumber = CManager::GetWhatPlayer();
+	m_playerNumber = color;
 	m_Radius = 10.0f;
 
 	// テクスチャ読込
@@ -128,6 +129,8 @@ void CBullet::Update( void )
 		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
 		CSceneGL::Release();
 	}
+
+
 }
 
 /******************************************************************************
