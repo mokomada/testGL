@@ -17,6 +17,7 @@
 #include "shadow.h"
 #include "textureManager.h"
 #include "effect.h"
+#include "collision.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -128,6 +129,8 @@ void CBullet::Update( void )
 		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
 		CSceneGL::Release();
 	}
+
+
 }
 
 /******************************************************************************

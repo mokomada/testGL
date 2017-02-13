@@ -43,6 +43,8 @@ public:
 	void Update( void );
 	void Draw( void );
 
+	void SetLife( int life ) { m_life = life; }
+
 private:
 	int m_playerNumber;	//ƒvƒŒƒCƒ„[‚ª‰½P‚©‚ğ•Û‘¶
 	int m_life;		//’e‚Ìõ–½
