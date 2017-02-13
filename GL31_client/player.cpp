@@ -97,6 +97,13 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	}
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
+	Scene3D[0] = CScene3DGL::Create(VECTOR3(30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane1.png");
+	Scene3D[0]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[0]->UnlinkList();
+	Scene3D[1] = CScene3DGL::Create(VECTOR3(-30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane2.png");
+	Scene3D[1]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[1]->UnlinkList();
+
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
 
@@ -117,9 +124,17 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(bool isLast)
 {
-	m_pLife->Uninit();
-	Model->Uninit();
-	m_pParticle->Uninit();
+	m_pLife = NULL;
+
+	if(Model != NULL) {
+		Model->Uninit();
+		Model = NULL;
+	}
+
+	if(m_pParticle != NULL) {
+		m_pParticle->Uninit();
+		m_pParticle = NULL;
+	}
 }
 
 //=============================================================================
@@ -245,6 +260,14 @@ void CPlayer::Update(void)
 			
 			}
 
+			static float rot = 0.0f;
+			rot += 0.08f;
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+
+			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
+			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
+
 			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 
@@ -307,7 +330,7 @@ void CPlayer::Update(void)
 	}
 
 
-	//************* HP0時演出テストここから *****************//
+	//************* HP0時演出テストここから *****************
 
 	if(life <= 0 && !m_DeadFlag) {
 		m_Move.y += PLAYER_JUMP * 3;
@@ -322,7 +345,7 @@ void CPlayer::Update(void)
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
 
-	//************* HP0時演出テストここまで *****************//
+	//************* HP0時演出テストここまで *****************
 
 
 	// 移動量反映
@@ -433,6 +456,27 @@ void CPlayer::Draw(void)
 		// モデル描画
 		Model->Draw();
 
+		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_DEPTH_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.1);
+		glEnable(GL_ALPHA_TEST);
+		glDepthMask(GL_FALSE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_BLEND);
+		Scene3D[0]->Draw();
+		Scene3D[1]->Draw();
+		// 各種設定引き戻し
+		glEnable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthMask(TRUE);
+		glDepthMask(GL_TRUE);
+
+		glEnable(GL_CULL_FACE);
+
 		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
 		glPopMatrix();					// 保存マトリックスの取り出し
 	}
@@ -461,7 +505,7 @@ CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
 }
 
 //=============================================================================
-//	関数名	:Update
+//	関数名	:
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:更新処理を行う。
@@ -530,7 +574,7 @@ void CPlayer::CollisionDetection(void)
 }
 
 //=============================================================================
-//	関数名	:Update
+//	関数名	:
 //	引数	:無し
 //	戻り値	:無し
 //	説明	:更新処理を行う。

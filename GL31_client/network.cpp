@@ -90,7 +90,7 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr(m_ConnectProtocol.pAddr);
-	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.6");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.1.169");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));

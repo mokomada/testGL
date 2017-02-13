@@ -264,38 +264,80 @@ bool CCollision::SphereToLine(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTO
 	return false;
 }
 
+////=============================================================================
+////	球とAABB(軸に平行なボックス)の当たり判定
+////=============================================================================
+//bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box)
+//{
+//	float WidthHalf = _Box->width * 0.5f, HightHalf = _Box->height * 0.5f, DepthHalf = _Box->depth * 0.5f;
+//	float pos[3] = { Pos.x, Pos.y, Pos.z },
+//		min[3] = { _Pos.x - WidthHalf, _Pos.y - HightHalf, _Pos.z - DepthHalf },
+//		max[3] = { _Pos.x + WidthHalf, _Pos.y + HightHalf, _Pos.z + DepthHalf }, length = 0.0f;
+//
+//	for (int count = 0; count<3; count++)
+//	{
+//		// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
+//		if (pos[count] < min[count])
+//		{
+//			length += (pos[count] - min[count]) * (pos[count] - min[count]);
+//		}
+//		if (pos[count] > max[count])
+//		{
+//			length += (pos[count] - max[count]) * (pos[count] - max[count]);
+//		}
+//	}
+//
+//	length = sqrt(length);
+//	if (length <= Radius)
+//	{
+//		/*VECTOR3 Sub = Pos - _Pos;
+//		Pos += Sub.normalize() * (Radius - length);*/
+//		SphereToBox(Pos, Radius, _Pos, _Box);
+//		return true;
+//	}
+//
+//	return false;
+//}
+
 //=============================================================================
 //	球とAABB(軸に平行なボックス)の当たり判定
 //=============================================================================
 bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box)
 {
-	float WidthHalf = _Box->width * 0.5f, HightHalf = _Box->height * 0.5f, DepthHalf = _Box->depth * 0.5f;
-	float pos[3] = { Pos.x, Pos.y, Pos.z },
-		min[3] = { _Pos.x - WidthHalf, _Pos.y - HightHalf, _Pos.z - DepthHalf },
-		max[3] = { _Pos.x + WidthHalf, _Pos.y + HightHalf, _Pos.z + DepthHalf }, length = 0.0f;
+	//球の中心に対する最近接点であるAABB上にある点Pointを見つける
+	VECTOR3 Point;
+	ClosestPtPointAABB(Pos, _Pos, _Box, Point);
 
-	for (int count = 0; count<3; count++)
+	//球とAABBが交差するのは、球の中心から点Pointまでの(平方した)距離が(平方した)球の半径よりも小さい場合
+	VECTOR3 vec = Point - Pos;
+	if (Vec3Length(vec) <= Radius * Radius)
 	{
-		// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
-		if (pos[count] < min[count])
-		{
-			length += (pos[count] - min[count]) * (pos[count] - min[count]);
-		}
-		if (pos[count] > max[count])
-		{
-			length += (pos[count] - max[count]) * (pos[count] - max[count]);
-		}
-	}
-
-	length = sqrt(length);
-	if (length <= Radius)
-	{
-		/*VECTOR3 Sub = Pos - _Pos;
-		Pos += Sub.normalize() * (Radius - length);*/
-		SphereToBox(Pos, Radius, _Pos, _Box);
+		float sub = Vec3LengthSq(vec) - Radius;
+		Pos += vec.normalize() * sub;
 		return true;
 	}
 
 	return false;
+}
+
+//=============================================================================
+//	与えられた点Pointに対して、AABB上もしくは中にあるPointの最近接点_Pointを返す
+//=============================================================================
+void CCollision::ClosestPtPointAABB(VECTOR3 &Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point)
+{
+	float point[3] = { Pos.x, Pos.y, Pos.z }, _point[3];
+	float min[3] = { _Pos.x - _Box->width * 0.5f, _Pos.y - _Box->height * 0.5f, _Pos.z - _Box->depth * 0.5f };
+	float max[3] = { _Pos.x + _Box->width * 0.5f, _Pos.y + _Box->height * 0.5f, _Pos.z + _Box->depth * 0.5f };
+
+	//各座標軸に対して、点の座標値がボックスの外側にある場合に
+	//ボックスまで点をクランプ、そうでなければそのまま
+	for (int count = 0; count < 3; count++)
+	{
+		if (point[count] < min[count]) point[count] = min[count];	// point[count] = max(point[count], min[i]);
+		if (point[count] > max[count]) point[count] = max[count];	// point[count] = min(point[count], max[i]);
+		_point[count] = point[count];
+	}
+
+	Point = VECTOR3(_point[0], _point[1], _point[2]);
 }
 
