@@ -99,12 +99,16 @@ public:
 	~CSceneModel();
 
 	void	Init(void){}
-	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(char* fileName, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CSceneModel	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CSceneModel	*Create(char* fileName = "./data/MODEL/car1.obj", VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+
+	void		SetVec(VECTOR3 rot) { m_Move = rot; }
+	void		SetVec(float x, float y, float z) { m_Move = VECTOR3(x, y, z); }
+	VECTOR3		GetVec(void) { return m_Move; }
 	
 	void	LoadModel(char *fileName);
 	void	LoadMotion(char *fileName, int nNumMotion);
@@ -112,7 +116,6 @@ public:
 
 	float GetGauge(void) { return m_Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
-	bool	m_ifMinePlayer;
 
 	float m_Radius;	//“–‚½‚è”»’è‚Ì”¼Œa
 

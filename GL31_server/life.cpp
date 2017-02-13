@@ -38,7 +38,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CLife::CLife(bool ifListAdd, PRIORITY priority, OBJTYPE objType) : CSceneGL(ifListAdd, priority, objType)
+CLife::CLife(PRIORITY priority, OBJTYPE objType) : CSceneGL(priority, objType)
 {
 }
 /******************************************************************************
@@ -57,10 +57,10 @@ CLife::~CLife()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CLife * CLife::Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent )
+CLife * CLife::Create( VECTOR3 pos , CSceneGL *parent )
 {
 	CLife *bullet = new CLife;
-	bullet->Init( pos , r , g , b , a , parent );
+	bullet->Init( pos , parent );
 
 	return bullet;
 }
@@ -71,11 +71,59 @@ CLife * CLife::Create( VECTOR3 pos , float r , float g , float b , float a , CSc
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CLife::Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL *parent )
+void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 {
 	m_parent = parent;
 	m_Pos = pos;
-	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 60.0f , pos.z ) , r , g , b , a );
+
+	int color = CManager::GetWhatPlayer();
+	float r , g , b , a;
+	
+	switch( color )
+	{
+		case 0:
+		{
+			r = 1.0f;
+			g = 0.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		case 1:
+		{
+			r = 0.0f;
+			g = 1.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		case 2:
+		{
+			r = 0.0f;
+			g = 0.0f;
+			b = 1.0f;
+			a = 1.0f;
+			break;
+		}
+		case 3:
+		{
+			r = 1.0f;
+			g = 1.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		default:
+		{
+			r = 1.0f;
+			g = 1.0f;
+			b = 1.0f;
+			a = 1.0f;
+			break;
+		}
+	}
+
+	m_balloon = CBalloon::Create( VECTOR3( pos.x , pos.y + 40.0f , pos.z ) , r , g , b , a );
 
 	m_life = 3;
 }
@@ -107,7 +155,7 @@ void CLife::Update( void )
 	CPlayer* player = ( CPlayer* )m_parent;
 
 	//仮の処理
-	if( player->GetPlayerNum() )
+	//if( player->m_ifMinePlayer )
 	{
 		if (CInput::GetKeyboardTrigger(DIK_O))	
 		{
@@ -118,11 +166,13 @@ void CLife::Update( void )
 
 	if( m_balloon != NULL )
 	{
+		SetBalloonColor();
+
 		VECTOR3 playerPos = m_parent->GetPos();	
 		VECTOR3 playerRot = m_parent->GetRot();
 		VECTOR3 pos = m_balloon->GetPos();
 
-		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 60.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
+		m_balloon->SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
 		m_balloon->Update();
 	}
 
@@ -162,4 +212,78 @@ void CLife::HitDamage( void )
 		delete m_balloon;
 		m_balloon = NULL;
 	}
+}
+
+/******************************************************************************
+*	関数名：void CLife::SetBalloonColor( void )
+*	引数  ：なし
+*	戻り値：なし
+*	説明  ：風船の色を設定
+******************************************************************************/
+void CLife::SetBalloonColor( void )
+{
+	int color = CManager::GetWhatPlayer();
+	float r , g , b , a;
+	
+	switch( color )
+	{
+		case 0:
+		{
+			r = 1.0f;
+			g = 0.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		case 1:
+		{
+			r = 0.0f;
+			g = 1.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		case 2:
+		{
+			r = 0.0f;
+			g = 0.0f;
+			b = 1.0f;
+			a = 1.0f;
+			break;
+		}
+		case 3:
+		{
+			r = 1.0f;
+			g = 1.0f;
+			b = 0.0f;
+			a = 1.0f;
+			break;
+		}
+		default:
+		{
+			r = 1.0f;
+			g = 1.0f;
+			b = 1.0f;
+			a = 1.0f;
+			break;
+		}
+	}
+
+	if( !m_balloon )
+	{
+		m_balloon->SetColor( r , g , b , a );
+	}
+
+}
+
+
+/******************************************************************************
+*	関数名：int CLife::GetLife( void )
+*	引数  ：なし
+*	戻り値：m_life
+*	説明  ：現在のライフ残量を返す
+******************************************************************************/
+
+int CLife::GetLife( void ) {
+	return m_life;
 }

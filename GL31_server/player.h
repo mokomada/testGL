@@ -43,13 +43,15 @@
 //=============================================================================
 class CSceneModel;
 class CLife;
+class CParticle;
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
 class CPlayer : public CScene3DGL
 {
 public:
-	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_NONE);
+	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_PLAYER);
 	~CPlayer();
 
 	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
@@ -59,17 +61,16 @@ public:
 
 	static CPlayer	*Create(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 
-	void		SetVec(VECTOR3 rot) { m_Move = rot; }
-	void		SetVec(float x, float y, float z) { m_Move = VECTOR3(x, y, z); }
-	VECTOR3		GetVec(void) { return m_Move; }
-
+	VECTOR3 GetVec(void) { return m_Move; }
+	VECTOR3 GetOldPos(void) { return m_OldPos; }
 	float GetGauge(void) { return m_Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
-	uint GetPlayerNum(void) { return m_PlayerNumber; }
+	int GetPlayerLife(void);
 
 private:
 	uint	m_PlayerNumber;	// プレイヤー番号
 
+	VECTOR3	m_OldPos;		// 前フレームの座標
 	VECTOR3	m_Scale;		// スケール
 	VECTOR3	m_Move;			// 移動量
 	VECTOR3	m_RotMove;		// 回転量
@@ -79,9 +80,13 @@ private:
 	bool m_FlgLowSpeed;
 	int m_HitEffectTime; // 被弾エフェクトの実行時間
 	bool m_DrawOnOffFlag; // 描画のONOFF設定
+	bool m_DeadFlag;
 
 	CSceneModel* Model;
+	CScene3DGL* Scene3D[2];
 	CLife* m_pLife;
+	CParticle*	m_pParticle;
+
 	void CollisionDetection(void);
 	static bool CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1);
 	static bool CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2);

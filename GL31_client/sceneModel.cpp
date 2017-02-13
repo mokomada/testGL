@@ -48,12 +48,9 @@ CSceneModel::~CSceneModel()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
+void CSceneModel::Init(char* fileName, VECTOR3 pos)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
-	
-	// 自プレイヤーかどうかセット
-	m_ifMinePlayer = ifMinePlayer;
 
 	// 各種初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
@@ -70,7 +67,7 @@ void CSceneModel::Init(bool ifMinePlayer, VECTOR3 pos)
 	
 	
 	m_Texture = renderer->CreateTextureTGA("./data/MODEL/wheel_frame.png");
-	LoadModel("./data/MODEL/car.obj");
+	LoadModel(fileName);
 
 	// モーション生成
 	//m_Motion = new MOTION[MODEL_MOTION_NUM];
@@ -171,13 +168,13 @@ void CSceneModel::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CSceneModel *CSceneModel::Create(bool ifMinePlayer, VECTOR3 pos)
+CSceneModel *CSceneModel::Create(char* fileName, VECTOR3 pos)
 {
 	CSceneModel *scene3D;
 
 	scene3D = new CSceneModel;
 
-	scene3D->Init(ifMinePlayer, pos);
+	scene3D->Init(fileName, pos);
 
 	return scene3D;
 }
