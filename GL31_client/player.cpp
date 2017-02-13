@@ -80,6 +80,13 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	Model = CSceneModel::Create("./data/MODEL/car.obj", VECTOR3(0.0f, -25.0f, 0.0f));
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
+	Scene3D[0] = CScene3DGL::Create(VECTOR3(30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane1.png");
+	Scene3D[0]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[0]->UnlinkList();
+	Scene3D[1] = CScene3DGL::Create(VECTOR3(-30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane2.png");
+	Scene3D[1]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[1]->UnlinkList();
+
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
 
@@ -235,6 +242,14 @@ void CPlayer::Update(void)
 				}
 			
 			}
+
+			static float rot = 0.0f;
+			rot += 0.08f;
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+
+			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
+			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
 
 			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
@@ -423,6 +438,27 @@ void CPlayer::Draw(void)
 
 		// モデル描画
 		Model->Draw();
+
+		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_DEPTH_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.1);
+		glEnable(GL_ALPHA_TEST);
+		glDepthMask(GL_FALSE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_BLEND);
+		Scene3D[0]->Draw();
+		Scene3D[1]->Draw();
+		// 各種設定引き戻し
+		glEnable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthMask(TRUE);
+		glDepthMask(GL_TRUE);
+
+		glEnable(GL_CULL_FACE);
 
 		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
 		glPopMatrix();					// 保存マトリックスの取り出し
