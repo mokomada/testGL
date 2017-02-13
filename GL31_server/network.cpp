@@ -29,8 +29,8 @@ SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
 sockaddr_in	CNetwork::m_RecvClient;
-char		CNetwork::m_ReceiveData[65535] = "NO DATA";
-char		CNetwork::m_LastMessage[65535] = "NO DATA";
+char		CNetwork::m_ReceiveData[65535] = "";
+char		CNetwork::m_LastMessage[65535] = "";
 uint		CNetwork::m_thIDMatch;
 HANDLE		CNetwork::m_hThMatch;
 uint		CNetwork::m_thID;
@@ -78,7 +78,7 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 
 	// ソケット生成
-	if(1)
+	if(0)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
 		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,13 +102,13 @@ void CNetwork::Init(void)
 	m_ifBindSuccess = bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 
 	// 同時接続クライアント数設定
-	listen(m_SockRecv, 5);
+	//listen(m_SockRecv, 5);
 
 	// 初期化終了告知
 	m_ifInitialize = true;
 
 	// †スレッド起動†
-	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
+	//m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
 }
 
 //=============================================================================
@@ -120,12 +120,11 @@ void CNetwork::Init(void)
 uint __stdcall CNetwork::MatchThread(void* p)
 {
 	SOCKET sock;
-	SOCKADDR_IN client;
 	int len;
 
 	while(m_PlayerNum < PLAYER_NUM)
 	{
-		len = sizeof(client);
+		len = sizeof(m_AddrClient[m_PlayerNum]);
 		sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
 
 		char buff[1024] ={ NULL };

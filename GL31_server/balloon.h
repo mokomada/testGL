@@ -25,15 +25,15 @@
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CBalloon
+class CBalloon : public CSceneBillboardGL
 {
 public:
-	CBalloon();
+	CBalloon(PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
 	~CBalloon();
 
-	static CBalloon * Create( VECTOR3 pos , float r , float g , float b , float a );
+	static CBalloon * Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent );
 
-	void Init( VECTOR3 pos , float r , float g , float b , float a );
+	void Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent );
 	void Uninit( void );
 	void Update( void );
 	void Draw( void );
@@ -44,7 +44,7 @@ public:
 	void SetRot( VECTOR3 rot ) { m_Rot = rot; }
 	void SetUV( float u ) { m_u += u; }
 	void SetDeleteFlag() { m_deleteFlag = true; }
-
+	void SetColor( float r , float g , float b , float a );
 private:
 	VECTOR3 m_Pos;		// 位置
 	VECTOR3 m_Rot;		// 回転角
@@ -56,4 +56,5 @@ private:
 	unsigned int *m_Texture;	// テクスチャ
 	float m_u;
 	bool m_deleteFlag;
+	CSceneGL * m_parent;
 };

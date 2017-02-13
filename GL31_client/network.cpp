@@ -75,7 +75,7 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 	
 	// ソケット生成
-	if(1)
+	if(0)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
 		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
@@ -104,8 +104,8 @@ void CNetwork::Init(void)
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
 	// マッチング登録
-	connect(m_SockRecv, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-	//sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	//connect(m_SockRecv, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
 		
 	// 初期化終了告知
 	m_ifInitialize = true;
@@ -249,9 +249,9 @@ void CNetwork::ReceiveData(void)
 void CNetwork::SetPlayerData(void)
 {
 	vector<CPlayer*>	player = CGame::GetPlayer();
-	VECTOR3 pos[4];
-	VECTOR3 rot[4];
-	VECTOR3 vec[4];
+	VECTOR3 pos[4] = { VEC3_ZERO };
+	VECTOR3 rot[4] = { VEC3_ZERO };
+	VECTOR3 vec[4] = { VEC3_ZERO };
 
 	// ゲームモードの時のみ処理
 	if(CManager::GetModeState() == MODE_GAME)
@@ -268,7 +268,7 @@ void CNetwork::SetPlayerData(void)
 			&pos[3].x, &pos[3].y, &pos[3].z, &rot[3].x, &rot[3].y, &rot[3].z, &vec[3].x, &vec[3].y, &vec[3].z);
 
 		// 取得した座標をセット
-		for(int i = 0 ; i < 4 ; i++)
+		for(int i = 0 ; i < (int)player.size() ; i++)
 		{
 			if(i != CManager::GetWhatPlayer())
 			{

@@ -1,5 +1,5 @@
 /******************************************************************************
-*	ファイル：
+*	ファイル：エフェクト（バレッド用）
 *	作成者  ：庄司茜
 *	作成日  ：
 ******************************************************************************/
@@ -12,43 +12,33 @@
 /******************************************************************************
 *	インクルードファイル
 ******************************************************************************/
-#include "sceneGL.h"
+#include "sceneBillboardGL.h"
 /******************************************************************************
 *	マクロ定義
 ******************************************************************************/
-#define LIFE_NUM ( 1 )
 /******************************************************************************
 *	構造体定義
 ******************************************************************************/
 /******************************************************************************
 *	前方宣言
 ******************************************************************************/
-
-class CBalloon;
-class CSceneGL;
-
 /******************************************************************************
 *	クラス
 ******************************************************************************/
-class CLife : public CSceneGL
+class CEffect : public CSceneBillboardGL
 {
 public:
-	CLife(PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
-	~CLife();
+	CEffect(bool ifListAdd = true, int priority = PRIORITY_EFFECT, OBJTYPE objType = OBJTYPE_NONE);
+	~CEffect();
 
-	static CLife * Create( VECTOR3 pos , CSceneGL *parent );
+	static CEffect * Create( VECTOR3 pos , int playerNumber );
 
-	void Init( VECTOR3 pos , CSceneGL *parent );
+	void Init(  VECTOR3 pos , int playerNumber );
 	void Uninit( void );
 	void Update( void );
 	void Draw( void );
 
-	void HitDamage( void );	//ダメージを受けたら
-	void SetBalloonColor( void );
-	int GetLife( void ); // HP残量の取得
-
 private:
-	CBalloon *m_balloon;
-	CSceneGL *m_parent;	//親のアドレス
-	int m_life;
+	unsigned int *m_Texture;	// テクスチャ
+	VECTOR4 m_color;
 };
