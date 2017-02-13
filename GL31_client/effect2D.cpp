@@ -15,6 +15,7 @@
 #include "effect2D.h"
 #include "textureManager.h"
 #include "sceneGL.h"
+#include <time.h>
 
 //=============================================================================
 //	関数名	:CSceneBillboard()
@@ -48,7 +49,6 @@ void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 	/////////////////////////////////////////////////////////////
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));	// 中心点座標
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));		// 回転角度
-	m_Alpha		= 1.0f;						// α値
 	m_Size		= size;						// 拡大倍率
 	m_nAnimCntX = 0;						// 現在のアニメーションのXの位置	
 	m_nAnimCntY = 0;						// 現在のアニメーションのYの位置
@@ -56,7 +56,15 @@ void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
 	m_nAnimChangeFrameCnt = 0;				// アニメーション切り替えまでのフレームカウンタ
 	m_bEndFlugE = false;					// 自殺フラグ(通常エフェクト)
 	m_bEndFlugP = false;					// 自殺フラグ(パーティクルエフェクト)
-	
+
+	m_Color.Red		= 1.0f;		// R
+	m_Color.Green	= 1.0f;		// G
+	m_Color.Blue	= 1.0f;		// B
+	m_Color.Alpha	= 1.0f;		// A
+
+	////	乱数生成
+	/////////////////////////////////////////////////////////////
+	srand((unsigned)time( NULL ));
 
 	////	エフェクトタイプ別の初期化処理
 	/////////////////////////////////////////////////////////////
@@ -115,20 +123,20 @@ void CEffect2D::Update(void)
 		}
 	}
 
-	////	終了フラグが立っている場合の処理(パーティクルでない)
-	/////////////////////////////////////////////////////////////////
-	if(m_Etype != ETYPE_SMOKE00)
-	{
-		////	アニメーション切り替え用フレームカウンタ加算
+	//////	終了フラグが立っている場合の処理(パーティクルでない)
+	///////////////////////////////////////////////////////////////////
+	//if(m_Etype != ETYPE_SMOKE01)
+	//{
+	//	////	アニメーション切り替え用フレームカウンタ加算
 		/////////////////////////////////////////////////////////////////
 		m_nAnimChangeFrameCnt++;
-		if(m_bEndFlugE)
+		if(m_bEndFlugE || m_bEndFlugP)
 		{
 			// 終了処理
 			Release();
 			return;
 		}
-	}
+	//}
 }
 
 //=============================================================================
@@ -167,6 +175,9 @@ void CEffect2D::Draw(void)
 	// 書き換えた行列を書き戻す
 	glLoadMatrixd(m);
 
+	// 回転角を適応させる
+	glRotatef((m_Rot.z * 180 / PI), 0.0f, 0.0f, 1.0f);
+
 	////	描画処理
 	/////////////////////////////////////////////////////////////
 
@@ -184,10 +195,26 @@ void CEffect2D::Draw(void)
 		/////////////////////////////////////////////////////////
 		glBegin(GL_TRIANGLE_STRIP);
 		{
-			// 頂点色設定
-			glColor4f(1.0f, 1.0f, 1.0f, m_Alpha);
+			////	頂点色設定
+			/////////////////////////////////////////////////////
+			
+			//	通常
+			glColor4f(1.0f, 1.0f, 1.0f, m_Color.Alpha);
+			
+			// 爆風エフェクト時
+			if(m_Etype == ETYPE_SMOKE01)
+			{
+				glColor4f(m_Color.Red,m_Color.Green,m_Color.Blue,m_Color.Alpha);
+			}
+			
+			// α値が低くなった場合の処理
+			if(m_Color.Alpha<= 0.2f)
+			{
+				glColor4f(0.0f, 0.0f, 0.0f, m_Color.Alpha);
+			}
 
-			// 描画関数呼び出し
+			////	描画関数呼び出し
+			/////////////////////////////////////////////////////
 			DrawPolygon();
 		}
 
@@ -289,10 +316,19 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 			
 		// 土煙画像(白)		10x1
 		case ETYPE_SMOKE00 :
-			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE );		// 画像のアドレス(ヘッダに定義)
+			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE00 );		// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = SMOKE00_X;											// Xの分割数(ヘッダに定義)
 			m_nAnimY = SMOKE00_Y;											// Yの分割数(ヘッダに定義)
 			m_nAnimChangeFrame = SMOKE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
+			//m_Size = VECTOR2(1.0f,1.0f);//(0.1f,0.1f);
+			break;
+
+		// 煙画像(アニメーション無)
+		case ETYPE_SMOKE01 :
+			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE01 );		// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = 1;													// Xの分割数(ヘッダに定義)
+			m_nAnimY = 1;													// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = -1;										// アニメーション切り替えまでのフレーム数
 			m_Size = VECTOR2(0.1f,0.1f);
 			break;
 	}
@@ -310,29 +346,46 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 //=============================================================================
 void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 {
-	////	更新処理
-	/////////////////////////////////////////////////////////////
+	//--------------------------------------------------------------------------------------------//
+	//				ローカル変数
+	//--------------------------------------------------------------------------------------------//
+	int RandHosei = 0;
+	
+	//--------------------------------------------------------------------------------------------//
+	//				更新処理
+	//--------------------------------------------------------------------------------------------//
 	switch(etype)
 	{
-		// タイプなし
+
+		////	エフェクトタイプなし
+		////////////////////////////////////////////////////////////////////////////////////////////
 		case ETYPE_NONE :
 			break;
 
-		// 爆発エフェクト(白) 8x1 
+		////	爆発エフェクト(白) 8x1 
+		////////////////////////////////////////////////////////////////////////////////////////////
 		case ETYPE_EXPLODE00 :
 			break;
 
-		// 爆発エフェクト(赤) 7x1 
+		////	爆発エフェクト(赤) 7x1 
+		////////////////////////////////////////////////////////////////////////////////////////////
 		case ETYPE_EXPLODE01 :
+
+			////	色情報変更処理
+			///////////////////////////////////////////////////////
+			m_Color.Red		-= 0.001f;
+			m_Color.Green	-= 0.001f;
+			m_Color.Blue	-= 0.001f;
 			break;
 			
-		// 土煙画像(白)		10x1
+		////	土煙画像(白)		10x1
+		////////////////////////////////////////////////////////////////////////////////////////////	
 		case ETYPE_SMOKE00 :
 			
 			////	位置更新
 			///////////////////////////////////////////////////////
 			// 乱数生成
-			int RandHosei = rand()%2 -4;// - 4;
+			RandHosei = rand()%2 -4;// - 4;
 			
 			// 位置更新
 			//m_Pos.x += (float)RandHosei;
@@ -340,27 +393,69 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 			
 			////	サイズ更新
 			///////////////////////////////////////////////////////
-			m_Size.x += PUP_SCALE;
-			m_Size.y += PUP_SCALE;
+			//m_Size.x += PUP_SCALE;
+			//m_Size.y += PUP_SCALE;
+
+			m_Size.x -= 0.05f;//PUP_SCALE;
+			m_Size.y -= 0.05f;//PUP_SCALE;
 
 			////	アニメーション更新
 			///////////////////////////////////////////////////////
-			m_nAnimCntX  = (int)(m_Pos.y / (PHEIGHT_LIMIT / 6));
+			m_nAnimCntX  = 6;//(int)(m_Pos.y / (PHEIGHT_LIMIT / 6));
 			
 			////	透明度更新
 			///////////////////////////////////////////////////////
 			//m_Alpha = (1.0f /6) * (6 - m_nAnimCntX);
-			m_Alpha -= PALPHA_MINUS;
-			break;
+			m_Color.Alpha -= PALPHA_MINUS;
 		
 			////	高度制限と終了処理
 			///////////////////////////////////////////////////////
-			if(PHEIGHT_LIMIT <= m_Pos.y && m_Alpha <= 0.0f)
+			if(PHEIGHT_LIMIT <= m_Pos.y && m_Color.Alpha<= 0.0f)
 			{
 				// 終了処理
 				Release();
 				return;
 			}
+
+			break;
+
+		////	煙画像(アニメーションなし)
+		////////////////////////////////////////////////////////////////////////////////////////////
+		case ETYPE_SMOKE01 :
+			
+			////	位置更新
+			///////////////////////////////////////////////////////
+			m_Pos.y += MOVE_SPEED_PSMOKEY + ((rand()%2 -4)/5);
+			
+			////	回転値更新
+			///////////////////////////////////////////////////////
+			int RandHoseiHugou = rand()%2;
+			if(RandHoseiHugou == 0)
+			{m_Rot.z += 0.002f;}
+			else if(rand()%2 == 1)
+			{m_Rot.z -= 0.002f;}
+		
+			////	サイズ更新
+			///////////////////////////////////////////////////////
+			m_Size.x += PUP_SCALE;
+			m_Size.y += PUP_SCALE;
+			
+			////	透明度更新
+			///////////////////////////////////////////////////////
+			m_Color.Red -= PALPHA_MINUS;
+			m_Color.Green -= PALPHA_MINUS;
+			m_Color.Blue -= PALPHA_MINUS;
+			m_Color.Alpha -= PALPHA_MINUS;			
+			
+			////	高度制限と終了処理
+			///////////////////////////////////////////////////////
+			if(PHEIGHT_LIMIT <= m_Pos.y || m_Color.Alpha<= 0.0f)
+			{
+				// 終了処理
+				m_bEndFlugP = true;
+			}
+
+			break;
 	}
 }
 
@@ -407,6 +502,28 @@ void CEffect2D::SetEndFlugP(bool flug)
 {
 	m_bEndFlugP = flug;
 }
+
+//=============================================================================
+//	関数名	:Create
+//	引数	:VECTOR3 pos(初期位置)
+//	戻り値	:無し
+//	説明	:インスタンス生成を行うと共に、初期位置を設定する。
+//=============================================================================
+//bool CEffect2D::CheckHeight(CSceneGL *parent)
+//{
+//	VECTOR3 Check = parent->GetPos();
+//
+//	if (m_CheckHeight < Check.y)
+//	{
+//		m_CheckHeight = Check.y;
+//		return true;
+//	}
+//	else
+//	{
+//		m_CheckHeight = Check.y;
+//		return false;
+//	}
+//}
 
 //=============================================================================
 //	関数名	:Create

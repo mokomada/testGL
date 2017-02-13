@@ -53,19 +53,28 @@ public:
 	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_PLAYER);
 	~CPlayer();
 
-	void	Init(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(bool ifMinePlayer = false, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CPlayer	*Create(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
 
+	VECTOR3 GetVec(void) { return m_Move; }
+	VECTOR3 GetOldPos(void) { return m_OldPos; }
 	float GetGauge(void) { return m_Gauge; }
+<<<<<<< HEAD
 	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	bool	m_ifMinePlayer;
+=======
+	void SetGauge(float Gauge) { m_Gauge = Gauge; }
+>>>>>>> 79dfdeb1dfe681916cbb082fb4624d0dd8f0a903
 	int GetPlayerLife(void);
 
 private:
+	uint	m_PlayerNumber;	// プレイヤー番号
+
+	VECTOR3	m_OldPos;		// 前フレームの座標
 	VECTOR3	m_Scale;		// スケール
 	VECTOR3	m_Move;			// 移動量
 	VECTOR3	m_RotMove;		// 回転量

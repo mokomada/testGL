@@ -24,7 +24,7 @@
 //	マクロ定義
 //=============================================================================
 #define MAX_PARTICLE		(1000)		// パーティクルの最大数		
-#define GENERATE_TIME		(30)//(5)//(60)		// 発生間隔
+#define GENERATE_TIME		(60)		// 発生間隔
 #define LIFE				(1000)		// 最大発生数(この数を作ったら消滅)
 #define	PARTICLE_WIDTH		(100.0f)	// ポリゴンの横幅
 #define	PARTICLE_HEIGHT		(100.0f)	// ポリゴンの縦幅
@@ -35,8 +35,8 @@
 typedef enum
 {
 	PARTICLE_NONE = 0,	// なし
-	PARTICLE_DEADSMOKE,	// 死亡時煙エフェクト
-	PARTICLE_RUNSMOKE,	// 走行時煙エフェクト
+	PARTICLE_EXPLODE,	// 爆発エフェクト
+	PARTICLE_SMOKE,		// 煙
 }PARTICLE_TYPE;
 
 typedef struct 
@@ -58,8 +58,6 @@ class CParticle
 {
 	private:
 		PARTICLE m_Particle;
-		PARTICLE m_ParticleDeadSmoke;
-		PARTICLE m_ParticleRunSmoke;
 		CSceneGL* m_Parent;
 
 	public:

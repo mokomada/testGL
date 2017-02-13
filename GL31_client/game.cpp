@@ -55,6 +55,7 @@ void CGame::Init(void)
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
+<<<<<<< HEAD
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/Žå‚¿‚á.png");
 	CSquare::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(50.0f, 100.0f, 50.0f), "./data/TEXTURE/Žå‚¿‚á.png" , VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 	CBulletGauge::Create( );
@@ -63,6 +64,12 @@ void CGame::Init(void)
 	m_Player.push_back(CPlayer::Create(false, VECTOR3(-100.0f, 50.0f, 0.0f)));
 	m_Player.push_back(CPlayer::Create(false, VECTOR3(100.0f, 50.0f, 0.0f)));
 	m_Player.push_back(CPlayer::Create(false, VECTOR3(0.0f, 50.0f, 100.0f)));
+=======
+	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -100.0f)));
+	m_Player.push_back(CPlayer::Create(1, VECTOR3(-100.0f, 50.0f, 0.0f)));
+	m_Player.push_back(CPlayer::Create(2, VECTOR3(100.0f, 50.0f, 0.0f)));
+	m_Player.push_back(CPlayer::Create(3, VECTOR3(0.0f, 50.0f, 100.0f)));
+>>>>>>> 79dfdeb1dfe681916cbb082fb4624d0dd8f0a903
 
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/rock.png");
 	CSquare::Create(VECTOR3(0.0f, 50.0f, 2500.0f), VECTOR3(5000.0f, 100.0f, 50.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));

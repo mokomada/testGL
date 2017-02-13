@@ -48,18 +48,19 @@ CPlayer::~CPlayer()
 
 }
 
+VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //=============================================================================
 //	関数名	:Init
 //	引数	:VECTOR3 pos(初期位置)
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
+void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
-	
+
 	// 自プレイヤーかどうかセット
-	m_ifMinePlayer = ifMinePlayer;
+	m_PlayerNumber = whatPlayer;
 
 	// 各種初期化
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
@@ -77,8 +78,32 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
 	m_DeadFlag = false; // 死亡フラグをOFFに
 
-	Model = CSceneModel::Create("./data/MODEL/car.obj", VECTOR3(0.0f, -25.0f, 0.0f));
+	switch(m_PlayerNumber)
+	{
+	case 0:
+		Model = CSceneModel::Create("./data/MODEL/car1.obj");
+		break;
+	case 1:
+		Model = CSceneModel::Create("./data/MODEL/car2.obj");
+		break;
+	case 2:
+		Model = CSceneModel::Create("./data/MODEL/car3.obj");
+		break;
+	case 3:
+		Model = CSceneModel::Create("./data/MODEL/car4.obj");
+		break;
+	default:
+		Model = CSceneModel::Create("./data/MODEL/car1.obj");
+		break;
+	}
 	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
+
+	Scene3D[0] = CScene3DGL::Create(VECTOR3(30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane1.png");
+	Scene3D[0]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[0]->UnlinkList();
+	Scene3D[1] = CScene3DGL::Create(VECTOR3(-30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane2.png");
+	Scene3D[1]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[1]->UnlinkList();
 
 	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
@@ -89,7 +114,7 @@ void CPlayer::Init(bool ifMinePlayer, VECTOR3 pos)
 	m_pLife = CLife::Create( m_Pos , this );
 
 	// パーティクルオブジェクト生成
-	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
 }
 
 //=============================================================================
@@ -130,7 +155,7 @@ void CPlayer::Update(void)
 	// ライフが0以下ならば操作を受け付けない
 	if(life > 0) {
 		// 自プレイヤーの場合にのみ処理
-		if (m_ifMinePlayer)
+		if (m_PlayerNumber == CManager::GetWhatPlayer())
 		{
 			if (CInput::GetKeyboardPress(DIK_W))				// 移動方向に移動
 			{
@@ -236,6 +261,14 @@ void CPlayer::Update(void)
 			
 			}
 
+			static float rot = 0.0f;
+			rot += 0.08f;
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+
+			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
+			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
+
 			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 
@@ -285,7 +318,7 @@ void CPlayer::Update(void)
 		}
 	}
 
-	if (!m_ifMinePlayer)
+	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
 		{
@@ -294,6 +327,9 @@ void CPlayer::Update(void)
 				if(m_HitEffectTime <= 0) {
 					m_pLife -> HitDamage();
 					if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+					// 球ヒットエフェクト生成
+					CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
 				}
 //				Release();
 //				return;
@@ -317,6 +353,29 @@ void CPlayer::Update(void)
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
 
+
+  ////	爆風エフェクト生成(上昇中のみ毎フレーム爆発エフェクトを呼ぶ)
+  ///////////////////////////////////////////////////////////
+  //	死んでる　＋　空中　＋　上に移動中
+  if(m_DeadFlag && m_bJump && g_PosOld.y < m_Pos.y)
+  {
+    // 前回の位置に今回の位置を入れる
+    g_PosOld.y = m_Pos.y;
+
+    // 火柱方向
+    float test = (float)(rand()%50 - 100.0f);
+
+    // エフェクト生成
+    CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
+  }
+
+  // 以下(else if)は同期設定次第で後で消す。
+  else if(m_DeadFlag && !m_bJump)
+  {
+    // 前回の位置を0.0fに
+    g_PosOld.y = 0.0f;
+  }
+
 	//************* HP0時演出テストここまで *****************
 
 
@@ -339,7 +398,7 @@ void CPlayer::Update(void)
 	// ジャンプ量の反映
 	m_Pos.y += m_Move.y;
 
-	if (m_ifMinePlayer)
+	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		CollisionDetection();
 	}
@@ -384,7 +443,7 @@ void CPlayer::Update(void)
 
 
 	// 自プレイヤーの場合、位置を送信
-	if (m_ifMinePlayer)
+	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
 		char str[1024] = { NULL };
 
@@ -428,6 +487,27 @@ void CPlayer::Draw(void)
 		// モデル描画
 		Model->Draw();
 
+		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_DEPTH_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.1);
+		glEnable(GL_ALPHA_TEST);
+		glDepthMask(GL_FALSE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_BLEND);
+		Scene3D[0]->Draw();
+		Scene3D[1]->Draw();
+		// 各種設定引き戻し
+		glEnable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthMask(TRUE);
+		glDepthMask(GL_TRUE);
+
+		glEnable(GL_CULL_FACE);
+
 		glMatrixMode(GL_MODELVIEW);		// モデルビューマトリックスの設定
 		glPopMatrix();					// 保存マトリックスの取り出し
 	}
@@ -444,13 +524,13 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(bool ifMinePlayer, VECTOR3 pos)
+CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
 {
 	CPlayer *player;
 
 	player = new CPlayer;
 
-	player->Init(ifMinePlayer, pos);
+	player->Init(whatPlayer, pos);
 
 	return player;
 }
@@ -470,7 +550,7 @@ void CPlayer::CollisionDetection(void)
 		if (list != NULL)
 		{
 			CPlayer* player = (CPlayer*)list;
-			if (player->m_ifMinePlayer == false)
+			if (player->m_PlayerNumber == CManager::GetWhatPlayer())
 			{
 				VECTOR3 sub = GetPos() - player->GetPos();
 				float distance = VECTOR3::dot(sub, sub);

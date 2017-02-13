@@ -75,8 +75,16 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 	
 	// ソケット生成
-	m_SockSend = socket(AF_INET, SOCK_DGRAM, 0);
-	m_SockRecv = socket(AF_INET, SOCK_DGRAM, 0);
+	if(1)
+	{
+		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
+		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
+	}
+	else
+	{
+		m_SockSend = socket(AF_INET, SOCK_DGRAM, 0);
+		m_SockRecv = socket(AF_INET, SOCK_DGRAM, 0);
+	}
 	
 
 	// アドレスタイプ設定
@@ -96,7 +104,8 @@ void CNetwork::Init(void)
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
 	// マッチング登録
-	sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	connect(m_SockRecv, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	//sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
 		
 	// 初期化終了告知
 	m_ifInitialize = true;
