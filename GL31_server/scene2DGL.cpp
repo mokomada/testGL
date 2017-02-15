@@ -51,6 +51,8 @@ void CScene2DGL::Init(VECTOR3 pos, VECTOR2 size, char *texName)
 	// äeéÌèâä˙ê›íË
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	SetMove(VEC3_ZERO);
+	SetAcc(VEC3_ZERO);
 	m_Size		= size;
 	m_fAngle	= atan2f(m_Size.x, m_Size.y);
 	m_fLength	= hypotf(m_Size.x, m_Size.y) * 0.5f;
@@ -83,7 +85,11 @@ void CScene2DGL::Uninit(bool isLast)
 //=============================================================================
 void CScene2DGL::Update(void)
 {
+	// â¡ë¨ìxâ¡éZ
+	m_Move	+= m_Acc;
 
+	// à⁄ìÆó â¡éZ
+	m_Pos	+= m_Move;
 }
 
 //=============================================================================

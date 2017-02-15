@@ -78,7 +78,7 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 
 	// ソケット生成
-	if(0)
+	if(1)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
 		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,13 +102,13 @@ void CNetwork::Init(void)
 	m_ifBindSuccess = bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 
 	// 同時接続クライアント数設定
-	//listen(m_SockRecv, 5);
+	listen(m_SockRecv, 5);
 
 	// 初期化終了告知
 	m_ifInitialize = true;
 
 	// †スレッド起動†
-	//m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
+	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
 }
 
 //=============================================================================
