@@ -48,7 +48,6 @@ CPlayer::~CPlayer()
 
 }
 
-VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //=============================================================================
 //	関数名	:Init
 //	引数	:VECTOR3 pos(初期位置)
@@ -353,13 +352,13 @@ void CPlayer::Update(void)
   ////	爆風エフェクト生成(上昇中のみ毎フレーム爆発エフェクトを呼ぶ)
   ///////////////////////////////////////////////////////////
   //	死んでる　＋　空中　＋　上に移動中
-  if(m_DeadFlag && m_bJump && g_PosOld.y < m_Pos.y)
+  if(m_DeadFlag && m_bJump && m_OldPos.y < m_Pos.y)
   {
     // 前回の位置に今回の位置を入れる
-    g_PosOld.y = m_Pos.y;
+    m_OldPos.y = m_Pos.y;
 
     // 火柱方向
-    float test = (float)(rand()%50 - 100.0f);
+    float test = 0;//(float)(rand()%50 - 100.0f);
 
     // エフェクト生成
     CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
@@ -369,7 +368,7 @@ void CPlayer::Update(void)
   else if(m_DeadFlag && !m_bJump)
   {
     // 前回の位置を0.0fに
-    g_PosOld.y = 0.0f;
+    m_OldPos.y = 0.0f;
   }
 
 	//************* HP0時演出テストここまで *****************
