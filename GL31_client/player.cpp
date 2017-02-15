@@ -111,7 +111,7 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	//これで風船を描画します
 	//Uninit,Update,Drawにて各関数を呼んでます。
 	//ダメージを受けたらCLife内のHitDamage関数を使ってください
-	m_pLife = CLife::Create( m_Pos , this );
+	m_pLife = CLife::Create( m_Pos , this , m_PlayerNumber );
 
 	// パーティクルオブジェクト生成
 	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
@@ -285,11 +285,15 @@ void CPlayer::Update(void)
 			// 弾発射
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
+<<<<<<< HEAD
 				if( m_Gauge > 100 )
 				{
 					CBullet::Create(m_Pos, m_Rot, 10.0f);
 					AddGauge(-100);
 				}
+=======
+				CBullet::Create( m_Pos , m_Rot , 10.0f , m_PlayerNumber );
+>>>>>>> 22aaacffac61326c6b474152a54662273fef15a2
 			}
 		}
 		// 回転量補正
@@ -330,6 +334,8 @@ void CPlayer::Update(void)
 
 					// 球ヒットエフェクト生成
 					CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
+					CBullet *bullet = ( CBullet* )list;
+					bullet->SetLife( 0 );
 				}
 //				Release();
 //				return;
