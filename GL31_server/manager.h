@@ -48,6 +48,8 @@ public:
 
 	static void			SetMode(CMode *mode, int modeState);
 
+	static int	m_Frame;
+
 
 private:
 	static CMode		*m_Mode;		// モードのインスタンス

@@ -63,12 +63,12 @@ public:
 	VECTOR3 GetVec(void) { return m_Move; }
 	VECTOR3 GetOldPos(void) { return m_OldPos; }
 	float GetGauge(void) { return m_Gauge; }
-<<<<<<< HEAD
+//<<<<<<< HEAD
 	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	bool	m_ifMinePlayer;
-=======
+//=======
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
->>>>>>> 79dfdeb1dfe681916cbb082fb4624d0dd8f0a903
+//>>>>>>> 79dfdeb1dfe681916cbb082fb4624d0dd8f0a903
 	int GetPlayerLife(void);
 
 private:

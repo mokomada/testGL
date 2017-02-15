@@ -137,19 +137,19 @@ void CNumber::Draw(void)
 
 		// 描画用のテクスチャ座標・頂点座標設定
 		// 左上頂点
-		glTexCoord2d((m_Number * 0.1f), 1.0);
+		glTexCoord2d((m_Number * 0.1f), 0.0);
 		glVertex3f((m_Pos.x - (sinf(m_fAngle + m_Rot.z) * m_fLength)), (m_Pos.y + (cosf(m_fAngle + m_Rot.z + PI) * m_fLength)), 0.0f);
 
 		// 右上頂点
-		glTexCoord2d((m_Number * 0.1f + 0.1f), 1.0);
+		glTexCoord2d((m_Number * 0.1f + 0.1f), 0.0);
 		glVertex3f((m_Pos.x - (sinf(-m_fAngle + m_Rot.z) * m_fLength)), (m_Pos.y + (cosf(-m_fAngle + m_Rot.z + PI) * m_fLength)), 0.0f);
 
 		// 左下頂点
-		glTexCoord2d((m_Number * 0.1f), 0.0);
+		glTexCoord2d((m_Number * 0.1f), 1.0);
 		glVertex3f((m_Pos.x - (sinf(-m_fAngle + m_Rot.z + PI) * m_fLength)), (m_Pos.y + (cosf(-m_fAngle + m_Rot.z) * m_fLength)), 0.0f);
 
 		// 右下頂点
-		glTexCoord2d((m_Number * 0.1f + 0.1f), 0.0);
+		glTexCoord2d((m_Number * 0.1f + 0.1f), 1.0);
 		glVertex3f((m_Pos.x - (sinf(m_fAngle + m_Rot.z - PI) * m_fLength)), (m_Pos.y + (cosf(m_fAngle + m_Rot.z) * m_fLength)), 0.0f);
 	}
 	glEnd();

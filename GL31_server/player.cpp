@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//	ƒ^ƒCƒgƒ‹	ƒvƒŒƒCƒ„[
-//	ƒtƒ@ƒCƒ‹–¼	player.cpp
-//	ì¬Ò		AT13A284_10 Î‹´‘ñ–¤
-//	ì¬“ú		2016/12/5
+//	ã‚¿ã‚¤ãƒˆãƒ«	ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
+//	ãƒ•ã‚¡ã‚¤ãƒ«å	player.cpp
+//	ä½œæˆè€…		AT13A284_10 çŸ³æ©‹æ‹“å·³
+//	ä½œæˆæ—¥		2016/12/5
 //
 //=============================================================================
 //=============================================================================
-//	ƒCƒ“ƒNƒ‹[ƒh
+//	ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 //=============================================================================
 #include <stdio.h>
 #include "main.h"
@@ -27,10 +27,10 @@
 #include "particle.h"
 
 //=============================================================================
-//	ŠÖ”–¼	:CScene3D()
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:ƒRƒ“ƒXƒgƒ‰ƒNƒ^B
+//	é–¢æ•°å	:CScene3D()
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 //=============================================================================
 CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifListAdd, priority, objType)
 {
@@ -38,10 +38,10 @@ CPlayer::CPlayer(bool ifListAdd, int priority, OBJTYPE objType) : CScene3DGL(ifL
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:~CScene3D()
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:ƒfƒXƒgƒ‰ƒNƒ^B
+//	é–¢æ•°å	:~CScene3D()
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 //=============================================================================
 CPlayer::~CPlayer()
 {
@@ -49,19 +49,19 @@ CPlayer::~CPlayer()
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Init
-//	ˆø”	:VECTOR3 pos(‰ŠúˆÊ’u)
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:‰Šú‰»ˆ—‚ğs‚¤‚Æ‹¤‚ÉA‰ŠúˆÊ’u‚ğİ’è‚·‚éB
+//	é–¢æ•°å	:Init
+//	å¼•æ•°	:VECTOR3 pos(åˆæœŸä½ç½®)
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã†ã¨å…±ã«ã€åˆæœŸä½ç½®ã‚’è¨­å®šã™ã‚‹ã€‚
 //=============================================================================
 void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
-	// ©ƒvƒŒƒCƒ„[‚©‚Ç‚¤‚©ƒZƒbƒg
+	// è‡ªãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã©ã†ã‹ã‚»ãƒƒãƒˆ
 	m_PlayerNumber = whatPlayer;
 
-	// Šeí‰Šú‰»
+	// å„ç¨®åˆæœŸåŒ–
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));
 	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
@@ -70,180 +70,203 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	m_bJump			= false;
 	m_Scale			= VECTOR3(1.0f, 1.0f, 1.0f);
 
-	m_Gauge = 100.0f;	//ƒQ[ƒW‚Ì‰Šú‰»
+	m_Gauge = 100.0f;	//ã‚²ãƒ¼ã‚¸ã®åˆæœŸåŒ–
 	m_FlgLowSpeed = false;
 	m_Radius = 30.0f;
-	m_HitEffectTime = 0; // ”í’eƒGƒtƒFƒNƒgŠÔ‚Ì‰Šú‰»
-	m_DrawOnOffFlag = true; // •`‰æˆ—‚ÌONOFFƒtƒ‰ƒO‚ğON‚É
-	m_DeadFlag = false; // €–Sƒtƒ‰ƒO‚ğOFF‚É
+	m_HitEffectTime = 0; // è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæ™‚é–“ã®åˆæœŸåŒ–
+	m_DrawOnOffFlag = true; // æç”»å‡¦ç†ã®ONOFFãƒ•ãƒ©ã‚°ã‚’ONã«
+	m_DeadFlag = false; // æ­»äº¡ãƒ•ãƒ©ã‚°ã‚’OFFã«
 
 	switch(m_PlayerNumber)
 	{
 	case 0:
-		Model = CSceneModel::Create("./data/MODEL/car1.obj", VECTOR3(pos.x, pos.y, pos.z));
+		Model = CSceneModel::Create("./data/MODEL/car1.obj");
 		break;
 	case 1:
-		Model = CSceneModel::Create("./data/MODEL/car2.obj", VECTOR3(pos.x, pos.y, pos.z));
+		Model = CSceneModel::Create("./data/MODEL/car2.obj");
 		break;
 	case 2:
-		Model = CSceneModel::Create("./data/MODEL/car3.obj", VECTOR3(pos.x, pos.y, pos.z));
+		Model = CSceneModel::Create("./data/MODEL/car3.obj");
 		break;
 	case 3:
-		Model = CSceneModel::Create("./data/MODEL/car4.obj", VECTOR3(pos.x, pos.y, pos.z));
+		Model = CSceneModel::Create("./data/MODEL/car4.obj");
 		break;
 	default:
-		Model = CSceneModel::Create("./data/MODEL/car1.obj", VECTOR3(pos.x, pos.y, pos.z));
+		Model = CSceneModel::Create("./data/MODEL/car1.obj");
 		break;
 	}
-	CShadow::Create(m_Pos, 100.0f, 100.0f, this);
+	CShadow::Create( m_Pos , 100.0f , 100.0f , this );
 
-	BOX_DATA Box ={ 50.0f, 50.0f, 50.0f };
+	Scene3D[0] = CScene3DGL::Create(VECTOR3(30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane1.png");
+	Scene3D[0]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[0]->UnlinkList();
+	Scene3D[1] = CScene3DGL::Create(VECTOR3(-30.0f, 5.0f, 0.0f), VECTOR2(30.0f, 30.0f), "./data/TEXTURE/hane2.png");
+	Scene3D[1]->SetRot(VECTOR3(-PI * 0.45f, 0.0f, 0.0f));
+	Scene3D[1]->UnlinkList();
+
+	BOX_DATA Box = { 50.0f, 50.0f, 50.0f };
 	SetBox(Box);
 
-	//‚±‚ê‚Å•—‘D‚ğ•`‰æ‚µ‚Ü‚·
-	//Uninit,Update,Draw‚É‚ÄŠeŠÖ”‚ğŒÄ‚ñ‚Å‚Ü‚·B
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚çCLife“à‚ÌHitDamageŠÖ”‚ğg‚Á‚Ä‚­‚¾‚³‚¢
-	m_pLife = CLife::Create(m_Pos, this);
+	//ã“ã‚Œã§é¢¨èˆ¹ã‚’æç”»ã—ã¾ã™
+	//Uninit,Update,Drawã«ã¦å„é–¢æ•°ã‚’å‘¼ã‚“ã§ã¾ã™ã€‚
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã‚‰CLifeå†…ã®HitDamageé–¢æ•°ã‚’ä½¿ã£ã¦ãã ã•ã„
+	m_pLife = CLife::Create( m_Pos , this );
 
-	// ƒp[ƒeƒBƒNƒ‹ƒIƒuƒWƒFƒNƒg¶¬
-	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x, -100.0f, 0.0f), VECTOR2(100.0f, 100.0f), PARTICLE_EXPLODE, this);
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Uninit
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:I—¹ˆ—‚ğs‚¤B
+//	é–¢æ•°å	:Uninit
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:çµ‚äº†å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CPlayer::Uninit(bool isLast)
 {
-	m_pLife->Uninit();
-	Model->Uninit();
-	m_pParticle->Uninit();
+	m_pLife = NULL;
+
+	if(Model != NULL) {
+		Model->Uninit();
+		Model = NULL;
+	}
+
+	if(m_pParticle != NULL) {
+		m_pParticle->Uninit();
+		m_pParticle = NULL;
+	}
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Update
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:XVˆ—‚ğs‚¤B
+//	é–¢æ•°å	:Update
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CPlayer::Update(void)
 {
-	CCameraGL	*camera = CManager::GetCamera();	// ƒJƒƒ‰
-	int life = m_pLife->GetLife();
+	CCameraGL	*camera = CManager::GetCamera();	// ã‚«ãƒ¡ãƒ©
+	int life = m_pLife -> GetLife( );
 
-	if(CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
-	else if(CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
+	if (CInput::GetKeyboardTrigger(DIK_SPACE)) m_FlgLowSpeed = true;
+	else if (CInput::GetKeyboardRelease(DIK_SPACE)) m_FlgLowSpeed = false;
 
-	// ƒ‰ƒCƒt‚ª0ˆÈ‰º‚È‚ç‚Î‘€ì‚ğó‚¯•t‚¯‚È‚¢
+	// ãƒ©ã‚¤ãƒ•ãŒ0ä»¥ä¸‹ãªã‚‰ã°æ“ä½œã‚’å—ã‘ä»˜ã‘ãªã„
 	if(life > 0) {
-		// ©ƒvƒŒƒCƒ„[‚Ìê‡‚É‚Ì‚İˆ—
-		if(m_PlayerNumber == CManager::GetWhatPlayer())
+		// è‡ªãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å ´åˆã«ã®ã¿å‡¦ç†
+		if (m_PlayerNumber == CManager::GetWhatPlayer())
 		{
-			if(CInput::GetKeyboardPress(DIK_W))				// ˆÚ“®•ûŒü‚ÉˆÚ“®
+			if (CInput::GetKeyboardPress(DIK_W))				// ç§»å‹•æ–¹å‘ã«ç§»å‹•
 			{
-				if(CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
+				if (CInput::GetKeyboardPress(DIK_A))				// å·¦å‘¨ã‚Š
 				{
-					//‰ñ“]—Ê‚Ì‰ÁZ
-					if(m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if(m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					//å›è»¢é‡ã®åŠ ç®—
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
-				if(CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
+				if (CInput::GetKeyboardPress(DIK_D))				// å³å›ã‚Š
 				{
-					//‰ñ“]—Ê‚Ì‰ÁZ
-					if(m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if(m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					//å›è»¢é‡ã®åŠ ç®—
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
 
-				// ˆÚ“®—Ê‚ğİ’è
-				if(m_FlgLowSpeed == true)
+				// ç§»å‹•é‡ã‚’è¨­å®š
+				if (m_FlgLowSpeed == true)
 				{
 					m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
 					m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
 				}
-				if(m_FlgLowSpeed == false)
+				if (m_FlgLowSpeed == false)
 				{
 					m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
 					m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
 				}
 			}
-			if(CInput::GetKeyboardPress(DIK_S))		// ˆÚ“®•ûŒü‚ÉˆÚ“®‚Ì”½‘Î‚ÉˆÚ“®
+			if (CInput::GetKeyboardPress(DIK_S))		// ç§»å‹•æ–¹å‘ã«ç§»å‹•ã®åå¯¾ã«ç§»å‹•
 			{
-				if(CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
+				if (CInput::GetKeyboardPress(DIK_A))				// å·¦å‘¨ã‚Š
 				{
-					//‰ñ“]—Ê‚Ì‰ÁZ
-					if(m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-					else if(m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+					//å›è»¢é‡ã®åŠ ç®—
+					if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 				}
-				if(CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
+				if (CInput::GetKeyboardPress(DIK_D))				// å³å›ã‚Š
 				{
-					//‰ñ“]—Ê‚Ì‰ÁZ
-					if(m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-					else if(m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+					//å›è»¢é‡ã®åŠ ç®—
+					if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+					else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 				}
 
-				// ˆÚ“®—Ê‚ğİ’è
-				if(m_FlgLowSpeed == true)
+				// ç§»å‹•é‡ã‚’è¨­å®š
+				if (m_FlgLowSpeed == true)
 				{
 					m_Move.x += sinf(m_Rot.y + PI) * LOWBMOVE_SPEED;
 					m_Move.z += cosf(m_Rot.y + PI) * LOWBMOVE_SPEED;
 				}
-				if(m_FlgLowSpeed == false)
+				if (m_FlgLowSpeed == false)
 				{
 					m_Move.x += sinf(m_Rot.y + PI) * BMOVE_SPEED;
 					m_Move.z += cosf(m_Rot.y + PI) * BMOVE_SPEED;
 				}
 			}
-			if(m_bJump == true)
+			if (m_bJump == true)
 			{
-				if(CInput::GetKeyboardPress(DIK_W))				// ˆÚ“®•ûŒü‚ÉˆÚ“®
+				if (CInput::GetKeyboardPress(DIK_W))				// ç§»å‹•æ–¹å‘ã«ç§»å‹•
 				{
-					if(CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
+					if (CInput::GetKeyboardPress(DIK_A))				// å·¦å‘¨ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 					}
-					if(CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
+					if (CInput::GetKeyboardPress(DIK_D))				// å³å›ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 					}
 				}
-				else if(CInput::GetKeyboardPress(DIK_S))		// ˆÚ“®•ûŒü‚ÉˆÚ“®‚Ì”½‘Î‚ÉˆÚ“®
+				else if (CInput::GetKeyboardPress(DIK_S))		// ç§»å‹•æ–¹å‘ã«ç§»å‹•ã®åå¯¾ã«ç§»å‹•
 				{
-					if(CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
+					if (CInput::GetKeyboardPress(DIK_A))				// å·¦å‘¨ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 					}
-					if(CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
+					if (CInput::GetKeyboardPress(DIK_D))				// å³å›ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 					}
 				}
 				else
 				{
-					if(CInput::GetKeyboardPress(DIK_A))				// ¶ü‚è
+					if (CInput::GetKeyboardPress(DIK_A))				// å·¦å‘¨ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y += LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y += MOVE_ROT;
 					}
-					if(CInput::GetKeyboardPress(DIK_D))				// ‰E‰ñ‚è
+					if (CInput::GetKeyboardPress(DIK_D))				// å³å›ã‚Š
 					{
-						//‰ñ“]—Ê‚Ì‰ÁZ
-						if(m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
-						else if(m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
+						//å›è»¢é‡ã®åŠ ç®—
+						if (m_FlgLowSpeed == true) m_MoveDirection.y -= LOWMOVE_ROT;
+						else if (m_FlgLowSpeed == false) m_MoveDirection.y -= MOVE_ROT;
 					}
 				}
-
+			
 			}
+
+			static float rot = 0.0f;
+			rot += 0.08f;
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+
+			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
+			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
 
 			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
@@ -251,63 +274,63 @@ void CPlayer::Update(void)
 			camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
 			camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
 
-			// ƒWƒƒƒ“ƒv
-			if(CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
+			// ã‚¸ãƒ£ãƒ³ãƒ—
+			if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
 			{
 				m_Move.y += PLAYER_JUMP;
 
 				m_bJump = true;
 			}
-			// ’e”­Ë
-			if(CInput::GetKeyboardTrigger(DIK_L))
+			// å¼¾ç™ºå°„
+			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
-				CBullet::Create(m_Pos, m_Rot, 10.0f);
+				CBullet::Create( m_Pos , m_Rot , 10.0f );
 			}
 		}
-		// ‰ñ“]—Ê•â³
-		if(m_Rot.y - m_MoveDirection.y > PI)				// ‰ñ“]—Ê‚ªƒvƒ‰ƒX•ûŒü‚É‹tŒü‚«‚Ìê‡
+		// å›è»¢é‡è£œæ­£
+		if (m_Rot.y - m_MoveDirection.y > PI)				// å›è»¢é‡ãŒãƒ—ãƒ©ã‚¹æ–¹å‘ã«é€†å‘ãã®å ´åˆ
 		{
-			// ‰ñ“]—Ê‚ğ‹t•ûŒü‚É
+			// å›è»¢é‡ã‚’é€†æ–¹å‘ã«
 			m_Rot.y -= (PI * 2.0f);
 		}
-		else if(m_Rot.y - m_MoveDirection.y < -PI)			// ‰ñ“]—Ê‚ªƒ}ƒCƒiƒX•ûŒü‚É‹tŒü‚«‚Ìê‡
+		else if (m_Rot.y - m_MoveDirection.y < -PI)			// å›è»¢é‡ãŒãƒã‚¤ãƒŠã‚¹æ–¹å‘ã«é€†å‘ãã®å ´åˆ
 		{
-			// ‰ñ“]—Ê‚ğ‹t•ûŒü‚É
+			// å›è»¢é‡ã‚’é€†æ–¹å‘ã«
 			m_Rot.y += (PI * 2.0f);
 		}
 
-		// ‰ñ“]—Ê‚ğİ’è
+		// å›è»¢é‡ã‚’è¨­å®š
 		m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
 	}
 
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL))
 	{
-		if(CCollision::GetInstance()->SphereToAabb(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
+		if (CCollision::GetInstance()->SphereToAabb(m_Pos, m_Radius, list->GetPos(), &list->GetBox()))
 		{
 			CDebugProcGL::DebugProc("HitBox\n");
 		}
 	}
 
-	if(m_PlayerNumber != CManager::GetWhatPlayer())
+	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
 		{
-			if(CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
+			if (CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
 			{
 				if(m_HitEffectTime <= 0) {
-					m_pLife->HitDamage();
-					if(life > 1) m_HitEffectTime = 120; // ƒ‰ƒCƒt‚ª1‚Ì‚É”í’e‚·‚é‚Á”ò‚ÑƒGƒtƒFƒNƒg‚ÉˆÚs‚·‚é‚Ì‚Å“_–Åˆ—‚Í‚È‚µ
+					m_pLife -> HitDamage();
+					if(life > 1) m_HitEffectTime = 120; // ãƒ©ã‚¤ãƒ•ãŒ1ã®æ™‚ã«è¢«å¼¾ã™ã‚‹ï¼å¹ã£é£›ã³ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã«ç§»è¡Œã™ã‚‹ã®ã§ç‚¹æ»…å‡¦ç†ã¯ãªã—
 				}
-				//				Release();
-				//				return;
+//				Release();
+//				return;
 			}
 		}
 	}
 
 
-	//************* HP0‰‰oƒeƒXƒg‚±‚±‚©‚ç *****************//
+	//************* HP0æ™‚æ¼”å‡ºãƒ†ã‚¹ãƒˆã“ã“ã‹ã‚‰ *****************
 
 	if(life <= 0 && !m_DeadFlag) {
 		m_Move.y += PLAYER_JUMP * 3;
@@ -322,15 +345,15 @@ void CPlayer::Update(void)
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
 
-	//************* HP0‰‰oƒeƒXƒg‚±‚±‚Ü‚Å *****************//
+	//************* HP0æ™‚æ¼”å‡ºãƒ†ã‚¹ãƒˆã“ã“ã¾ã§ *****************
 
 
-	// ˆÚ“®—Ê”½‰f
+	// ç§»å‹•é‡åæ˜ 
 	m_Pos.x += m_Move.x;
 	m_Pos.z += m_Move.z;
 
-	//ˆÚ“®—Ê‚ÌŒ¸Š
-	if(m_bJump == true)
+	//ç§»å‹•é‡ã®æ¸›è¡°
+	if (m_bJump == true)
 	{
 		m_Move.x += (-m_Move.x * MODEL_SPEED_DOWNJ);
 		m_Move.z += (-m_Move.z * MODEL_SPEED_DOWNJ);
@@ -341,17 +364,17 @@ void CPlayer::Update(void)
 		m_Move += (-m_Move * MODEL_SPEED_DOWN);
 	}
 
-	// ƒWƒƒƒ“ƒv—Ê‚Ì”½‰f
+	// ã‚¸ãƒ£ãƒ³ãƒ—é‡ã®åæ˜ 
 	m_Pos.y += m_Move.y;
 
-	if(m_PlayerNumber == CManager::GetWhatPlayer())
+	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		CollisionDetection();
 	}
 
-	// ƒvƒŒƒCƒ„[‚Ì‚‚³‚ğİ’è
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é«˜ã•ã‚’è¨­å®š
 
-	if(m_Pos.y < 25.0f)
+	if (m_Pos.y < 25.0f)
 	{
 		m_Pos.y = 25.0f;
 		m_RotMove.x = 0;
@@ -361,15 +384,15 @@ void CPlayer::Update(void)
 	}
 	else
 	{
-		// ƒWƒƒƒ“ƒv—Ê‚ÌŒ¸Š
+		// ã‚¸ãƒ£ãƒ³ãƒ—é‡ã®æ¸›è¡°
 		m_Move.y -= PLAYER_GRAVITY;
 	}
 
 
-	//*************************** ”í’eƒGƒtƒFƒNƒgˆ—ŠJn ***************************
+	//*************************** è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå‡¦ç†é–‹å§‹ ***************************
 
-	// ƒeƒXƒg—p 8`0ƒL[‚Å”í’eƒGƒtƒFƒNƒg ‚»‚ê‚¼‚ê’·‚³‚ªˆá‚¤
-	// ¦8‚Ì”{”-4`8‚Ì”{”-2‚Éİ’è‚·‚é‚ÆÅ‰‚Ì“_–Å‚ª3`1ƒtƒŒ[ƒ€’Z‚­‚È‚é‚Ì‚Å’ˆÓBŠî–{‚Í4ƒtƒŒ[ƒ€–ˆ‚ÉONOFF‚ğØ‚è‘Ö‚¦‚é“_–Å
+	// ãƒ†ã‚¹ãƒˆç”¨ 8ï½0ã‚­ãƒ¼ã§è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ ãã‚Œãã‚Œé•·ã•ãŒé•ã†
+	// â€»8ã®å€æ•°-4ï½8ã®å€æ•°-2ã«è¨­å®šã™ã‚‹ã¨æœ€åˆã®ç‚¹æ»…ãŒ3ï½1ãƒ•ãƒ¬ãƒ¼ãƒ çŸ­ããªã‚‹ã®ã§æ³¨æ„ã€‚åŸºæœ¬ã¯4ãƒ•ãƒ¬ãƒ¼ãƒ æ¯ã«ONOFFã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ç‚¹æ»…
 	if(CInput::GetKeyboardTrigger(DIK_8) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 30;
 	}
@@ -380,29 +403,29 @@ void CPlayer::Update(void)
 		m_HitEffectTime = 120;
 	}
 
-	// ”í’eƒGƒtƒFƒNƒgˆ—‚ğÀs
+	// è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå‡¦ç†ã‚’å®Ÿè¡Œ
 	if(m_HitEffectTime > 0) {
-		HitEffect();
+		HitEffect( );
 	}
 
-	//*************************** ”í’eƒGƒtƒFƒNƒgˆ—I—¹ ***************************
+	//*************************** è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå‡¦ç†çµ‚äº† ***************************
 
-
-	// ©ƒvƒŒƒCƒ„[‚Ìê‡AˆÊ’u‚ğ‘—M
-	if(m_PlayerNumber == CManager::GetWhatPlayer())
+	/*
+	// è‡ªãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å ´åˆã€ä½ç½®ã‚’é€ä¿¡
+	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
-		char str[1024] ={ NULL };
+		char str[1024] = { NULL };
 
 		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
 			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
-	}
+	}*/
 
-	//•—‘DXV
+	//é¢¨èˆ¹æ›´æ–°
 	m_pLife->Update();
 
-	// ‰Œƒp[ƒeƒBƒNƒ‹”­¶
+	// ç…™ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç™ºç”Ÿ
 	if(m_DeadFlag)
 	{
 		m_pParticle->Update();
@@ -412,42 +435,63 @@ void CPlayer::Update(void)
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Draw
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:•`‰æˆ—‚ğs‚¤B
+//	é–¢æ•°å	:Draw
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:æç”»å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CPlayer::Draw(void)
 {
 	if(m_DrawOnOffFlag) {
-		glMatrixMode(GL_MODELVIEW);		// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒNƒX‚Ìİ’è
-		glPushMatrix();					// ƒ}ƒgƒŠƒNƒX‚Ì‘Ş”ğ
+		glMatrixMode(GL_MODELVIEW);		// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªã‚¯ã‚¹ã®è¨­å®š
+		glPushMatrix();					// ãƒãƒˆãƒªã‚¯ã‚¹ã®é€€é¿
 
-										// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒNƒX‚Ìİ’è
+		// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªã‚¯ã‚¹ã®è¨­å®š
 		glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
-		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// ‰ñ“]ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’èAŠp“x‚Í“x”–@‚Å
-		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// ‰ñ“]ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’èAŠp“x‚Í“x”–@‚Å
-		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// ‰ñ“]ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’èAŠp“x‚Í“x”–@‚Å
+		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// å›è»¢ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®šã€è§’åº¦ã¯åº¦æ•°æ³•ã§
+		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// å›è»¢ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®šã€è§’åº¦ã¯åº¦æ•°æ³•ã§
+		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// å›è»¢ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®šã€è§’åº¦ã¯åº¦æ•°æ³•ã§
 		glScalef(m_Scale.x, m_Scale.y, m_Scale.z);
 
-		// ƒ‚ƒfƒ‹•`‰æ
+		// ãƒ¢ãƒ‡ãƒ«æç”»
 		Model->Draw();
 
-		glMatrixMode(GL_MODELVIEW);		// ƒ‚ƒfƒ‹ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
-		glPopMatrix();					// •Û‘¶ƒ}ƒgƒŠƒbƒNƒX‚Ìæ‚èo‚µ
+		glDisable(GL_CULL_FACE);
+
+		glEnable(GL_DEPTH_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.1);
+		glEnable(GL_ALPHA_TEST);
+		glDepthMask(GL_FALSE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_BLEND);
+		Scene3D[0]->Draw();
+		Scene3D[1]->Draw();
+		// å„ç¨®è¨­å®šå¼•ãæˆ»ã—
+		glEnable(GL_LIGHTING);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthMask(TRUE);
+		glDepthMask(GL_TRUE);
+
+		glEnable(GL_CULL_FACE);
+
+		glMatrixMode(GL_MODELVIEW);		// ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
+		glPopMatrix();					// ä¿å­˜ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®å–ã‚Šå‡ºã—
 	}
 
-	//•—‘D•`‰æ
+	//é¢¨èˆ¹æç”»
 	m_pLife->Draw();
 
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Create
-//	ˆø”	:VECTOR3 pos(‰ŠúˆÊ’u)
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:ƒCƒ“ƒXƒ^ƒ“ƒX¶¬‚ğs‚¤‚Æ‹¤‚ÉA‰ŠúˆÊ’u‚ğİ’è‚·‚éB
+//	é–¢æ•°å	:Create
+//	å¼•æ•°	:VECTOR3 pos(åˆæœŸä½ç½®)
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆã‚’è¡Œã†ã¨å…±ã«ã€åˆæœŸä½ç½®ã‚’è¨­å®šã™ã‚‹ã€‚
 //=============================================================================
 CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
 {
@@ -461,10 +505,10 @@ CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Update
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:XVˆ—‚ğs‚¤B
+//	é–¢æ•°å	:
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 void CPlayer::CollisionDetection(void)
 {
@@ -472,16 +516,16 @@ void CPlayer::CollisionDetection(void)
 
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_PLAYER))
 	{
-		if(list != NULL)
+		if (list != NULL)
 		{
 			CPlayer* player = (CPlayer*)list;
-			if(player->m_PlayerNumber == CManager::GetWhatPlayer())
+			if (player->m_PlayerNumber == CManager::GetWhatPlayer())
 			{
 				VECTOR3 sub = GetPos() - player->GetPos();
 				float distance = VECTOR3::dot(sub, sub);
 				float radius = m_Radius + player->m_Radius;
 
-				if(distance <= radius * radius)
+				if (distance <= radius * radius)
 				{
 					CDebugProcGL::DebugProc("Hit%d\n", nCnt);
 
@@ -503,37 +547,37 @@ void CPlayer::CollisionDetection(void)
 	vector<CPlayer*> sceneModel = game->GetPlayer();
 	for (int nCnt = 0; nCnt < game->GetPlayer().size(); nCnt++)
 	{
-	if (sceneModel[nCnt] != NULL)
-	{
-	if (sceneModel[nCnt]->m_ifMinePlayer == false)
-	{
-	VECTOR3 sub = GetPos() - sceneModel[nCnt]->GetPos();
-	float distance = VECTOR3::dot(sub, sub);
-	float radius = m_Radius + sceneModel[nCnt]->m_Radius;
+		if (sceneModel[nCnt] != NULL)
+		{
+			if (sceneModel[nCnt]->m_ifMinePlayer == false)
+			{
+				VECTOR3 sub = GetPos() - sceneModel[nCnt]->GetPos();
+				float distance = VECTOR3::dot(sub, sub);
+				float radius = m_Radius + sceneModel[nCnt]->m_Radius;
 
-	if (distance <= radius * radius)
-	{
-	CDebugProcGL::DebugProc("Hit%d\n", nCnt);
+				if (distance <= radius * radius)
+				{
+					CDebugProcGL::DebugProc("Hit%d\n", nCnt);
 
-	VECTOR3 Pos0 = GetPos(), Pos1 = sceneModel[nCnt]->GetPos();
-	float Radius = m_Radius + sceneModel[nCnt]->m_Radius;
-	float Lenght = (Pos1 - Pos0).magnitude();
-	VECTOR3 Vec = Pos0 - Pos1;
-	Vec.normalize();
-	Radius -= Lenght;
-	Pos0 += VECTOR3(Vec.x * Radius, Vec.y * Radius, Vec.z * Radius);
-	SetPos(Pos0);
-	}
-	}
-	}
+					VECTOR3 Pos0 = GetPos(), Pos1 = sceneModel[nCnt]->GetPos();
+					float Radius = m_Radius + sceneModel[nCnt]->m_Radius;
+					float Lenght = (Pos1 - Pos0).magnitude();
+					VECTOR3 Vec = Pos0 - Pos1;
+					Vec.normalize();
+					Radius -= Lenght;
+					Pos0 += VECTOR3(Vec.x * Radius, Vec.y * Radius, Vec.z * Radius);
+					SetPos(Pos0);
+				}
+			}
+		}
 	}*/
 }
 
 //=============================================================================
-//	ŠÖ”–¼	:Update
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:XVˆ—‚ğs‚¤B
+//	é–¢æ•°å	:
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
 //=============================================================================
 bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1, float Radius1)
 {
@@ -541,7 +585,7 @@ bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1
 	float distance = VECTOR3::dot(sub, sub);
 	float radius = Radius0 + Radius1;
 
-	if(distance <= radius * radius)
+	if (distance <= radius * radius)
 	{
 		return true;
 	}
@@ -550,10 +594,10 @@ bool CPlayer::CollisionDetectionSphere(VECTOR3 Pos0, float Radius0, VECTOR3 Pos1
 
 
 //=============================================================================
-//	ŠÖ”–¼	:CollisionDetectionBox
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:ƒ{ƒbƒNƒX‚Ì“–‚½‚è”»’è
+//	é–¢æ•°å	:CollisionDetectionBox
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:ãƒœãƒƒã‚¯ã‚¹ã®å½“ãŸã‚Šåˆ¤å®š
 //=============================================================================
 bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, BOX_DATA* Box2)
 {
@@ -562,15 +606,15 @@ bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, 
 	float WidthHalf1 = Box1->width * 0.5f;
 	float WidthHalf2 = Box2->width * 0.5f;
 
-	if((Pos1.x + WidthHalf1 >= Pos2.x - WidthHalf2) && (Pos1.x - WidthHalf1 <= Pos2.x + WidthHalf2))
+	if ((Pos1.x + WidthHalf1 >= Pos2.x - WidthHalf2) && (Pos1.x - WidthHalf1 <= Pos2.x + WidthHalf2))
 	{
 		float HightHalf1 = Box1->height * 0.5f;
 		float HightHalf2 = Box2->height * 0.5f;
-		if((Pos1.y + HightHalf1 >= Pos2.y - HightHalf2) && (Pos1.y - HightHalf1 <= Pos2.y + HightHalf2))
+		if ((Pos1.y + HightHalf1 >= Pos2.y - HightHalf2) && (Pos1.y - HightHalf1 <= Pos2.y + HightHalf2))
 		{
 			float DepthHalf1 = Box1->depth * 0.5f;
 			float DepthHalf2 = Box2->depth * 0.5f;
-			if((Pos1.z + DepthHalf1 >= Pos2.z - DepthHalf2) && (Pos1.z - DepthHalf1 <= Pos2.z + DepthHalf2))
+			if ((Pos1.z + DepthHalf1 >= Pos2.z - DepthHalf2) && (Pos1.z - DepthHalf1 <= Pos2.z + DepthHalf2))
 			{
 				HitBox = true;
 			}
@@ -582,23 +626,23 @@ bool CPlayer::CollisionDetectionBox(VECTOR3 Pos1, BOX_DATA* Box1, VECTOR3 Pos2, 
 
 
 //=============================================================================
-//	ŠÖ”–¼	:HitEffect
-//	ˆø”	:–³‚µ
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:”í’eƒGƒtƒFƒNƒg
+//	é–¢æ•°å	:HitEffect
+//	å¼•æ•°	:ç„¡ã—
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 //=============================================================================
 
 void CPlayer::HitEffect(void) {
-	if(m_HitEffectTime % (BLINK_TIME * 2) < BLINK_TIME) {
+	if(m_HitEffectTime % (BLINK_TIME * 2) < BLINK_TIME ) {
 		m_DrawOnOffFlag = true;
 	}
 	else {
 		m_DrawOnOffFlag = false;
 	}
 
-	// ƒGƒtƒFƒNƒgŠÔ‚ğŒ¸‚ç‚·
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæ™‚é–“ã‚’æ¸›ã‚‰ã™
 	m_HitEffectTime--;
-	// ‚à‚µƒGƒtƒFƒNƒg‚Ìc‚èŠÔ‚ª0‚ğ‰º‰ñ‚Á‚½ê‡AŠÔ‚ğ0‚É‚µ‚Ä•`‰æƒtƒ‰ƒO‚ğON‚É‚·‚éi‹N‚±‚è“¾‚È‚¢‚Í‚¸‚¾‚¯‚Ç•ÛŒ¯j
+	// ã‚‚ã—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æ®‹ã‚Šæ™‚é–“ãŒ0ã‚’ä¸‹å›ã£ãŸå ´åˆã€æ™‚é–“ã‚’0ã«ã—ã¦æç”»ãƒ•ãƒ©ã‚°ã‚’ONã«ã™ã‚‹ï¼ˆèµ·ã“ã‚Šå¾—ãªã„ã¯ãšã ã‘ã©ä¿é™ºï¼‰
 	if(m_HitEffectTime < 0) {
 		m_HitEffectTime = 0;
 		m_DrawOnOffFlag = true;
@@ -607,10 +651,10 @@ void CPlayer::HitEffect(void) {
 
 
 //=============================================================================
-//	ŠÖ”–¼	:SetHitEffectTime
-//	ˆø”	:time ƒGƒtƒFƒNƒgŠÔ‚Ì’·‚³iƒtƒŒ[ƒ€’PˆÊj
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:”í’eƒGƒtƒFƒNƒgİ’è
+//	é–¢æ•°å	:SetHitEffectTime
+//	å¼•æ•°	:time ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæ™‚é–“ã®é•·ã•ï¼ˆãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½ï¼‰
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¨­å®š
 //=============================================================================
 
 void CPlayer::SetHitEffectTime(int time) {
@@ -619,12 +663,12 @@ void CPlayer::SetHitEffectTime(int time) {
 
 
 //=============================================================================
-//	ŠÖ”–¼	:GetPlayerLife
-//	ˆø”	:time ƒGƒtƒFƒNƒgŠÔ‚Ì’·‚³iƒtƒŒ[ƒ€’PˆÊj
-//	–ß‚è’l	:–³‚µ
-//	à–¾	:”í’eƒGƒtƒFƒNƒgİ’è
+//	é–¢æ•°å	:GetPlayerLife
+//	å¼•æ•°	:time ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæ™‚é–“ã®é•·ã•ï¼ˆãƒ•ãƒ¬ãƒ¼ãƒ å˜ä½ï¼‰
+//	æˆ»ã‚Šå€¤	:ç„¡ã—
+//	èª¬æ˜	:è¢«å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆè¨­å®š
 //=============================================================================
 
 int CPlayer::GetPlayerLife(void) {
-	return m_pLife->GetLife();
+	return m_pLife -> GetLife( );
 }

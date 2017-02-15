@@ -39,7 +39,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBalloon::CBalloon()
+CBalloon::CBalloon(PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(priority, objType)
 {
 	m_deleteFlag = false;
 	m_u = 0.0f;
@@ -60,10 +60,10 @@ CBalloon::~CBalloon()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a )
+CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent )
 {
 	CBalloon *balloon = new CBalloon;
-	balloon->Init( pos , r , g , b , a );
+	balloon->Init( pos , r , g , b , a , parent );
 
 	return balloon;
 }
@@ -74,7 +74,7 @@ CBalloon * CBalloon::Create( VECTOR3 pos , float r , float g , float b , float a
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a )
+void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
@@ -86,7 +86,8 @@ void CBalloon::Init( VECTOR3 pos , float r , float g , float b , float a )
 	m_Size = VECTOR2( 60.0f , 60.0f );
 	m_deleteFlag = false;
 	m_u = 0.0f;
-
+	m_parent = parent;
+	
 	// テクスチャ読込
 	m_Texture = CTextureManager::GetTexture( TEXTURE_BALLOON );
 }
@@ -109,6 +110,12 @@ void CBalloon::Uninit( void )
 ******************************************************************************/
 void CBalloon::Update( void )
 {
+	CPlayer* player = ( CPlayer* )m_parent;
+	VECTOR3 playerPos = m_parent->GetPos();	
+	VECTOR3 playerRot = m_parent->GetRot();
+
+
+	SetPos( VECTOR3( ( playerPos.x ) + cosf( playerRot.y  + PI ) , playerPos.y + 40.0f , playerPos.z + -sinf( playerRot.y + PI ) ) );
 }
 
 /******************************************************************************
@@ -209,4 +216,18 @@ void CBalloon::DrawPolygon( void )
 	glNormal3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2d( m_u + 0.33f , 1.0f );
 	glVertex3f(( (m_Size.x * 0.5f)), (- (m_Size.y * 0.5f)), 0.0f);
+}
+
+/******************************************************************************
+*	関数名：void CBalloon::SetColor( float r , float g , float b , float a )
+*	引数  ：なし
+*	戻り値：なし
+*	説明  ：
+******************************************************************************/
+void CBalloon::SetColor( float r , float g , float b , float a )
+{
+	m_r = r;
+	m_g = g;
+	m_b = b;
+	m_Alpha = a;
 }

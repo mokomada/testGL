@@ -219,11 +219,11 @@ void CBulletGauge::Draw(void)
 ******************************************************************************/
 float CBulletGauge::SubtractGauge(float Subtract)
 {
-	//Œ»Ý’l‚ªŒ¸ŽZ’l‚æ‚è‘½‚¢
-	if ( m_Gauge > Subtract )
-	{
-		m_Gauge -= Subtract;
-	}
+	////Œ»Ý’l‚ªŒ¸ŽZ’l‚æ‚è‘½‚¢
+	//if ( m_Gauge > Subtract )
+	//{
+	//	m_Gauge -= Subtract;
+	//}
 	return m_Gauge;
 }
 
@@ -247,9 +247,9 @@ CBulletGauge *CBulletGauge::Create(void)
 {
 	CBulletGauge *BulletGauge;
 
-	BulletGauge = new CBulletGauge;
+	//BulletGauge = new CBulletGauge;
 
-	BulletGauge->Init();
+	//BulletGauge->Init();
 
 	return BulletGauge;
 }

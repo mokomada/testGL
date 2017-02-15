@@ -561,7 +561,9 @@ void CPlayer::CollisionDetection(void)
 
 					VECTOR3 Pos0 = GetPos(), Pos1 = player->GetPos();
 					float Radius = m_Radius + player->m_Radius;
-					float Lenght = (Pos1 - Pos0).magnitude();
+					VECTOR3 VLenght = Pos1 - Pos0;
+					float Lenght = VLenght.magnitude();
+					//float Lenght = (Pos1 - Pos0).magnitude();
 					VECTOR3 Vec = Pos0 - Pos1;
 					Vec.normalize();
 					Radius -= Lenght;

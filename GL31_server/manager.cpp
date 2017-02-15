@@ -27,9 +27,10 @@
 //=============================================================================
 CMode		*CManager::m_Mode;			// モードクラス
 int			CManager::m_ModeState;		// モード情報
-int			CManager::m_WhatPlayer = -1;
+int			CManager::m_WhatPlayer = 0;
 CCameraGL	*CManager::m_Camera;		// カメラのインスタンス
 CRendererGL	*CManager::m_RendererGL;	// レンダラ(GL)
+int			CManager::m_Frame = 0;			// 起動からのフレーム数
 
 //=============================================================================
 //	関数名	:Init
@@ -104,6 +105,8 @@ void CManager::Update(void)
 	CFade::Update();
 	CNetwork::Update();
 	CDebugProcGL::Update();
+
+	m_Frame++;
 }
 
 //=============================================================================
@@ -137,8 +140,9 @@ void CManager::Draw(void)
 	//int i = 12;	使用例
 	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
+	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 #endif
-
+	
 	// 描画シーケンス終了
 	m_RendererGL->End();
 }
