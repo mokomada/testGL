@@ -144,6 +144,9 @@
     <ClInclude Include="square.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="bulletgauge.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraGL.cpp">
@@ -261,6 +264,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="square.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletgauge.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

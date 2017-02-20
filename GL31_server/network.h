@@ -66,6 +66,7 @@ private:
 	static void	DeleteBullet(void);
 	static void RemoveDataTag(char* data);
 	static void	ReadConnetProtocol(CONNECT_PROTOCOL* cp);
+	static int CheckReceivable(int fd);
 
 	static int			m_PlayerNum;	// プレイヤー数
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
