@@ -144,6 +144,9 @@
     <ClInclude Include="effect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="bulletgauge.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="podium.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -264,6 +267,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="effect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletgauge.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="podium.cpp">
