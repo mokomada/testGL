@@ -35,6 +35,11 @@ typedef struct {
 	int		RecvPort;	// 受信ポート
 } CONNECT_PROTOCOL;		// 通信情報
 
+typedef struct {
+	SOCKET		Sock;	// TCPソケット
+	sockaddr_in	Addr;	// アドレス情報
+} CLIENT;				// クライアント情報
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -65,6 +70,7 @@ private:
 	static int			m_PlayerNum;	// プレイヤー数
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
+	static CLIENT		m_Client[PLAYER_NUM];		// クライアント情報
 	static SOCKET		m_SockSend;					// UDPソケット
 	static SOCKET		m_SockRecv;					// UDPソケット
 	static sockaddr_in	m_AddrClient[PLAYER_NUM];	// 送信アドレス情報
