@@ -64,6 +64,7 @@ public:
 	VECTOR3 GetVec(void) { return m_Move; }
 	VECTOR3 GetOldPos(void) { return m_OldPos; }
 	float GetGauge(void) { return m_Gauge; }
+	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	int GetPlayerLife(void);
 

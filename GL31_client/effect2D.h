@@ -102,7 +102,7 @@ class CEffect2D : public CScene2DGL
 		EFFTEXCOLOR m_Color;				// 色データ
 
 	public:
-		CEffect2D(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
+		CEffect2D(bool ifListAdd = true, int priority = PRIORITY_EFFECT, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
 		~CEffect2D();													// デストラクタ
 
 		void Init(VECTOR3 pos		= VECTOR3(0.0f, 0.0f, 0.0f),			// 初期化処理
