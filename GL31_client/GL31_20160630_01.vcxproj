@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="balloon.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletgauge.h" />
     <ClInclude Include="cameraGL.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="confetti.h" />
@@ -126,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="balloon.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletgauge.cpp" />
     <ClCompile Include="cameraGL.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="confetti.cpp" />

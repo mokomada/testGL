@@ -29,6 +29,7 @@
 #include "wall.h"
 #include "textureManager.h"
 #include "skybox.h"
+#include "bulletgauge.h"
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -112,6 +113,7 @@ void CGame::Init(void)
 
 	// 2D
 	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	CBulletGauge::Create( );
 	//CTrickGauge::Create( );
 
 	// BGM再生
