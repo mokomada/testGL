@@ -36,9 +36,9 @@ public:
 	CLife(PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
 	~CLife();
 
-	static CLife * Create( VECTOR3 pos , CSceneGL *parent );
+	static CLife * Create( VECTOR3 pos , CSceneGL *parent , int color );
 
-	void Init( VECTOR3 pos , CSceneGL *parent );
+	void Init( VECTOR3 pos , CSceneGL *parent , int color );
 	void Uninit( void );
 	void Update( void );
 	void Draw( void );
