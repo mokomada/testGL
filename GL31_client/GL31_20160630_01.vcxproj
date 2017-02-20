@@ -92,6 +92,7 @@
     <ClInclude Include="network.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="podium.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -137,6 +138,7 @@
     <ClCompile Include="network.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="podium.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />
