@@ -140,7 +140,7 @@ void CManager::Draw(void)
 	//int i = 12;	使用例
 	//CDebugProcGL::DebugProc(L"さし%dせそ\n", i);
 	CDebugProcGL::DebugProc("FPS:%d\n", GetFPS());
-	CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
+	//CDebugProcGL::DebugProc("PLAYER:%dP\n", m_WhatPlayer + 1);
 #endif
 	
 	// 描画シーケンス終了

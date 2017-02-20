@@ -195,6 +195,16 @@ void CNetwork::Uninit(void)
 //=============================================================================
 void CNetwork::Update(void)
 {
+	VECTOR3 pos[PLAYER_NUM] ={ VEC3_ZERO };
+	VECTOR3 rot[PLAYER_NUM] ={ VEC3_ZERO };
+	VECTOR3 vec[PLAYER_NUM] ={ VEC3_ZERO };
+	for(int i = 0 ; i < m_PlayerNum ; i++)
+	{
+		pos[i] = CGame::GetPlayer()[i]->GetPos();
+		rot[i] = CGame::GetPlayer()[i]->GetRot();
+		vec[i] = CGame::GetPlayer()[i]->GetVec();
+	}
+
 	if(CManager::GetModeState() == MODE_GAME)
 	{
 		SendData("1, POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
@@ -202,21 +212,21 @@ void CNetwork::Update(void)
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
 
-			CGame::GetPlayer()[0]->GetPos().x, CGame::GetPlayer()[0]->GetPos().y, CGame::GetPlayer()[0]->GetPos().z,
-			CGame::GetPlayer()[0]->GetRot().x, CGame::GetPlayer()[0]->GetRot().y, CGame::GetPlayer()[0]->GetRot().z,
-			CGame::GetPlayer()[0]->GetVec().x, CGame::GetPlayer()[0]->GetVec().y, CGame::GetPlayer()[0]->GetVec().z,
+			pos[0].x, pos[0].y, pos[0].z,
+			rot[0].x, rot[0].y, rot[0].z,
+			vec[0].x, vec[0].y, vec[0].z,
 
-			CGame::GetPlayer()[1]->GetPos().x, CGame::GetPlayer()[1]->GetPos().y, CGame::GetPlayer()[1]->GetPos().z,
-			CGame::GetPlayer()[1]->GetRot().x, CGame::GetPlayer()[1]->GetRot().y, CGame::GetPlayer()[1]->GetRot().z,
-			CGame::GetPlayer()[1]->GetVec().x, CGame::GetPlayer()[1]->GetVec().y, CGame::GetPlayer()[1]->GetVec().z,
+			pos[1].x, pos[1].y, pos[1].z,
+			rot[1].x, rot[1].y, rot[1].z,
+			vec[1].x, vec[1].y, vec[1].z,
 
-			CGame::GetPlayer()[2]->GetPos().x, CGame::GetPlayer()[2]->GetPos().y, CGame::GetPlayer()[2]->GetPos().z,
-			CGame::GetPlayer()[2]->GetRot().x, CGame::GetPlayer()[2]->GetRot().y, CGame::GetPlayer()[2]->GetRot().z,
-			CGame::GetPlayer()[2]->GetVec().x, CGame::GetPlayer()[2]->GetVec().y, CGame::GetPlayer()[2]->GetVec().z,
+			pos[2].x, pos[2].y, pos[2].z,
+			rot[2].x, rot[2].y, rot[2].z,
+			vec[2].x, vec[2].y, vec[2].z,
 
-			CGame::GetPlayer()[3]->GetPos().x, CGame::GetPlayer()[3]->GetPos().y, CGame::GetPlayer()[3]->GetPos().z,
-			CGame::GetPlayer()[3]->GetRot().x, CGame::GetPlayer()[3]->GetRot().y, CGame::GetPlayer()[3]->GetRot().z,
-			CGame::GetPlayer()[3]->GetVec().x, CGame::GetPlayer()[3]->GetVec().y, CGame::GetPlayer()[3]->GetVec().z);
+			pos[3].x, pos[3].y, pos[3].z,
+			rot[3].x, rot[3].y, rot[3].z,
+			vec[3].x, vec[3].y, vec[3].z);
 	}
 }
 
@@ -294,7 +304,10 @@ void CNetwork::ReceiveData(void)
 //#pragma omp parallel for
 	for(int i = 0 ; i < m_PlayerNum ; i++)
 	{
-		recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
+		if(CheckReceivable(m_Client[i].Sock))
+		{
+			recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
+		}
 	}
 	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
 
@@ -329,6 +342,25 @@ void CNetwork::ReceiveData(void)
 	default:
 		break;
 	}
+}
+
+/* ノンブロックでrecvを行えるかチェックする */
+int CNetwork::CheckReceivable(int fd)
+{
+	fd_set fdset;
+	int re;
+	struct timeval timeout;
+	FD_ZERO(&fdset);
+	FD_SET(fd, &fdset);
+
+	/* timeoutは０秒。つまりselectはすぐ戻ってく る */
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	/* readできるかチェック */
+	re = select(fd + 1, &fdset, NULL, NULL, &timeout);
+
+	return (re == 1) ? TRUE : FALSE;
 }
 
 //=============================================================================
@@ -398,10 +430,13 @@ void CNetwork::SetPlayerData(void)
 	sscanf(m_ReceiveData, "%d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
 		&num, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &vec.x, &vec.y, &vec.z);
 
-	// 取得したデータをセット
-	player[num]->SetPos(pos);
-	player[num]->SetRot(rot);
-	//player[i]->SetVec(vec);
+	if(num < m_PlayerNum)
+	{
+		// 取得したデータをセット
+		player[num]->SetPos(pos);
+		player[num]->SetRot(rot);
+		//player[i]->SetVec(vec);
+	}
 }
 
 //=============================================================================
@@ -426,7 +461,7 @@ void CNetwork::CreateBullet(void)
 				&pos.x, &pos.y, &pos.z, &speed);
 
 			// 取得したデータをセット
-			m_BulletInstance[i].push_back(CBullet::Create(pos, VEC3_ZERO, speed));
+			m_BulletInstance[i].push_back(CBullet::Create(pos, VEC3_ZERO, speed, 0));
 		}
 	}
 }
