@@ -264,7 +264,7 @@ void CNetwork::ReceiveData(void)
 
 	// データ受信
 #pragma omp parallel for
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	for(int i = 0 ; i < m_PlayerNum ; i++)
 	{
 		recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
 	}
