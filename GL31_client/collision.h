@@ -23,6 +23,7 @@ class CCollision
 public:
 	//インスタンスを返す
 	static CCollision* GetInstance() { return Instance == NULL ? Instance = new CCollision() : Instance; };
+	bool PlayerToPlayer(VECTOR3 &Pos, float Radius, VECTOR3 &_Pos, float _Radius);
 	bool SphereToSphere(VECTOR3 Pos, float Radius, VECTOR3 _Pos, float _Radius);
 	bool BoxToBox(VECTOR3 Pos, BOX_DATA* Box, VECTOR3 _Pos, BOX_DATA* _Box);
 	bool SphereToBox(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box);
@@ -30,7 +31,7 @@ public:
 	bool SphereToLine(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3);
 	bool SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box);
 
-	void ClosestPtPointAABB(VECTOR3 &Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point);
+	void ClosestPtPointAABB(VECTOR3 Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point);
 
 private:
 	static CCollision *Instance;	//インスタンス

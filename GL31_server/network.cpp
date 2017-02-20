@@ -124,20 +124,48 @@ void CNetwork::Init(void)
 uint __stdcall CNetwork::MatchThread(void* p)
 {
 	int len;
+	sockaddr_in addr;
 
 	while(m_PlayerNum < PLAYER_NUM)
 	{
 		len = sizeof(m_AddrClient[m_PlayerNum]);
-		m_Client[m_PlayerNum].Sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
+		m_Client[m_PlayerNum].Sock = accept(m_SockRecv, (sockaddr*)&addr, &len);
+
+		// 同じ接続先の場合カウントしない
+		int i = 0;
+		for(i = 0 ; i < 4 ; i++)
+		{
+			if(m_AddrClient[i].sin_addr.s_addr == addr.sin_addr.s_addr)
+			{
+				break;
+			}
+		}
 
 		char buff[1024] ={ NULL };
 
-		// 現在のプレイヤー番号をセット
-		sprintf(buff, "%d", m_PlayerNum);
+		if(i <= 3)
+		{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
 
-		send(m_Client[m_PlayerNum].Sock, buff, strlen(buff), 0);
+			// 重複しているプレイヤー番号をセット
+			sprintf(buff, "0, %d", i);
 
-		m_PlayerNum++;
+			// プレイヤー番号を送信
+			send(m_Client[i].Sock, buff, strlen(buff), 0);
+		}
+		else
+		{// そうでない場合、現在のプレイヤー番号を返信する
+
+			// クライアント情報の登録
+			m_AddrClient[m_PlayerNum] = addr;
+
+			// 現在のプレイヤー番号をセット
+			sprintf(buff, "0, %d", m_PlayerNum);
+
+			// プレイヤー番号のセット
+			send(m_Client[m_PlayerNum].Sock, buff, strlen(buff), 0);
+
+			m_PlayerNum++;
+		}
 	}
 
 	return 0;
@@ -263,7 +291,7 @@ void CNetwork::ReceiveData(void)
 	int len = sizeof(m_RecvClient);
 
 	// データ受信
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int i = 0 ; i < m_PlayerNum ; i++)
 	{
 		recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
