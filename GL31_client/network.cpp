@@ -105,7 +105,7 @@ void CNetwork::Init(void)
 	
 	// マッチング登録
 	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-	//sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
 	
 	// 初期化終了告知
 	m_ifInitialize = true;
