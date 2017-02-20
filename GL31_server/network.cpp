@@ -156,7 +156,7 @@ uint __stdcall CNetwork::MatchThread(void* p)
 		{// そうでない場合、現在のプレイヤー番号を返信する
 
 			// クライアント情報の登録
-			m_AddrClient[m_PlayerNum] = m_RecvClient;
+			m_AddrClient[m_PlayerNum] = addr;
 
 			// 現在のプレイヤー番号をセット
 			sprintf(buff, "0, %d", m_PlayerNum);
