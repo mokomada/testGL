@@ -16,6 +16,9 @@
 #include "player.h"
 #include <process.h>
 #include <mbstring.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -25,6 +28,7 @@
 CONNECT_PROTOCOL CNetwork::m_ConnectProtocol = { "127.0.0.1", "239.0.0.1", 20000, 20000 };
 
 int			CNetwork::m_PlayerNum = 0;
+CLIENT		CNetwork::m_Client[PLAYER_NUM];
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
@@ -119,22 +123,19 @@ void CNetwork::Init(void)
 //=============================================================================
 uint __stdcall CNetwork::MatchThread(void* p)
 {
-	SOCKET sock;
 	int len;
 
 	while(m_PlayerNum < PLAYER_NUM)
 	{
 		len = sizeof(m_AddrClient[m_PlayerNum]);
-		sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
+		m_Client[m_PlayerNum].Sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
 
 		char buff[1024] ={ NULL };
 
 		// 現在のプレイヤー番号をセット
 		sprintf(buff, "%d", m_PlayerNum);
 
-		send(sock, buff, strlen(buff), 0);
-
-		closesocket(sock);
+		send(m_Client[m_PlayerNum].Sock, buff, strlen(buff), 0);
 
 		m_PlayerNum++;
 	}
@@ -244,9 +245,9 @@ void CNetwork::SendData(char* format, ...)
 	va_end(list);
 
 	// データ送信
-	for(int i = 0 ; i < 4 ; i++)
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
-		sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrClient[i], sizeof(m_AddrClient[i]));
+		send(m_Client[m_PlayerNum].Sock, str, strlen(str) + 1, 0);
 	}
 }
 
@@ -262,7 +263,12 @@ void CNetwork::ReceiveData(void)
 	int len = sizeof(m_RecvClient);
 
 	// データ受信
-	recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
+#pragma omp parallel for
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
+	}
+	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
 
 	// データが送信されてきた場合記録
 	if(strcmp(m_ReceiveData, ""))
@@ -354,25 +360,20 @@ void CNetwork::Matching(void)
 void CNetwork::SetPlayerData(void)
 {
 	vector<CPlayer*>	player = CGame::GetPlayer();
+	int					num = 0;
 	VECTOR3				pos = VEC3_ZERO;
 	VECTOR3				rot = VEC3_ZERO;
 	VECTOR3				vec = VEC3_ZERO;
 
 
-	for(int i = 0 ; i < (int)player.size() ; i++)
-	{
-		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
-		{
-			// 受信データからデータを取得
-			sscanf(m_ReceiveData, "%f, %f, %f, %f, %f, %f, %f, %f, %f",
-				&pos.x, &pos.y, &pos.z,	&rot.x, &rot.y, &rot.z,	&vec.x, &vec.y, &vec.z);
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+		&num, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &vec.x, &vec.y, &vec.z);
 
-			// 取得したデータをセット
-			player[i]->SetPos(pos);
-			player[i]->SetRot(rot);
-			//player[i]->SetVec(vec);
-		}
-	}
+	// 取得したデータをセット
+	player[num]->SetPos(pos);
+	player[num]->SetRot(rot);
+	//player[i]->SetVec(vec);
 }
 
 //=============================================================================

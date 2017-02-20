@@ -10,6 +10,9 @@
 //=============================================================================
 #include "mode.h"
 class CScene2DGL;
+class CSceneModel;
+class CParticle;
+
 //=============================================================================
 //	ƒNƒ‰ƒX’è‹`
 //=============================================================================
@@ -27,6 +30,11 @@ private:
 	CScene2DGL *m_ResultBG;
 	CScene2DGL *m_PushEnter;
 	float		m_Alpha;
+
+
+	CSceneModel *m_Model[4 ];
+
+	CParticle* m_Particle;
 };
 
 #endif

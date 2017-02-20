@@ -75,7 +75,7 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 	
 	// ソケット生成
-	if(0)
+	if(1)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
 		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
@@ -97,16 +97,16 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	//m_AddrServer.sin_addr.s_addr = inet_addr(m_ConnectProtocol.pAddr);
-	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.59");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.59");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
 	// マッチング登録
-	//connect(m_SockRecv, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-	sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-		
+	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	//sendto(m_SockSend, "0, entry", strlen("0, entry") + 1, 0, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	
 	// 初期化終了告知
 	m_ifInitialize = true;
 }
@@ -186,7 +186,8 @@ void CNetwork::SendData(char* format, ...)
 
 	// データ送信
 	m_AddrServer.sin_port = htons(20010);
-	sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
+	send(m_SockSend, str, strlen(str) + 1, 0);
+	//sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
 }
 
 //=============================================================================
@@ -201,7 +202,8 @@ void CNetwork::ReceiveData(void)
 	int len = sizeof(m_AddrServer);
 
 	// データ受信
-	recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_AddrServer, &len);
+	recv(m_SockSend, m_ReceiveData, sizeof(m_ReceiveData), 0);
+	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_AddrServer, &len);
 	
 	// データが送信されてきた場合記録
 	if(strcmp(m_ReceiveData, ""))
