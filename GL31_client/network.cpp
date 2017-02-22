@@ -35,6 +35,8 @@ char		CNetwork::m_LastMessage[65535] = "NO DATA";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 
+BULLETDATA	CNetwork::m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+
 //=============================================================================
 //	関数名	:Init
 //	引数	:無し
@@ -97,8 +99,8 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.59");
-	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
+	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
@@ -106,6 +108,17 @@ void CNetwork::Init(void)
 	// マッチング登録
 	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
 	send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
+
+
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+		{
+			m_BulletInstance[i][j].Instance	= NULL;
+			m_BulletInstance[i][j].Use		= false;
+			m_BulletInstance[i][j].IfUninit	= false;
+		}
+	}
 	
 	// 初期化終了告知
 	m_ifInitialize = true;
@@ -185,7 +198,6 @@ void CNetwork::SendData(char* format, ...)
 	va_end(list);
 
 	// データ送信
-	m_AddrServer.sin_port = htons(20010);
 	send(m_SockSend, str, strlen(str) + 1, 0);
 	//sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
 }
