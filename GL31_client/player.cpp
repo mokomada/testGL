@@ -286,22 +286,25 @@ void CPlayer::Update(void)
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
 				if ( m_Gauge > 100 )
-				{
+				{/*
 					// 取得したデータをセット
 					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
 					{
-						if(CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = false)
+						if(CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use == false)
 						{
 							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Instance = CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = true;
+							break;
 						}
-					}					
-					AddGauge(-100);
+					}
 
 					char str[1024] ={ NULL };
 					sprintf(str, "2, %f, %f, %f, %f, %f, %f, %f",
 						m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
-					CNetwork::SendData(str);
+					CNetwork::SendData(str);*/
+
+					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					AddGauge(-100);
 				}
 			}
 		}
