@@ -43,14 +43,15 @@ CScene2DGLAnimation::~CScene2DGLAnimation()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CScene2DGLAnimation::Init(VECTOR3 pos ,VECTOR2 size , int maxside , int maxlen , int maxanim , int maxtime , char *texName )
+void CScene2DGLAnimation::Init(VECTOR3 pos ,VECTOR2 size , int maxside , int maxlen , int maxanim , int maxtime , char *texName , int tex )
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
 
 	// 各種初期設定
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	m_Position = pos;
+	m_Rotation = VECTOR3( 0.0f , 0.0f , 0.0f );
+
 	m_Size		= size;
 	m_fAngle	= atan2f(m_Size.x, m_Size.y);
 	m_fLength	= hypotf(m_Size.x, m_Size.y) * 0.5f;
@@ -61,11 +62,19 @@ void CScene2DGLAnimation::Init(VECTOR3 pos ,VECTOR2 size , int maxside , int max
 	m_NowAnim = 0;
 	m_MaxTime = maxtime;
 	m_NowTime = 0;
-
+	m_Move = NULL;
 	m_Use = true;
 	m_Start = true;
-	// テクスチャ読込
-	m_Texture	= renderer->CreateTextureTGA(texName);
+
+	if( tex == 0 )
+	{
+		// テクスチャ読込
+		m_Texture	= renderer->CreateTextureTGA(texName);
+	}
+	else
+	{
+		m_Texture = tex;
+	}
 }
 
 //=============================================================================
@@ -82,6 +91,11 @@ void CScene2DGLAnimation::Uninit(bool isLast)
 		if(isLast)
 		glDeleteTextures(1, ((GLuint *)m_Texture));
 	}
+	if(m_Move != NULL)
+	{
+		delete m_Move;
+		m_Move = NULL;
+	}
 }
 
 //=============================================================================
@@ -92,6 +106,10 @@ void CScene2DGLAnimation::Uninit(bool isLast)
 //=============================================================================
 void CScene2DGLAnimation::Update(void)
 {
+	if( m_Move != NULL )
+	{
+		m_Move -> Update( );
+	}
 	if( m_Use == false )return;
 
 	if( m_Start == false )return;
@@ -188,13 +206,13 @@ void CScene2DGLAnimation::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CScene2DGLAnimation *CScene2DGLAnimation::Create(VECTOR3 pos ,VECTOR2 size , int maxside , int maxlen , int maxanim , int maxtime , char *texName )
+CScene2DGLAnimation *CScene2DGLAnimation::Create(VECTOR3 pos ,VECTOR2 size , int maxside , int maxlen , int maxanim , int maxtime , char *texName , int tex )
 {
 	CScene2DGLAnimation *scene2Danimation;
 
 	scene2Danimation = new CScene2DGLAnimation;
 
-	scene2Danimation -> Init(pos, size, maxside , maxlen , maxanim , maxtime , texName);
+	scene2Danimation -> Init(pos, size, maxside , maxlen , maxanim , maxtime , texName , tex );
 
 	return scene2Danimation;
 }
@@ -213,17 +231,135 @@ void CScene2DGLAnimation::DrawPolygon(void)
 	// 描画用のテクスチャ座標・頂点座標設定
 	// 左上頂点
 	glTexCoord2d(( 1 / ( float )m_MaxSide ) * ( m_NowAnim % m_MaxSide ) , ( 1 / ( float )m_MaxLen ) * ( m_NowAnim / m_MaxSide ));
-	glVertex3f((m_Pos.x - (sinf(m_fAngle + m_Rot.z) * m_fLength)), (m_Pos.y + (cosf(m_fAngle + m_Rot.z + PI) * m_fLength)), 0.0f);
+	glVertex3f((m_Position.x - (sinf(m_fAngle + m_Rotation.z) * m_fLength)), (m_Position.y + (cosf(m_fAngle + m_Rotation.z + PI) * m_fLength)), 0.0f);
 
 	// 右上頂点
 	glTexCoord2d( ( ( 1 / ( float )m_MaxSide ) * ( m_NowAnim % m_MaxSide + 1 ) ), ( 1 / ( float )m_MaxLen ) * ( m_NowAnim / m_MaxSide ) );
-	glVertex3f((m_Pos.x - (sinf(-m_fAngle + m_Rot.z) * m_fLength)), (m_Pos.y + (cosf(-m_fAngle + m_Rot.z + PI) * m_fLength)), 0.0f);
+	glVertex3f((m_Position.x - (sinf(-m_fAngle + m_Rotation.z) * m_fLength)), (m_Position.y + (cosf(-m_fAngle + m_Rotation.z + PI) * m_fLength)), 0.0f);
 
 	// 左下頂点
 	glTexCoord2d( ( 1 / ( float )m_MaxSide ) * ( m_NowAnim % m_MaxSide ), ( 1 / ( float )m_MaxLen ) * ( ( m_NowAnim / m_MaxSide ) + 1 ));
-	glVertex3f((m_Pos.x - (sinf(-m_fAngle + m_Rot.z + PI) * m_fLength)), (m_Pos.y + (cosf(-m_fAngle + m_Rot.z) * m_fLength)), 0.0f);
+	glVertex3f((m_Position.x - (sinf(-m_fAngle + m_Rotation.z + PI) * m_fLength)), (m_Position.y + (cosf(-m_fAngle + m_Rotation.z) * m_fLength)), 0.0f);
 
 	// 右下頂点
 	glTexCoord2d( ( ( 1 / ( float )m_MaxSide ) * ( m_NowAnim % m_MaxSide + 1 ) ), ( 1 / ( float )m_MaxLen ) * ( ( m_NowAnim / m_MaxSide ) + 1 ));
-	glVertex3f((m_Pos.x - (sinf(m_fAngle + m_Rot.z - PI) * m_fLength)), (m_Pos.y + (cosf(m_fAngle + m_Rot.z) * m_fLength)), 0.0f);
+	glVertex3f((m_Position.x - (sinf(m_fAngle + m_Rotation.z - PI) * m_fLength)), (m_Position.y + (cosf(m_fAngle + m_Rotation.z) * m_fLength)), 0.0f);
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//=============================================================================
+//	関数名	:CSceneMove()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:コンストラクタ。
+//=============================================================================
+CSceneMove::CSceneMove()
+{
+}
+
+//=============================================================================
+//	関数名	:~CScenemove()
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:デストラクタ。
+//=============================================================================
+CSceneMove::~CSceneMove()
+{
+
+}
+
+//=============================================================================
+//	関数名	:Create
+//	引数	:
+//	戻り値	:
+//	説明	:移動補正の生成
+//=============================================================================
+CSceneMove* CSceneMove::Create( VECTOR3 *pos , VECTOR3 *rot , VECTOR3 posaccele , VECTOR3 rotaccele , int time , MOVETYPE type )
+{
+	CSceneMove *scenemove;
+
+	scenemove = new CSceneMove;
+
+	scenemove -> Init( pos, rot , posaccele , rotaccele , time , type );
+
+	return scenemove;
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:
+//	戻り値	:
+//	説明	:初期化
+//=============================================================================
+void CSceneMove::Init( VECTOR3 *pos , VECTOR3 *rot , VECTOR3 posaccele , VECTOR3 rotaccele , int time , MOVETYPE type )
+{
+	m_PositionP = pos;
+
+	m_RotationP = rot;
+
+	m_PositionAccele = posaccele;
+
+	m_RotationAccele = rotaccele;
+
+	m_MaxTime = m_Time = time;
+
+	m_Type = type;
+
+	//非反転状態
+	m_ReturnSwitch = false;
+}
+
+//=============================================================================
+//	関数名	:Update
+//	引数	:
+//	戻り値	:
+//	説明	:更新
+//=============================================================================
+void CSceneMove::Update( void )
+{
+	switch( m_Type )
+	{
+		case MOVETYPE_STRAIGHT:
+		{
+			//LOOPと同じ
+		}
+		case MOVETYPE_LOOP:
+		{
+
+			//移動
+			m_PositionP -> x += m_PositionAccele.x;
+			m_PositionP -> y += m_PositionAccele.y;
+			m_PositionP -> z += m_PositionAccele.z;
+			break;
+		}
+	}
+	//時間減少
+	m_Time --;
+
+	if( m_Time == 0 )
+	{//制限時間がなくなったら
+		switch( m_Type )
+		{
+			case MOVETYPE_STRAIGHT:
+			{
+				//無しに設定
+				m_Type = MOVETYPE_NONE;
+				break;
+			}
+			case MOVETYPE_LOOP:
+			{
+				//反転
+				m_ReturnSwitch = !m_ReturnSwitch;
+
+				//向き反転
+				m_PositionAccele = VECTOR3( -m_PositionAccele.x , -m_PositionAccele.y , -m_PositionAccele.z );
+				m_RotationAccele = VECTOR3( -m_RotationAccele.x , -m_RotationAccele.y , -m_RotationAccele.z );
+
+				//制限時間の復元
+				m_Time = m_MaxTime;
+				break;
+			}
+		}
+	}
 }
