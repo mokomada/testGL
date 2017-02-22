@@ -20,7 +20,7 @@
 /******************************************************************************
 マクロ定義
 ******************************************************************************/
-#define GAUGE_WIDTH 30.0f
+#define GAUGE_WIDTH 40.0f
 #define GAUGE_WIDTH2 60.0f
 #define GAUGE_WIDTH3 90.0f
 #define GAUGE_HEIGHT 200.0f
@@ -75,12 +75,15 @@ void CBulletGauge::Init(void)
 	vector<CPlayer*> sceneModel = game->GetPlayer( );
 	sceneModel[0]->GetGauge( );
 	//テクスチャ指定
-	m_Texture[0] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\field000.tga");
-	m_Texture[1] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\title000.tga");
-	m_Texture[2] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\field000.tga");
+	m_Texture[0] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\gauge.png");
+	m_Texture[1] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\gauge.png");
+	m_Texture[2] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\gauge.png");
+	m_color[0] = VECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	m_color[1] = VECTOR4(0.0f, 1.0f, 0.0f, 1.0f);
+	m_color[2] = VECTOR4(0.0f, 0.0f, 1.0f, 1.0f);
 	m_StrPos[0] = VECTOR3(0.0f, 0.0f, 0.0f);
-	m_StrPos[1] = VECTOR3(GAUGE_WIDTH + GAUGE_WIDTH, 0.0f, 0.0f);
-	m_StrPos[2] = VECTOR3(GAUGE_WIDTH + GAUGE_WIDTH + GAUGE_WIDTH + GAUGE_WIDTH, 0.0f, 0.0f);
+	m_StrPos[1] = VECTOR3(GAUGE_WIDTH, 0.0f, 0.0f);
+	m_StrPos[2] = VECTOR3(GAUGE_WIDTH + GAUGE_WIDTH, 0.0f, 0.0f);
 	m_GaugeWidth[0] = GAUGE_WIDTH;
 	m_GaugeWidth[1] = GAUGE_WIDTH;
 	m_GaugeWidth[2] = GAUGE_WIDTH;
@@ -204,25 +207,25 @@ void CBulletGauge::Draw(void)
 		//ポリゴンカラー
 		//テクスチャ座標
 		glTexCoord2d(0, 0);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);//RGBA
+		glColor4f(m_color[i].x, m_color[i].y, m_color[i].z, 1.0f);//RGBA
 		glVertex3f(m_StrPos[i].x, GAUGE_HEIGHT, 0.0f);//XYZ
 
 													  //ポリゴンカラー
 													  //テクスチャ座標
 		glTexCoord2d(0, 1);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);//RGBA
+		glColor4f(m_color[i].x, m_color[i].y, m_color[i].z, 1.0f);//RGBA
 										  //ポリゴン座標
 		glVertex3f(m_StrPos[i].x, 100.0f, 0.0f);//XYZ
 
 												//テクスチャ座標
 		glTexCoord2d(1, 0);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);//RGBA
+		glColor4f(m_color[i].x, m_color[i].y, m_color[i].z, 1.0f);//RGBA
 		glVertex3f(m_StrPos[i].x + GAUGE_WIDTH * m_Pa[i], GAUGE_HEIGHT, 0.0f);//XYZ
 
 																			  //ポリゴンカラー
 																			  //テクスチャ座標
 		glTexCoord2d(1, 1);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);//RGBA
+		glColor4f(m_color[i].x, m_color[i].y, m_color[i].z, 1.0f);//RGBA
 		glVertex3f(m_StrPos[i].x + GAUGE_WIDTH * m_Pa[i], 100.0f, 0.0f);//XYZ
 
 		glEnd( );
@@ -249,8 +252,8 @@ void CBulletGauge::Draw(void)
 }
 
 /******************************************************************************
-関数名:void CBulletGauge::subtract(void)
-引数  :void
+関数名:void CBulletGauge::subtract(float Subtract)
+引数  :float Subtract
 戻り値:float
 説明  :ゲージ減算処理
 ******************************************************************************/

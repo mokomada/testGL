@@ -98,7 +98,7 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.59");
-	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.1.152");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
