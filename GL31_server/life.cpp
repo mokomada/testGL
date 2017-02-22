@@ -57,10 +57,10 @@ CLife::~CLife()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CLife * CLife::Create( VECTOR3 pos , CSceneGL *parent )
+CLife * CLife::Create( VECTOR3 pos , CSceneGL *parent , int color )
 {
 	CLife *bullet = new CLife;
-	bullet->Init( pos , parent );
+	bullet->Init( pos , parent , color );
 
 	return bullet;
 }
@@ -71,12 +71,11 @@ CLife * CLife::Create( VECTOR3 pos , CSceneGL *parent )
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CLife::Init( VECTOR3 pos , CSceneGL *parent )
+void CLife::Init( VECTOR3 pos , CSceneGL *parent , int color )
 {
 	m_parent = parent;
 	m_Pos = pos;
 
-	int color = CManager::GetWhatPlayer();
 	float r , g , b , a;
 	
 	switch( color )
@@ -92,16 +91,16 @@ void CLife::Init( VECTOR3 pos , CSceneGL *parent )
 		case 1:
 		{
 			r = 0.0f;
-			g = 1.0f;
-			b = 0.0f;
+			g = 0.0f;
+			b = 1.0f;
 			a = 1.0f;
 			break;
 		}
 		case 2:
 		{
 			r = 0.0f;
-			g = 0.0f;
-			b = 1.0f;
+			g = 1.0f;
+			b = 0.0f;
 			a = 1.0f;
 			break;
 		}

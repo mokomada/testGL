@@ -111,7 +111,12 @@ void CShadow::Update( void )
 	VECTOR3 rot = m_parent->GetRot();
 
 	SetPos( VECTOR3( pos.x , 0.1f , pos.z ) );
-	if( m_parent -> GetObjtype() != OBJTYPE_PLAYER || ( (CPlayer*)m_parent) -> GetPlayerLife() > 0 ) {
+	if( m_parent -> GetObjtype() != OBJTYPE_PLAYER )
+	{ 
+		SetRot( rot );
+	}
+	else if( ( (CPlayer*)m_parent) -> GetPlayerLife() > 0 )
+	{
 		SetRot( rot );
 	}
 
