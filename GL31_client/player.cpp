@@ -413,7 +413,7 @@ void CPlayer::Update(void)
 														 // 球ヒットエフェクト生成
 					CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
 					CBullet *bullet = (CBullet*)list;
-					bullet->SetLife(0);
+					bullet->SetLife(-100);
 				}
 				//				Release();
 				//				return;
@@ -511,7 +511,7 @@ void CPlayer::Draw(void)
 		glEnable(GL_DEPTH_TEST);
 		glAlphaFunc(GL_GEQUAL, 0.1);
 		glEnable(GL_ALPHA_TEST);
-		glDepthMask(GL_FALSE);
+//		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL_BLEND);
 		Scene3D[0]->Draw();
@@ -522,7 +522,7 @@ void CPlayer::Draw(void)
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glDepthMask(TRUE);
+//		glDepthMask(TRUE);
 		glDepthMask(GL_TRUE);
 
 		glEnable(GL_CULL_FACE);
