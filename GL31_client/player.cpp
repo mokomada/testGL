@@ -400,7 +400,7 @@ void CPlayer::Update(void)
 														 // 球ヒットエフェクト生成
 					CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
 					CBullet *bullet = (CBullet*)list;
-					bullet->SetLife(0);
+					bullet->SetLife(-100);
 				}
 				//				Release();
 				//				return;
