@@ -45,6 +45,26 @@ CCollision::~CCollision()
 //=============================================================================
 //	‹…‚Æ‹…‚Ì“–‚½‚è”»’è
 //=============================================================================
+bool CCollision::PlayerToPlayer(VECTOR3 &Pos, float Radius, VECTOR3 &_Pos, float _Radius)
+{
+	VECTOR3 sub = _Pos - Pos;
+	float distance = Vec3Length(sub);
+	float radius = Radius + _Radius;
+
+	if (distance <= radius * radius)
+	{
+		float Length = Vec3LengthSq(sub) - radius;
+		Length *= 0.5f;
+		Pos += sub.normalize() * Length;
+		_Pos -= sub.normalize() * Length;
+		return true;
+	}
+	return false;
+}
+
+//=============================================================================
+//	‹…‚Æ‹…‚Ì“–‚½‚è”»’è
+//=============================================================================
 bool CCollision::SphereToSphere(VECTOR3 Pos, float Radius, VECTOR3 _Pos, float _Radius)
 {
 	VECTOR3 sub = _Pos - Pos;
@@ -323,7 +343,7 @@ bool CCollision::SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA
 //=============================================================================
 //	—^‚¦‚ç‚ê‚½“_Point‚É‘Î‚µ‚ÄAAABBã‚à‚µ‚­‚Í’†‚É‚ ‚éPoint‚ÌÅ‹ßÚ“__Point‚ð•Ô‚·
 //=============================================================================
-void CCollision::ClosestPtPointAABB(VECTOR3 &Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point)
+void CCollision::ClosestPtPointAABB(VECTOR3 Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point)
 {
 	float point[3] = { Pos.x, Pos.y, Pos.z }, _point[3];
 	float min[3] = { _Pos.x - _Box->width * 0.5f, _Pos.y - _Box->height * 0.5f, _Pos.z - _Box->depth * 0.5f };

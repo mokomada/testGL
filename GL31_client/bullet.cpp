@@ -123,6 +123,15 @@ void CBullet::Update( void )
 	m_Pos.x -= -sinf( m_Rot.y ) * m_speed;
 	m_Pos.z -= -cosf( m_Rot.y ) * m_speed;
 
+	//“–‚½‚è”»’è
+	for each ( CSceneGL* list in CSceneGL::GetList(PRIORITY_WALL) )
+	{
+		if ( CCollision::GetInstance( )->SphereToAabb(m_Pos, m_Radius, list->GetPos( ), &list->GetBox( )) )
+		{
+			m_life = 0;
+		}
+	}
+
 	if( m_life <= 0 )	//Žõ–½‚ªs‚«‚½‚çíœ
 	{
 		CEffect2D::Create( m_Pos , VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );

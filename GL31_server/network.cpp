@@ -16,6 +16,9 @@
 #include "player.h"
 #include <process.h>
 #include <mbstring.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -25,6 +28,7 @@
 CONNECT_PROTOCOL CNetwork::m_ConnectProtocol = { "127.0.0.1", "239.0.0.1", 20000, 20000 };
 
 int			CNetwork::m_PlayerNum = 0;
+CLIENT		CNetwork::m_Client[PLAYER_NUM];
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
@@ -78,7 +82,7 @@ void CNetwork::Init(void)
 	ReadConnetProtocol(&m_ConnectProtocol);
 
 	// ソケット生成
-	if(0)
+	if(1)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
 		m_SockRecv = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,13 +106,13 @@ void CNetwork::Init(void)
 	m_ifBindSuccess = bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 
 	// 同時接続クライアント数設定
-	//listen(m_SockRecv, 5);
+	listen(m_SockRecv, 5);
 
 	// 初期化終了告知
 	m_ifInitialize = true;
 
 	// †スレッド起動†
-	//m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
+	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
 }
 
 //=============================================================================
@@ -119,24 +123,49 @@ void CNetwork::Init(void)
 //=============================================================================
 uint __stdcall CNetwork::MatchThread(void* p)
 {
-	SOCKET sock;
 	int len;
+	sockaddr_in addr;
 
 	while(m_PlayerNum < PLAYER_NUM)
 	{
 		len = sizeof(m_AddrClient[m_PlayerNum]);
-		sock = accept(m_SockRecv, (sockaddr*)&m_AddrClient[m_PlayerNum], &len);
+		m_Client[m_PlayerNum].Sock = accept(m_SockRecv, (sockaddr*)&addr, &len);
+
+		// 同じ接続先の場合カウントしない
+		int i = 0;
+		for(i = 0 ; i < 4 ; i++)
+		{
+			if(m_AddrClient[i].sin_addr.s_addr == addr.sin_addr.s_addr)
+			{
+				break;
+			}
+		}
 
 		char buff[1024] ={ NULL };
 
-		// 現在のプレイヤー番号をセット
-		sprintf(buff, "%d", m_PlayerNum);
+		if(i <= 3)
+		{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
 
-		send(sock, buff, strlen(buff), 0);
+			// 重複しているプレイヤー番号をセット
+			sprintf(buff, "0, %d", i);
 
-		closesocket(sock);
+			// プレイヤー番号を送信
+			send(m_Client[i].Sock, buff, strlen(buff), 0);
+		}
+		else
+		{// そうでない場合、現在のプレイヤー番号を返信する
 
-		m_PlayerNum++;
+			// クライアント情報の登録
+			m_AddrClient[m_PlayerNum] = addr;
+
+			// 現在のプレイヤー番号をセット
+			sprintf(buff, "0, %d", m_PlayerNum);
+
+			// プレイヤー番号のセット
+			send(m_Client[m_PlayerNum].Sock, buff, strlen(buff), 0);
+
+			m_PlayerNum++;
+		}
 	}
 
 	return 0;
@@ -166,6 +195,16 @@ void CNetwork::Uninit(void)
 //=============================================================================
 void CNetwork::Update(void)
 {
+	VECTOR3 pos[PLAYER_NUM] ={ VEC3_ZERO };
+	VECTOR3 rot[PLAYER_NUM] ={ VEC3_ZERO };
+	VECTOR3 vec[PLAYER_NUM] ={ VEC3_ZERO };
+	for(int i = 0 ; i < m_PlayerNum ; i++)
+	{
+		pos[i] = CGame::GetPlayer()[i]->GetPos();
+		rot[i] = CGame::GetPlayer()[i]->GetRot();
+		vec[i] = CGame::GetPlayer()[i]->GetVec();
+	}
+
 	if(CManager::GetModeState() == MODE_GAME)
 	{
 		SendData("1, POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
@@ -173,21 +212,21 @@ void CNetwork::Update(void)
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
 
-			CGame::GetPlayer()[0]->GetPos().x, CGame::GetPlayer()[0]->GetPos().y, CGame::GetPlayer()[0]->GetPos().z,
-			CGame::GetPlayer()[0]->GetRot().x, CGame::GetPlayer()[0]->GetRot().y, CGame::GetPlayer()[0]->GetRot().z,
-			CGame::GetPlayer()[0]->GetVec().x, CGame::GetPlayer()[0]->GetVec().y, CGame::GetPlayer()[0]->GetVec().z,
+			pos[0].x, pos[0].y, pos[0].z,
+			rot[0].x, rot[0].y, rot[0].z,
+			vec[0].x, vec[0].y, vec[0].z,
 
-			CGame::GetPlayer()[1]->GetPos().x, CGame::GetPlayer()[1]->GetPos().y, CGame::GetPlayer()[1]->GetPos().z,
-			CGame::GetPlayer()[1]->GetRot().x, CGame::GetPlayer()[1]->GetRot().y, CGame::GetPlayer()[1]->GetRot().z,
-			CGame::GetPlayer()[1]->GetVec().x, CGame::GetPlayer()[1]->GetVec().y, CGame::GetPlayer()[1]->GetVec().z,
+			pos[1].x, pos[1].y, pos[1].z,
+			rot[1].x, rot[1].y, rot[1].z,
+			vec[1].x, vec[1].y, vec[1].z,
 
-			CGame::GetPlayer()[2]->GetPos().x, CGame::GetPlayer()[2]->GetPos().y, CGame::GetPlayer()[2]->GetPos().z,
-			CGame::GetPlayer()[2]->GetRot().x, CGame::GetPlayer()[2]->GetRot().y, CGame::GetPlayer()[2]->GetRot().z,
-			CGame::GetPlayer()[2]->GetVec().x, CGame::GetPlayer()[2]->GetVec().y, CGame::GetPlayer()[2]->GetVec().z,
+			pos[2].x, pos[2].y, pos[2].z,
+			rot[2].x, rot[2].y, rot[2].z,
+			vec[2].x, vec[2].y, vec[2].z,
 
-			CGame::GetPlayer()[3]->GetPos().x, CGame::GetPlayer()[3]->GetPos().y, CGame::GetPlayer()[3]->GetPos().z,
-			CGame::GetPlayer()[3]->GetRot().x, CGame::GetPlayer()[3]->GetRot().y, CGame::GetPlayer()[3]->GetRot().z,
-			CGame::GetPlayer()[3]->GetVec().x, CGame::GetPlayer()[3]->GetVec().y, CGame::GetPlayer()[3]->GetVec().z);
+			pos[3].x, pos[3].y, pos[3].z,
+			rot[3].x, rot[3].y, rot[3].z,
+			vec[3].x, vec[3].y, vec[3].z);
 	}
 }
 
@@ -244,9 +283,9 @@ void CNetwork::SendData(char* format, ...)
 	va_end(list);
 
 	// データ送信
-	for(int i = 0 ; i < 4 ; i++)
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
-		sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrClient[i], sizeof(m_AddrClient[i]));
+		send(m_Client[m_PlayerNum].Sock, str, strlen(str) + 1, 0);
 	}
 }
 
@@ -262,7 +301,15 @@ void CNetwork::ReceiveData(void)
 	int len = sizeof(m_RecvClient);
 
 	// データ受信
-	recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
+//#pragma omp parallel for
+	for(int i = 0 ; i < m_PlayerNum ; i++)
+	{
+		if(CheckReceivable(m_Client[i].Sock))
+		{
+			recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
+		}
+	}
+	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
 
 	// データが送信されてきた場合記録
 	if(strcmp(m_ReceiveData, ""))
@@ -295,6 +342,25 @@ void CNetwork::ReceiveData(void)
 	default:
 		break;
 	}
+}
+
+/* ノンブロックでrecvを行えるかチェックする */
+int CNetwork::CheckReceivable(int fd)
+{
+	fd_set fdset;
+	int re;
+	struct timeval timeout;
+	FD_ZERO(&fdset);
+	FD_SET(fd, &fdset);
+
+	/* timeoutは０秒。つまりselectはすぐ戻ってく る */
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	/* readできるかチェック */
+	re = select(fd + 1, &fdset, NULL, NULL, &timeout);
+
+	return (re == 1) ? TRUE : FALSE;
 }
 
 //=============================================================================
@@ -354,24 +420,22 @@ void CNetwork::Matching(void)
 void CNetwork::SetPlayerData(void)
 {
 	vector<CPlayer*>	player = CGame::GetPlayer();
+	int					num = 0;
 	VECTOR3				pos = VEC3_ZERO;
 	VECTOR3				rot = VEC3_ZERO;
 	VECTOR3				vec = VEC3_ZERO;
 
 
-	for(int i = 0 ; i < (int)player.size() ; i++)
-	{
-		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
-		{
-			// 受信データからデータを取得
-			sscanf(m_ReceiveData, "%f, %f, %f, %f, %f, %f, %f, %f, %f",
-				&pos.x, &pos.y, &pos.z,	&rot.x, &rot.y, &rot.z,	&vec.x, &vec.y, &vec.z);
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+		&num, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &vec.x, &vec.y, &vec.z);
 
-			// 取得したデータをセット
-			player[i]->SetPos(pos);
-			player[i]->SetRot(rot);
-			//player[i]->SetVec(vec);
-		}
+	if(num < m_PlayerNum)
+	{
+		// 取得したデータをセット
+		player[num]->SetPos(pos);
+		player[num]->SetRot(rot);
+		//player[i]->SetVec(vec);
 	}
 }
 
@@ -397,7 +461,7 @@ void CNetwork::CreateBullet(void)
 				&pos.x, &pos.y, &pos.z, &speed);
 
 			// 取得したデータをセット
-			m_BulletInstance[i].push_back(CBullet::Create(pos, VEC3_ZERO, speed));
+			m_BulletInstance[i].push_back(CBullet::Create(pos, VEC3_ZERO, speed, 0));
 		}
 	}
 }

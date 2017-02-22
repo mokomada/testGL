@@ -48,6 +48,7 @@ CPlayer::~CPlayer()
 
 }
 
+VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //=============================================================================
 //	関数名	:Init
 //	引数	:VECTOR3 pos(初期位置)
@@ -110,10 +111,10 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	//これで風船を描画します
 	//Uninit,Update,Drawにて各関数を呼んでます。
 	//ダメージを受けたらCLife内のHitDamage関数を使ってください
-	m_pLife = CLife::Create( m_Pos , this );
+	m_pLife = CLife::Create( m_Pos , this , m_PlayerNumber );
 
 	// パーティクルオブジェクト生成
-	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_EXPLODE, this);
+	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
 }
 
 //=============================================================================
@@ -284,7 +285,11 @@ void CPlayer::Update(void)
 			// 弾発射
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
-				CBullet::Create( m_Pos , m_Rot , 10.0f );
+				if ( m_Gauge > 100 )
+				{
+					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					AddGauge(-100);
+				}
 			}
 		}
 		// 回転量補正
@@ -322,6 +327,11 @@ void CPlayer::Update(void)
 				if(m_HitEffectTime <= 0) {
 					m_pLife -> HitDamage();
 					if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+					// 球ヒットエフェクト生成
+					CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
+					CBullet *bullet = ( CBullet* )list;
+					bullet->SetLife( 0 );
 				}
 //				Release();
 //				return;
@@ -344,6 +354,29 @@ void CPlayer::Update(void)
 	m_Rot.x += m_RotMove.x;
 	m_Rot.y += m_RotMove.y;
 	m_Rot.z += m_RotMove.z;
+
+
+  ////	爆風エフェクト生成(上昇中のみ毎フレーム爆発エフェクトを呼ぶ)
+  ///////////////////////////////////////////////////////////
+  //	死んでる　＋　空中　＋　上に移動中
+  if(m_DeadFlag && m_bJump && g_PosOld.y < m_Pos.y)
+  {
+    // 前回の位置に今回の位置を入れる
+    g_PosOld.y = m_Pos.y;
+
+    // 火柱方向
+    float test = (float)(rand()%50 - 100.0f);
+
+    // エフェクト生成
+    CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
+  }
+
+  // 以下(else if)は同期設定次第で後で消す。
+  else if(m_DeadFlag && !m_bJump)
+  {
+    // 前回の位置を0.0fに
+    g_PosOld.y = 0.0f;
+  }
 
 	//************* HP0時演出テストここまで *****************
 
@@ -410,17 +443,17 @@ void CPlayer::Update(void)
 
 	//*************************** 被弾エフェクト処理終了 ***************************
 
-	/*
+
 	// 自プレイヤーの場合、位置を送信
 	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+		sprintf(str, "1, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+			CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
-	}*/
+	}
 
 	//風船更新
 	m_pLife->Update();
@@ -484,7 +517,7 @@ void CPlayer::Draw(void)
 	//風船描画
 	m_pLife->Draw();
 
-	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================

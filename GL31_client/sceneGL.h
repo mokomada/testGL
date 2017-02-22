@@ -69,10 +69,20 @@ public:
 	void		AddPos(float x, float y, float z) { m_Pos += VECTOR3(x, y, z); }
 	void		AddRot(VECTOR3 rot) { m_Rot += rot; }
 	void		AddRot(float x, float y, float z) { m_Rot += VECTOR3(x, y, z); }
+	void		AddMove(VECTOR3 move) { m_Move += move; }
+	void		AddMove(float x, float y, float z) { m_Move += VECTOR3(x, y, z); }
+	void		AddAcc(VECTOR3 acc) { m_Acc += acc; }
+	void		AddAcc(float x, float y, float z) { m_Acc += VECTOR3(x, y, z); }
+
 	void		SetPos(VECTOR3 pos) { m_Pos = pos; }
 	void		SetPos(float x, float y, float z) { m_Pos = VECTOR3(x, y, z); }
 	void		SetRot(VECTOR3 rot) { m_Rot = rot; }
 	void		SetRot(float x, float y, float z) { m_Rot = VECTOR3(x, y, z); }
+	void		SetMove(VECTOR3 rot) { m_Move = rot; }
+	void		SetMove(float x, float y, float z) { m_Move = VECTOR3(x, y, z); }
+	void		SetAcc(VECTOR3 acc) { m_Acc = acc; }
+	void		SetAcc(float x, float y, float z) { m_Acc = VECTOR3(x, y, z); }
+
 	void SetBox(BOX_DATA Box) { m_Box = Box; }
 	void SetRadius(float Radius) { m_Radius = Radius; }
 	VECTOR3	GetPos(void) { return m_Pos; }
@@ -102,6 +112,8 @@ protected:
 
 	VECTOR3 m_Pos;		// 位置
 	VECTOR3 m_Rot;		// 回転角
+	VECTOR3 m_Move;		// 移動ベクトル
+	VECTOR3 m_Acc;		// 加速ベクトル
 	BOX_DATA m_Box;	//当たり判定用のボックス情報
 	float m_Radius;	//当たり判定用の半径情報
 };
