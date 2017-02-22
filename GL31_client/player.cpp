@@ -287,8 +287,21 @@ void CPlayer::Update(void)
 			{
 				if ( m_Gauge > 100 )
 				{
-					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					// 取得したデータをセット
+					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+					{
+						if(CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = false)
+						{
+							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Instance = CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = true;
+						}
+					}					
 					AddGauge(-100);
+
+					char str[1024] ={ NULL };
+					sprintf(str, "2, %f, %f, %f, %f, %f, %f, %f",
+						m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+					CNetwork::SendData(str);
 				}
 			}
 		}
@@ -413,6 +426,7 @@ void CPlayer::Update(void)
 	if (m_Pos.y < 25.0f)
 	{
 		m_Pos.y = 25.0f;
+		m_Move.y = 0;
 		m_RotMove.x = 0;
 		m_RotMove.y = 0;
 		m_RotMove.z = 0;
@@ -452,8 +466,8 @@ void CPlayer::Update(void)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+		sprintf(str, "1, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+			CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
 	}
