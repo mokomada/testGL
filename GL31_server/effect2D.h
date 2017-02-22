@@ -30,13 +30,6 @@
 #define	BILLBOARD_WIDTH		(100.0f)				// ポリゴンの横幅
 #define	BILLBOARD_HEIGHT	(100.0f)				// ポリゴンの縦幅
 
-/////////////////////
-/*   ファイル名    */
-/////////////////////
-#define	EXPLODE_TEXFILENAME000	"./data/TEXTURE/EFFECT/Effect_Explosion00.tga"	// 爆発テストエフェクト(8x1)
-#define	EXPLODE_TEXFILENAME001	"./data/TEXTURE/EFFECT/Effect_Explosion01.tga"	// 爆発テストエフェクト(7x1)
-#define SMOKE_TEXFILENAME000	"./data/TEXTURE/EFFECT/Effect_Smoke00.tga"		// 土煙テストエフェクト(10x1)
-
 /////////////////////////////////
 /*   アニメーショングリッド    */
 /////////////////////////////////
@@ -54,7 +47,8 @@
 #define MOVE_SPEED_PSMOKEY	(0.5f)		// 煙パーティクルの移動スピード(Y軸)
 #define PHEIGHT_LIMIT		(400.0f)	// 煙パーティクルの高度制限
 #define PUP_SCALE			(0.5f)		// 煙パーティクルの拡大倍率
-#define PALPHA_MINUS		(0.0015f)	// 煙パーティクルのα値減算量
+#define PALPHA_MINUS		(0.0020f)	// 煙パーティクルのα値減算量
+
 
 ////	アニメーションが切り替わるまでのフレーム数
 //////////////////////////////////////////////////////////////
@@ -68,12 +62,23 @@
 typedef enum
 {
 	ETYPE_NONE = 0,	// なし
-	ETYPE_EXPLODE00,	// 爆発エフェクト(テスト)
-	ETYPE_EXPLODE01,	// 爆発エフェクト
-	ETYPE_SMOKE00,		// 土煙エフェクト
+	ETYPE_EXPLODE00,	// 爆発エフェクト(白)
+	ETYPE_EXPLODE01,	// 爆発エフェクト(赤)
+	ETYPE_SMOKE00,		// 土煙エフェクト(ドリフト)
+	ETYPE_SMOKE01,		// 煙エフェクト(プレイヤ死亡時)
 }EFFECTTYPE;
 
+typedef struct
+{
+	float Red;
+	float Green;
+	float Blue;
+	float Alpha;
+}EFFTEXCOLOR;
 
+//=============================================================================
+//	前方定義
+//=============================================================================
 class CSceneGL;
 
 //=============================================================================
@@ -94,11 +99,10 @@ class CEffect2D : public CScene2DGL
 		EFFECTTYPE m_Etype;					// エフェクトタイプ
 		bool	m_bEndFlugE;				// 最終アニメーション表示後自殺するフラグ(エフェクト)
 		bool	m_bEndFlugP;				// 最終アニメーション表示後自殺するフラグ(パーティクル)
-		float	m_Alpha;
-		
+		EFFTEXCOLOR m_Color;				// 色データ
 
 	public:
-		CEffect2D(bool ifListAdd = true, int priority = 1, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
+		CEffect2D(bool ifListAdd = true, int priority = PRIORITY_EFFECT, OBJTYPE objType = OBJTYPE_NONE);	// コンストラクタ
 		~CEffect2D();													// デストラクタ
 
 		void Init(VECTOR3 pos		= VECTOR3(0.0f, 0.0f, 0.0f),			// 初期化処理
@@ -115,6 +119,10 @@ class CEffect2D : public CScene2DGL
 		bool GetEndFlugP(void);										// エンドフラグ取得(パーティクルエフェクト)
 		void SetEndFlugE(bool flug);								// エンドフラグ変更(通常エフェクト)
 		void SetEndFlugP(bool flug);								// エンドフラグ変更(パーティクルエフェクト)
+		
+		//static float	m_CheckHeight;
+		//static bool CheckHeight(CSceneGL *parent);
+
 		static CEffect2D *Create(VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f),			// 作成関数
 								 VECTOR2 size = VECTOR2(BILLBOARD_WIDTH, BILLBOARD_HEIGHT),
 								 EFFECTTYPE etype = ETYPE_NONE);
