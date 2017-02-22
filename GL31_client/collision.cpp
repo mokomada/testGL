@@ -110,7 +110,6 @@ bool CCollision::SphereToBox(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA*
 {
 	VECTOR3 VtxPos1[6], VtxPos2[6], VtxPos3[6], VtxPos4[6];	//’¸“_‚ÌˆÊ’uŠi”[
 	VECTOR3 Nor, Vec, _Vec, Position, Cross1, Cross2, Cross3;
-	float Lenght, Dot1, Dot2;
 	float WidthHalf = _Box->width * 0.5f;
 	float HightHalf = _Box->height * 0.5f;
 	float DepthHalf = _Box->depth * 0.5f;
