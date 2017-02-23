@@ -38,10 +38,13 @@ public:
 
 	static CMeshfield	*GetMeshfield(void){ return m_Meshfield; }
 	static vector<CPlayer*>	GetPlayer(void) { return m_Player; }
+	static int	GetFrame(void) { return m_GamaFrame; }
 
 private:
 	static CMeshfield	*m_Meshfield;	// メッシュフィールドのインスタンス
 	static vector<CPlayer*>	m_Player;		// プレイヤーのインスタンス
+
+	static int m_GamaFrame;
 };
 
 #endif

@@ -150,7 +150,11 @@
     <ClInclude Include="podium.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="slope.h">
+=======
+    <ClInclude Include="scene2DGLAnimation.h">
+>>>>>>> 168faf17b4886060145adb5bbfd3d0e9f0a431da
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -278,7 +282,11 @@
     <ClCompile Include="podium.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="slope.cpp">
+=======
+    <ClCompile Include="scene2DGLAnimation.cpp">
+>>>>>>> 168faf17b4886060145adb5bbfd3d0e9f0a431da
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

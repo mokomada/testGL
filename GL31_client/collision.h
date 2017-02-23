@@ -30,6 +30,7 @@ public:
 	bool SphereToPolygon(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3);
 	bool SphereToLine(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3);
 	bool SphereToAabb(VECTOR3 &Pos, float Radius, VECTOR3 _Pos, BOX_DATA* _Box);
+	bool CCollision::SphereToBoard(VECTOR3 &Pos, float Radius, VECTOR3 VtxPos1, VECTOR3 VtxPos2, VECTOR3 VtxPos3, VECTOR3 VtxPos4);
 
 	void ClosestPtPointAABB(VECTOR3 Pos, VECTOR3 _Pos, BOX_DATA* _Box, VECTOR3& Point);
 

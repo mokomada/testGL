@@ -94,6 +94,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="podium.h" />
+    <ClInclude Include="scene2DGLAnimation.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="podium.cpp" />
+    <ClCompile Include="scene2DGLAnimation.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />

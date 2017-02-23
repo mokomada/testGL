@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//	ã‚¿ã‚¤ãƒˆãƒ«	ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«(2DGL)
-//	ãƒ•ã‚¡ã‚¤ãƒ«å	network.cpp
-//	ä½œæˆè€…		AT13A284_07 æ± ç”°é”å“‰
-//	ä½œæˆæ—¥		2016/11/14
+//	ƒ^ƒCƒgƒ‹	ƒV[ƒ“ƒtƒ@ƒCƒ‹(2DGL)
+//	ƒtƒ@ƒCƒ‹–¼	network.cpp
+//	ì¬ŽÒ		AT13A284_07 ’r“c’BÆ
+//	ì¬“ú		2016/11/14
 //
 //=============================================================================
 //=============================================================================
-//	ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+//	ƒCƒ“ƒNƒ‹[ƒh
 //=============================================================================
 #include "network.h"
 #include "main.h"
@@ -19,7 +19,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 //=============================================================================
-//	é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
+//	Ã“Iƒƒ“ƒo•Ï”
 //============================================================================
 //uint __stdcall CNetwork::ReceveThread(void *);
 CONNECT_PROTOCOL	CNetwork::m_ConnectProtocol;
@@ -38,10 +38,10 @@ HANDLE		CNetwork::m_hTh;
 BULLETDATA	CNetwork::m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
 
 //=============================================================================
-//	é–¢æ•°å	:Init
-//	å¼•æ•°	:ç„¡ã—
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:Init
+//	ˆø”	:–³‚µ
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:‰Šú‰»ˆ—‚ðs‚¤B
 //=============================================================================
 void CNetwork::Init(void)
 {
@@ -53,30 +53,30 @@ void CNetwork::Init(void)
 	m_ifInitialize	= false;
 	m_ifMatched		= false;
 
-	// â€ ã‚¹ãƒ¬ãƒƒãƒ‰èµ·å‹•â€ 
+	// õƒXƒŒƒbƒh‹N“®õ
 	m_hTh = (HANDLE)_beginthreadex(NULL, 0, ReceveThread, NULL, 0, &m_thID);
 
-	// ï¼·ï¼©ï¼®ï¼³ï¼¯ï¼£ï¼«åˆæœŸå‡¦ç†
+	// ‚v‚h‚m‚r‚n‚b‚j‰Šúˆ—
 	sts = WSAStartup(MAKEWORD(2, 0), &wsadata);
 	if(sts != 0)
 	{
 		errcode = WSAGetLastError();
-		printf("WSAStartupã‚¨ãƒ©ãƒ¼ã§ã™ %d \n", errcode);
+		printf("WSAStartupƒGƒ‰[‚Å‚· %d \n", errcode);
 		return;
 	}
 
-	// ãƒãƒ¼ã‚¸ãƒ§ãƒ³ãƒã‚§ãƒƒã‚¯
+	// ƒo[ƒWƒ‡ƒ“ƒ`ƒFƒbƒN
 	if(LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wVersion) != 0)
 	{
-		printf("ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚¨ãƒ©ãƒ¼ã§ã™\n");
+		printf("ƒo[ƒWƒ‡ƒ“ƒGƒ‰[‚Å‚·\n");
 		WSACleanup();
 		return;
 	}
 
-	// é€ä¿¡å…ˆæƒ…å ±èª­ã¿å–ã‚Š
+	// ‘—Mæî•ñ“Ç‚ÝŽæ‚è
 	ReadConnetProtocol(&m_ConnectProtocol);
 	
-	// ã‚½ã‚±ãƒƒãƒˆç”Ÿæˆ
+	// ƒ\ƒPƒbƒg¶¬
 	if(1)
 	{
 		m_SockSend = socket(AF_INET, SOCK_STREAM, 0);
@@ -89,23 +89,23 @@ void CNetwork::Init(void)
 	}
 	
 
-	// ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚¿ã‚¤ãƒ—è¨­å®š
+	// ƒAƒhƒŒƒXƒ^ƒCƒvÝ’è
 	addr.sin_family = AF_INET;
 	m_AddrServer.sin_family = AF_INET;
 
-	// ãƒãƒ¼ãƒˆç•ªå·è¨­å®š
+	// ƒ|[ƒg”Ô†Ý’è
 	addr.sin_port = htons(20010);
 	m_AddrServer.sin_port = htons(20010);
 
-	// IPã‚¢ãƒ‰ãƒ¬ã‚¹è¨­å®š
+	// IPƒAƒhƒŒƒXÝ’è
 	addr.sin_addr.s_addr = INADDR_ANY;
 	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
 
-	// ãƒã‚¤ãƒ³ãƒ‰
+	// ƒoƒCƒ“ƒh
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 	
-	// ãƒžãƒƒãƒãƒ³ã‚°ç™»éŒ²
+	// ƒ}ƒbƒ`ƒ“ƒO“o˜^
 	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
 	send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
 
@@ -120,30 +120,30 @@ void CNetwork::Init(void)
 		}
 	}
 	
-	// åˆæœŸåŒ–çµ‚äº†å‘ŠçŸ¥
+	// ‰Šú‰»I—¹’m
 	m_ifInitialize = true;
 }
 
 //=============================================================================
-//	é–¢æ•°å	:Uninit
-//	å¼•æ•°	:ç„¡ã—
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:çµ‚äº†å‡¦ç†ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:Uninit
+//	ˆø”	:–³‚µ
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:I—¹ˆ—‚ðs‚¤B
 //=============================================================================
 void CNetwork::Uninit(void)
 {
-	// ã‚½ã‚±ãƒƒãƒˆçµ‚äº†
+	// ƒ\ƒPƒbƒgI—¹
 	if(m_SockSend)	closesocket(m_SockSend);
 
-	// ï¼·ï¼©ï¼®ï¼³ï¼¯ï¼£ï¼«å¾Œå‡¦ç†
+	// ‚v‚h‚m‚r‚n‚b‚jŒãˆ—
 	WSACleanup();
 }
 
 //=============================================================================
-//	é–¢æ•°å	:Update
-//	å¼•æ•°	:ç„¡ã—
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:Update
+//	ˆø”	:–³‚µ
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:XVˆ—‚ðs‚¤B
 //=============================================================================
 void CNetwork::Update(void)
 {
@@ -151,10 +151,10 @@ void CNetwork::Update(void)
 }
 
 //=============================================================================
-//	é–¢æ•°å	:Draw
-//	å¼•æ•°	:ç„¡ã—
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:æç”»å‡¦ç†ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:Draw
+//	ˆø”	:–³‚µ
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:•`‰æˆ—‚ðs‚¤B
 //=============================================================================
 void CNetwork::Draw(void)
 {
@@ -165,10 +165,10 @@ void CNetwork::Draw(void)
 
 uint __stdcall CNetwork::ReceveThread(void *p)
 {
-	// ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+	// ƒf[ƒ^ŽóM
 	while(1)
 	{		
-		// åˆæœŸåŒ–ãŒçµ‚äº†ã—ã¦ã„ã‚‹å ´åˆã®ã¿å‡¦ç†
+		// ‰Šú‰»‚ªI—¹‚µ‚Ä‚¢‚éê‡‚Ì‚Ýˆ—
 		if(m_ifInitialize)
 		{
 			while(1)
@@ -182,42 +182,42 @@ uint __stdcall CNetwork::ReceveThread(void *p)
 }
 
 //=============================================================================
-//	é–¢æ•°å	:SendData
-//	å¼•æ•°	:char *format	->	é€ä¿¡ãƒ‡ãƒ¼ã‚¿
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:ãƒ‡ãƒ¼ã‚¿ã®é€ä¿¡ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:SendData
+//	ˆø”	:char *format	->	‘—Mƒf[ƒ^
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:ƒf[ƒ^‚Ì‘—M‚ðs‚¤B
 //=============================================================================
 void CNetwork::SendData(char* format, ...)
 {
 	va_list list;
 	char str[65535];
 
-	// ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆå¤‰æ›
+	// ƒtƒH[ƒ}ƒbƒg•ÏŠ·
 	va_start(list, format);
 	vsprintf_s(str, format, list);
 	va_end(list);
 
-	// ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+	// ƒf[ƒ^‘—M
 	send(m_SockSend, str, strlen(str) + 1, 0);
 	//sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
 }
 
 //=============================================================================
-//	é–¢æ•°å	:ReceiveData
-//	å¼•æ•°	:char *str	->	é€ä¿¡ãƒ‡ãƒ¼ã‚¿
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:ãƒ‡ãƒ¼ã‚¿ã®é€ä¿¡ã‚’è¡Œã†ã€‚
+//	ŠÖ”–¼	:ReceiveData
+//	ˆø”	:char *str	->	‘—Mƒf[ƒ^
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:ƒf[ƒ^‚Ì‘—M‚ðs‚¤B
 //=============================================================================
 void CNetwork::ReceiveData(void)
 {
-	// ã‚µãƒ¼ãƒã‚¢ãƒ‰ãƒ¬ã‚¹ã®ã‚µã‚¤ã‚ºã‚»ãƒƒãƒˆ
+	// ƒT[ƒoƒAƒhƒŒƒX‚ÌƒTƒCƒYƒZƒbƒg
 	int len = sizeof(m_AddrServer);
 
-	// ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+	// ƒf[ƒ^ŽóM
 	recv(m_SockSend, m_ReceiveData, sizeof(m_ReceiveData), 0);
 	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_AddrServer, &len);
 	
-	// ãƒ‡ãƒ¼ã‚¿ãŒé€ä¿¡ã•ã‚Œã¦ããŸå ´åˆè¨˜éŒ²
+	// ƒf[ƒ^‚ª‘—M‚³‚ê‚Ä‚«‚½ê‡‹L˜^
 	if(strcmp(m_ReceiveData, ""))
 	{
 		strcpy(m_LastMessage, m_ReceiveData);
@@ -232,7 +232,7 @@ void CNetwork::ReceiveData(void)
 
 	switch(dataTag)
 	{
-	case 0:	// ãƒžãƒƒãƒãƒ³ã‚°
+	case 0:	// ƒ}ƒbƒ`ƒ“ƒO
 		if(!m_ifMatched)
 		{
 			int whatplayer = -1;
@@ -255,10 +255,10 @@ void CNetwork::ReceiveData(void)
 }
 
 //=============================================================================
-//	é–¢æ•°å	:SetPlayerData
-//	å¼•æ•°	:char *str	->	å—ä¿¡ãƒ‡ãƒ¼ã‚¿
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:å—ä¿¡ã—ãŸãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã€‚
+//	ŠÖ”–¼	:SetPlayerData
+//	ˆø”	:char *str	->	ŽóMƒf[ƒ^
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:ŽóM‚µ‚½ƒvƒŒƒCƒ„[‚Ìƒf[ƒ^‚ðƒZƒbƒg‚·‚éB
 //=============================================================================
 void CNetwork::SetPlayerData(void)
 {
@@ -267,10 +267,10 @@ void CNetwork::SetPlayerData(void)
 	VECTOR3 rot[4] = { VEC3_ZERO };
 	VECTOR3 vec[4] = { VEC3_ZERO };
 
-	// ã‚²ãƒ¼ãƒ ãƒ¢ãƒ¼ãƒ‰ã®æ™‚ã®ã¿å‡¦ç†
+	// ƒQ[ƒ€ƒ‚[ƒh‚ÌŽž‚Ì‚Ýˆ—
 	if(CManager::GetModeState() == MODE_GAME)
 	{
-		// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™ã‚’å–å¾—
+		// ŽóMƒf[ƒ^‚©‚çƒvƒŒƒCƒ„[À•W‚ðŽæ“¾
 		sscanf(m_ReceiveData,
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
@@ -281,7 +281,7 @@ void CNetwork::SetPlayerData(void)
 			&pos[2].x, &pos[2].y, &pos[2].z, &rot[2].x, &rot[2].y, &rot[2].z, &vec[2].x, &vec[2].y, &vec[2].z,
 			&pos[3].x, &pos[3].y, &pos[3].z, &rot[3].x, &rot[3].y, &rot[3].z, &vec[3].x, &vec[3].y, &vec[3].z);
 
-		// å–å¾—ã—ãŸåº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
+		// Žæ“¾‚µ‚½À•W‚ðƒZƒbƒg
 		for(int i = 0 ; i < (int)player.size() ; i++)
 		{
 			if(i != CManager::GetWhatPlayer())
@@ -295,10 +295,10 @@ void CNetwork::SetPlayerData(void)
 }
 
 //=============================================================================
-//	é–¢æ•°å	:RemoveDataTag
-//	å¼•æ•°	:char *str	->	å—ä¿¡ãƒ‡ãƒ¼ã‚¿
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:å—ä¿¡ã—ãŸãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ã‚¿ã‚°ã‚’å–ã‚Šå¤–ã™ã€‚
+//	ŠÖ”–¼	:RemoveDataTag
+//	ˆø”	:char *str	->	ŽóMƒf[ƒ^
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:ŽóM‚µ‚½ƒvƒŒƒCƒ„[‚Ìƒf[ƒ^‚©‚çƒ^ƒO‚ðŽæ‚èŠO‚·B
 //=============================================================================
 void CNetwork::RemoveDataTag(char *data)
 {
@@ -306,13 +306,13 @@ void CNetwork::RemoveDataTag(char *data)
 
 	for(; data[offset] != NULL ; offset++)
 	{
-		// ç©ºç™½ã‚’è¦‹ã¤ã‘ãŸã‚‰
+		// ‹ó”’‚ðŒ©‚Â‚¯‚½‚ç
 		if(data[offset] == ' ')
 		{
-			// æ–‡å­—åˆ—å–ã‚Šå‡ºã—
+			// •¶Žš—ñŽæ‚èo‚µ
 			strcpy(data, &data[offset + 1]);
 
-			// NULLè¿½åŠ 
+			// NULL’Ç‰Á
 			data[strlen(data)] = NULL;
 
 			break;
@@ -321,26 +321,26 @@ void CNetwork::RemoveDataTag(char *data)
 }
 
 //=============================================================================
-//	é–¢æ•°å	:ReadConnetProtocol
-//	å¼•æ•°	:CONNECT_PROTOCOL *cp(ã‚³ãƒã‚¯ãƒˆæƒ…å ±ã®ãƒã‚¤ãƒ³ã‚¿)
-//	æˆ»ã‚Šå€¤	:ç„¡ã—
-//	èª¬æ˜Ž	:IPv4é€šä¿¡ã«å¿…è¦ãªæƒ…å ±ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿å–ã‚‹ã€‚
+//	ŠÖ”–¼	:ReadConnetProtocol
+//	ˆø”	:CONNECT_PROTOCOL *cp(ƒRƒlƒNƒgî•ñ‚Ìƒ|ƒCƒ“ƒ^)
+//	–ß‚è’l	:–³‚µ
+//	à–¾	:IPv4’ÊM‚É•K—v‚Èî•ñ‚ðƒtƒ@ƒCƒ‹‚©‚ç“Ç‚ÝŽæ‚éB
 //=============================================================================
 void CNetwork::ReadConnetProtocol(CONNECT_PROTOCOL *cp)
 {
-	FILE	*fp;	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚¤ãƒ³ã‚¿
+	FILE	*fp;	// ƒtƒ@ƒCƒ‹ƒ|ƒCƒ“ƒ^
 
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³
+	// ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“
 	if((fp = fopen("./data/connectprotocol.txt", "rb")) == NULL)
-	{// ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³ã«å¤±æ•—ã—ãŸå ´åˆ
+	{// ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“‚ÉŽ¸”s‚µ‚½ê‡
 		exit(EXIT_FAILURE);
 	}
 
-	// æƒ…å ±èª­ã¿å–ã‚Š
+	// î•ñ“Ç‚ÝŽæ‚è
 	fscanf(fp, "SEND_ADDRESS:%s", cp->Addr);
 	cp->pAddr = cp->Addr;
 
-	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¯ãƒ­ãƒ¼ã‚º
+	// ƒtƒ@ƒCƒ‹ƒNƒ[ƒY
 	fclose(fp);
 }

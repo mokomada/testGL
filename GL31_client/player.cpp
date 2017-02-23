@@ -55,7 +55,7 @@ VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
+void CPlayer::Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
@@ -63,8 +63,8 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	m_PlayerNumber = whatPlayer;
 
 	// 各種初期化
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	SetPos(pos);
+	SetRot(rot);
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
 	m_RotMove		= VECTOR3(0.0f, 0.0f, 0.0f);
 	m_MoveDirection = VECTOR3(0.0f, 0.0f, 0.0f);
@@ -115,6 +115,11 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 
 	// パーティクルオブジェクト生成
 	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
+
+	FILE* fp;
+
+	fp = fopen("./data/ranking.txt", "w");
+	fclose(fp);
 }
 
 //=============================================================================
@@ -333,6 +338,15 @@ void CPlayer::Update(void)
 		m_RotMove.z = (rand() % 40) * 0.01f;
 		m_bJump = true;
 		m_DeadFlag = true;
+
+
+		FILE* fp;
+
+		fp = fopen("./data/ranking.txt", "a");
+
+		fprintf(fp, "%d\n", m_PlayerNumber);
+
+		fclose(fp);
 	}
 
 	m_Rot.x += m_RotMove.x;
@@ -401,6 +415,8 @@ void CPlayer::Update(void)
 		}
 	}
 
+	//CCollision::GetInstance()->SphereToBoard(m_Pos, m_Radius, VECTOR3(-200.0f, 100.0f, 500.0f), VECTOR3(200.0f, 100.0f, 500.0f), VECTOR3(-200.0f, 0.0f, 0.0f), VECTOR3(200.0f, 0.0f, 0.0f));
+
 	//CCollision::GetInstance()->PlayerToPlayer(m_Pos, m_Radius, VECTOR3(0.0f, 0.0f, 500.0f), 50.0f);
 
 	if (m_PlayerNumber != CManager::GetWhatPlayer())
@@ -467,12 +483,15 @@ void CPlayer::Update(void)
 	// 自プレイヤーの場合、位置を送信
 	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
-		char str[1024] = { NULL };
+		if(CGame::GetFrame() % 10 == 0)
+		{
+			char str[1024] ={ NULL };
 
-		sprintf(str, "1, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+			sprintf(str, "1, %d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
+				CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
-		CNetwork::SendData(str);
+			CNetwork::SendData(str);
+		}
 	}
 
 	//風船更新
