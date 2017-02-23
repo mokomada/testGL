@@ -18,6 +18,7 @@
 #include "textureManager.h"
 #include "effect.h"
 #include "collision.h"
+#include "network.h"
 
 /******************************************************************************
 *	マクロ定義
@@ -61,10 +62,10 @@ CBullet::~CBullet()
 *	戻り値：
 *	説明  ：クリエイト
 ******************************************************************************/
-CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed , int color )
+CBullet * CBullet::Create(int playerNum, int bulletNum, VECTOR3 pos , VECTOR3 rot , float speed , int color )
 {
 	CBullet *bullet = new CBullet();
-	bullet->Init( pos , rot , speed , color );
+	bullet->Init(playerNum, bulletNum, pos , rot , speed , color );
 
 	return bullet;
 }
@@ -75,7 +76,7 @@ CBullet * CBullet::Create( VECTOR3 pos , VECTOR3 rot , float speed , int color )
 *	戻り値：HRESULT
 *	説明  ：初期化処理
 ******************************************************************************/
-void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed , int color )
+void CBullet::Init(int playerNum, int bulletNum, VECTOR3 pos , VECTOR3 rot , float speed , int color )
 {
 	CRendererGL	*renderer = CManager::GetRendererGL();
 
@@ -88,6 +89,8 @@ void CBullet::Init( VECTOR3 pos , VECTOR3 rot , float speed , int color )
 	m_life = BULLET_LIFE;	//弾の寿命
 	m_playerNumber = color;
 	m_Radius = 10.0f;
+	m_PlayerNum = playerNum;
+	m_BulletNum = bulletNum;
 
 	// テクスチャ読込
 	m_Texture = CTextureManager::GetTexture( TEXTURE_BULLET );
@@ -136,6 +139,7 @@ void CBullet::Update( void )
 	{
 		if(m_life > -100) CEffect2D::Create( m_Pos , VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );
 		m_myShadow->DeleteFlag( true );	//影の削除フラグをON
+		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].Use = false;
 		CSceneGL::Release();
 	}
 

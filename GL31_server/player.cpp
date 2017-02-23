@@ -175,13 +175,13 @@ void CPlayer::Update(void)
 				// 移動量を設定
 				if (m_FlgLowSpeed == true)
 				{
-					m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
-					m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
+					//m_Move.x += sinf(m_Rot.y) * LOWFMOVE_SPEED;
+					//m_Move.z += cosf(m_Rot.y) * LOWFMOVE_SPEED;
 				}
 				if (m_FlgLowSpeed == false)
 				{
-					m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
-					m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
+					//m_Move.x += sinf(m_Rot.y) * FMOVE_SPEED;
+					//m_Move.z += cosf(m_Rot.y) * FMOVE_SPEED;
 				}
 			}
 			if (CInput::GetKeyboardPress(DIK_S))		// 移動方向に移動の反対に移動
@@ -268,13 +268,13 @@ void CPlayer::Update(void)
 
 			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
 			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
-
+			/*
 			camera->m_CameraState.posV.x = m_Pos.x + sinf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 			camera->m_CameraState.posV.z = m_Pos.z + cosf(camera->m_CameraState.Rot.y + m_Rot.y) *camera->m_CameraState.fDistance;
 
 			camera->m_CameraState.posR.x = m_Pos.x + sinf(m_Rot.y) * BMOVE_SPEED;
 			camera->m_CameraState.posR.z = m_Pos.z + cosf(m_Rot.y) * BMOVE_SPEED;
-
+			*/
 			// ジャンプ
 			if (CInput::GetKeyboardTrigger(DIK_J) && !m_bJump)
 			{
@@ -287,7 +287,7 @@ void CPlayer::Update(void)
 			{
 				if ( m_Gauge > 100 )
 				{
-					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					//CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);
 				}
 			}
@@ -518,7 +518,7 @@ void CPlayer::Draw(void)
 	//風船描画
 	m_pLife->Draw();
 
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================
