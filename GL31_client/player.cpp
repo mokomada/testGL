@@ -67,7 +67,7 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 	SetRot(rot);
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
 	m_RotMove		= VECTOR3(0.0f, 0.0f, 0.0f);
-	m_MoveDirection = VECTOR3(0.0f, 0.0f, 0.0f);
+	m_MoveDirection = rot;
 	m_bJump			= false;
 	m_Scale			= VECTOR3(1.0f, 1.0f, 1.0f);
 
@@ -565,13 +565,13 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
+CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CPlayer *player;
 
 	player = new CPlayer;
 
-	player->Init(whatPlayer, pos);
+	player->Init(whatPlayer, pos, rot);
 
 	return player;
 }

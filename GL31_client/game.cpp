@@ -56,10 +56,10 @@ void CGame::Init(void)
 	//3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
-	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -1800.0f)));
-	m_Player.push_back(CPlayer::Create(1, VECTOR3(-1800.0f, 50.0f, 0.0f)));
-	m_Player.push_back(CPlayer::Create(2, VECTOR3(1800.0f, 50.0f, 0.0f)));
-	m_Player.push_back(CPlayer::Create(3, VECTOR3(0.0f, 50.0f, 1800.0f)));
+	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -1800.0f) , VECTOR3(0.0f,0.0f,0.0f)));
+	m_Player.push_back(CPlayer::Create(1, VECTOR3(-1800.0f, 50.0f, 0.0f) , VECTOR3(0.0f, PI * 0.5f, 0.0f) ));
+	m_Player.push_back(CPlayer::Create(2, VECTOR3(1800.0f, 50.0f, 0.0f) , VECTOR3(0.0f, -PI * 0.5f, 0.0f) ));
+	m_Player.push_back(CPlayer::Create(3, VECTOR3(0.0f, 50.0f, 1800.0f) , VECTOR3(0.0f, PI, 0.0f) ));
 
 	//VECTOR3 Pos[4] = {VECTOR3(-200, 100, 500), VECTOR3(200, 100, 500) , VECTOR3(-200, 0, 0), VECTOR3(200, 0, 0) };
 	//CSlope::Create(Pos, VECTOR3(0, 0, 0), "./data/TEXTURE/rocklong.png");
