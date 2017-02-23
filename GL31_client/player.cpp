@@ -6,6 +6,9 @@
 //	作成日		2016/12/5
 //
 //=============================================================================
+
+#define _CRT_SECURE_NO_WARNINGS // fscanf/fopenの警告対策
+
 //=============================================================================
 //	インクルード
 //=============================================================================
@@ -268,8 +271,8 @@ void CPlayer::Update(void)
 
 			static float rot = 0.0f;
 			rot += 0.08f;
-			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
-			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2f, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2f, 0.0f));
 
 			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
 			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
@@ -466,6 +469,7 @@ void CPlayer::Update(void)
 
 	// テスト用 8～0キーで被弾エフェクト それぞれ長さが違う
 	// ※8の倍数-4～8の倍数-2に設定すると最初の点滅が3～1フレーム短くなるので注意。基本は4フレーム毎にONOFFを切り替える点滅
+/*	デバッグ用機能は出荷よー
 	if(CInput::GetKeyboardTrigger(DIK_8) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 30;
 	}
@@ -474,7 +478,7 @@ void CPlayer::Update(void)
 	}
 	else if(CInput::GetKeyboardTrigger(DIK_0) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 120;
-	}
+	}*/
 
 	// 被弾エフェクト処理を実行
 	if(m_HitEffectTime > 0) {
@@ -537,7 +541,7 @@ void CPlayer::Draw(void)
 		glDisable(GL_CULL_FACE);
 
 		glEnable(GL_DEPTH_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.1);
+		glAlphaFunc(GL_GEQUAL, 0.1f);
 		glEnable(GL_ALPHA_TEST);
 //		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
