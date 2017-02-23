@@ -151,7 +151,7 @@ void CEffect::Draw( void )
 	//// 深度バッファ設定
 	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);
-	glAlphaFunc(GL_GEQUAL, 0.1 );
+	glAlphaFunc(GL_GEQUAL, 0.1f );
 	glEnable( GL_ALPHA_TEST );
 	glDepthMask( GL_FALSE );
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);

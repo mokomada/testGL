@@ -50,7 +50,7 @@ void CSquare::Init(VECTOR3 pos , VECTOR3 size , char* TexName, VECTOR4 color)
 	
 
 	//‘å‚«‚³‚ðŽw’è
-	m_Square.pos = VECTOR3(size.x * 0.5, size.y * 0.5, size.z *0.5 );
+	m_Square.pos = VECTOR3(size.x * 0.5f, size.y * 0.5f, size.z *0.5f );
 
 	CSquare::m_Box.width = size.x;
 	CSquare::m_Box.height = size.y;

@@ -54,7 +54,7 @@ int g_ConfettiTexture = 0;
 //	戻り値	:無し
 //	説明	:コンストラクタ。
 //=============================================================================
-CConfetti::CConfetti(int priority, OBJTYPE objtype) : CScene3DGL( priority , objtype )
+CConfetti::CConfetti(bool ifListAdd, int priority, OBJTYPE objtype) : CScene3DGL( ifListAdd , priority , objtype )
 {
 
 }
@@ -169,7 +169,7 @@ void CConfetti::Update(void)
 
 			if( ( rand( ) % 100 ) == 0 )
 			{
-				m_GravityResistanceVector = rand( ) % 1000 - 500;
+				m_GravityResistanceVector = rand( ) % 1000 - 500.0f;
 				m_GravityResistanceVector *= 0.00001f;
 			}
 			m_GravityResistance.y += m_GravityResistanceVector;
