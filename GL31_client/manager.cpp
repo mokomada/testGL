@@ -45,7 +45,7 @@ void CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_RendererGL->Init(hWnd);
 
 	// 各種インスタンス生成
-	m_Mode			= new CTitle();
+	m_Mode			= new CGame();
 	m_Camera		= new CCameraGL();
 
 	// 初期化処理

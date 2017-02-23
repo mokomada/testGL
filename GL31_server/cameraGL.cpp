@@ -46,7 +46,7 @@ CCameraGL::~CCameraGL()
 //=============================================================================
 void CCameraGL::Init(void)
 {
-	m_CameraState.posV = VECTOR3(0.0f, 100.0f, 300.0f);
+	m_CameraState.posV = VECTOR3(0.0f, 10000.0f, 100.0f);
 	m_CameraState.posR = VECTOR3(0.0f, 50.0f, 0.0f);
 	m_CameraState.vecU = VECTOR3(0.0f, 1.0f, 0.0f);
 	m_CameraState.Rot = VECTOR3(0.0f, atan2f((m_CameraState.posR.x - m_CameraState.posV.x), (m_CameraState.posR.z - m_CameraState.posV.z)), 0.0f);

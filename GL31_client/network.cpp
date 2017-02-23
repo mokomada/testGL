@@ -30,8 +30,8 @@ bool		CNetwork::m_ifMatched		= false;
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrServer;
-char		CNetwork::m_ReceiveData[65535] = "NO DATA";
-char		CNetwork::m_LastMessage[65535] = "NO DATA";
+char		CNetwork::m_ReceiveData[65535] = "";
+char		CNetwork::m_LastMessage[65535] = "";
 uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 
@@ -99,16 +99,11 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.52");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
-	
-	// マッチング登録
-	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-	send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
-
 
 	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
@@ -119,9 +114,13 @@ void CNetwork::Init(void)
 			m_BulletInstance[i][j].IfUninit	= false;
 		}
 	}
-	
+
 	// 初期化終了告知
 	m_ifInitialize = true;
+	
+	// マッチング登録
+	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	//send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
 }
 
 //=============================================================================

@@ -312,6 +312,7 @@ void CNetwork::ReceiveData(void)
 {
 	// クライアント情報
 	int len = sizeof(m_RecvClient);
+	int playerNum = -1;
 
 	// データ受信
 //#pragma omp parallel for
@@ -320,44 +321,44 @@ void CNetwork::ReceiveData(void)
 		if(CheckReceivable(m_ClientSock[i]))
 		{
 			recv(m_ClientSock[i], m_ReceiveData, sizeof(m_ReceiveData), 0);
-		}
-	}
-	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
+			playerNum = i;
 
-	// データが送信されてきた場合記録
-	if(strcmp(m_ReceiveData, ""))
-	{
-		strcpy(m_LastMessage, m_ReceiveData);
-	}
-	
-	DATA_TAG dataTag = DT_MAX;
-
-	sscanf(m_ReceiveData, "TAG:%d, ", &dataTag);
-	RemoveDataTag(m_ReceiveData);
-
-	switch(dataTag)
-	{
-	case 0:	// システムメッセージ
-		// ゲームエントリー確認
-		if(!strcmp(m_ReceiveData, "entry"))
-		{
-			if(m_PlayerNum < PLAYER_NUM)
+			// データが送信されてきた場合記録
+			if(strcmp(m_ReceiveData, ""))
 			{
-				Matching();
+				strcpy(m_LastMessage, m_ReceiveData);
+			}
+
+			DATA_TAG dataTag = DT_MAX;
+
+			sscanf(m_ReceiveData, "TAG:%d, ", &dataTag);
+			RemoveDataTag(m_ReceiveData);
+
+			switch(dataTag)
+			{
+			case 0:	// システムメッセージ
+				// ゲームエントリー確認
+				if(!strcmp(m_ReceiveData, "entry"))
+				{
+					if(m_PlayerNum < PLAYER_NUM)
+					{
+						Matching(playerNum);
+					}
+				}
+				break;
+
+			case 1:	// プレイヤーデータ
+				SetPlayerData();
+				break;
+
+			case 2:	// プレイヤーデータ
+				CreateBullet();
+				break;
+
+			default:
+				break;
 			}
 		}
-		break;
-
-	case 1:	// プレイヤーデータ
-		SetPlayerData();
-		break;
-
-	case 2:	// プレイヤーデータ
-		CreateBullet();
-		break;
-
-	default:
-		break;
 	}
 }
 
@@ -386,46 +387,19 @@ int CNetwork::CheckReceivable(int fd)
 //	戻り値	:無し
 //	説明	:マッチング処理を行う。
 //=============================================================================
-void CNetwork::Matching(void)
+void CNetwork::Matching(int playerNum)
 {
-	// 同じ接続先の場合カウントしない
-	int i = 0;
-	for(i = 0 ; i < PLAYER_NUM ; i++)
-	{
-		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
-		{
-			break;
-		}
-	}
-
-
 	char buff[1024] ={ NULL };
 
-	if(i <= 3)
-	{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
+	
+	// 現在のプレイヤー番号をセット
+	sprintf(buff, "%d", m_PlayerNum);
 
-		// 重複しているプレイヤー番号をセット
-		sprintf(buff, "0, %d", i);
+	// プレイヤー番号を送信
+	send(m_ClientSock[playerNum], buff, strlen(buff) + 1, 0);
 
-		// プレイヤー番号を送信
-		sendto(m_SockSend, buff, strlen(buff), 0, (sockaddr*)&m_AddrClient[i], sizeof(m_AddrClient));
-	}
-	else
-	{// そうでない場合、現在のプレイヤー番号を返信する
-
-		// クライアント情報の登録
-		m_AddrClient[m_PlayerNum]			= m_RecvClient;
-		m_AddrClient[m_PlayerNum].sin_port	= htons(20010);
-
-		// 現在のプレイヤー番号をセット
-		sprintf(buff, "%d", m_PlayerNum);
-
-		// プレイヤー番号を送信
-		sendto(m_SockSend, buff, strlen(buff), 0, (sockaddr*)&m_AddrClient[m_PlayerNum], sizeof(m_AddrClient));
-
-		// プレイヤー数を増やす
-		m_PlayerNum++;
-	}
+	// プレイヤー数を増やす
+	m_PlayerNum++;
 }
 
 //=============================================================================

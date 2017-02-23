@@ -68,7 +68,7 @@ public:
 	static BULLETDATA m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
 
 private:
-	static void Matching(void);
+	static void Matching(int playerNum);
 	static void	SetPlayerData(void);
 	static void	CreateBullet(void);
 	static void	DeleteBullet(void);
