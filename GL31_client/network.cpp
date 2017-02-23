@@ -285,7 +285,8 @@ void CNetwork::SetPlayerData(void)
 		if(i != CManager::GetWhatPlayer())
 		{
 			player[i]->SetPos(pos[i]);
-			player[i]->SetRot(rot[i]);
+			//player[i]->SetRot(rot[i]);
+			player[i]->SetRotMove(rot[i]);
 			//player[i]->SetVec(vec[i]);
 		}
 	}

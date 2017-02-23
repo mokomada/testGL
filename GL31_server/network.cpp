@@ -354,6 +354,11 @@ void CNetwork::ReceiveData(void)
 				CreateBullet();
 				break;
 
+
+			case 10:	// プレイヤーがダメージを負った
+
+				break;
+
 			default:
 				break;
 			}
@@ -424,7 +429,8 @@ void CNetwork::SetPlayerData(void)
 	{
 		// 取得したデータをセット
 		player[num]->SetPos(pos);
-		player[num]->SetRot(rot);
+		//player[i]->SetRot(rot[i]);
+		player[num]->SetRotMove(rot);
 		//player[i]->SetVec(vec);
 	}
 }

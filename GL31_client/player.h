@@ -67,6 +67,8 @@ public:
 	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	int GetPlayerLife(void);
+	void HitBullet(void);
+	void SetRotMove(VECTOR3 rot) { m_MoveDirection = rot; }
 
 private:
 	uint	m_PlayerNumber;	// ƒvƒŒƒCƒ„[”Ô†

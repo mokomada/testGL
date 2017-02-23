@@ -332,6 +332,9 @@ void CPlayer::Update(void)
 					CEffect2D::Create(m_Pos,VECTOR2(100.0f,100.0f),ETYPE_EXPLODE01);
 					CBullet *bullet = ( CBullet* )list;
 					bullet->SetLife( 0 );
+
+					// ダメージ判定
+					CNetwork::SendData("TAG:10, %d", m_PlayerNumber);
 				}
 //				Release();
 //				return;

@@ -425,7 +425,7 @@ void CPlayer::Update(void)
 	//CCollision::GetInstance()->SphereToBoard(m_Pos, m_Radius, VECTOR3(-200.0f, 100.0f, 500.0f), VECTOR3(200.0f, 100.0f, 500.0f), VECTOR3(-200.0f, 0.0f, 0.0f), VECTOR3(200.0f, 0.0f, 0.0f));
 
 	//CCollision::GetInstance()->PlayerToPlayer(m_Pos, m_Radius, VECTOR3(0.0f, 0.0f, 500.0f), 50.0f);
-
+	/*
 	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
@@ -445,7 +445,7 @@ void CPlayer::Update(void)
 				//				return;
 			}
 		}
-	}
+	}*/
 
 	// プレイヤーの高さを設定
 
@@ -492,7 +492,7 @@ void CPlayer::Update(void)
 	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
 		static char str[1024] = { NULL };
-		if(CGame::GetFrame() % 10 == 0)
+		if(CGame::GetFrame() % 1 == 0)
 		{
 			memset(str, NULL, sizeof(str));
 
@@ -514,6 +514,19 @@ void CPlayer::Update(void)
 	}
 
 	Model->Update();
+}
+
+void CPlayer::HitBullet(void)
+{
+	int life = m_pLife->GetLife();
+
+	if(m_HitEffectTime <= 0) {
+		m_pLife->HitDamage();
+		if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+											// 球ヒットエフェクト生成
+		CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
+	}
 }
 
 //=============================================================================
