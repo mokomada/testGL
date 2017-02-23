@@ -19,7 +19,7 @@
 #include "scene3DGL.h"
 #include "square.h"
 
-#define SIZE_MAX (50.0f)
+#define SQ_SIZE_MAX (50.0f)
 
 
 /********************************************
@@ -110,17 +110,17 @@ void CSquare::Draw(void)
 	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.z / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.z / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, m_Square.pos.z / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, m_Square.pos.z / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
@@ -137,17 +137,17 @@ void CSquare::Draw(void)
 	glVertex3f( -m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
@@ -163,18 +163,18 @@ void CSquare::Draw(void)
 	
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.z / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.z / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f(-m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 	
 
 	glNormal3f(0.0f, 1.0f, 0.01f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, m_Square.pos.z / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, m_Square.pos.z / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 	
@@ -189,17 +189,17 @@ void CSquare::Draw(void)
 	glVertex3f( -m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 	
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f(-m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.x / SIZE_MAX, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.x / SQ_SIZE_MAX, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
@@ -214,17 +214,17 @@ void CSquare::Draw(void)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.z / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.z / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.z / SIZE_MAX, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.z / SQ_SIZE_MAX, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 
@@ -239,17 +239,17 @@ void CSquare::Draw(void)
 	glVertex3f( -m_Square.pos.x , m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.z / SIZE_MAX, 0.0f);
+	glTexCoord2d(m_Square.pos.z / SQ_SIZE_MAX, 0.0f);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( -m_Square.pos.x , m_Square.pos.y , m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(0.0f, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(0.0f, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , -m_Square.pos.z );
 
 	glNormal3f(0.0f, 1.0f, 0.0f);
-	glTexCoord2d(m_Square.pos.z / SIZE_MAX, m_Square.pos.y / SIZE_MAX);
+	glTexCoord2d(m_Square.pos.z / SQ_SIZE_MAX, m_Square.pos.y / SQ_SIZE_MAX);
 	glColor4f( m_Color.x, m_Color.y, m_Color.z, m_Color.w );	//色(RGBA)
 	glVertex3f( -m_Square.pos.x , -m_Square.pos.y , m_Square.pos.z );
 

@@ -68,7 +68,7 @@ void CTitle::Init(void)
 				int texnumber = rand( ) % TITLE_BALLOON_COLOR;
 
 				m_Balloon = CScene2DGLAnimation::Create(VECTOR3( ( nCntBalloon * 100.0f ) + ( nCntDepth * SCREEN_WIDTH * 0.2f ), ( SCREEN_HEIGHT * 2.0f) + nCntLen * ( SCREEN_HEIGHT * 0.1f ), 0.0f),
-				VECTOR2((SCREEN_WIDTH * 0.2f), (SCREEN_HEIGHT * 0.2)) , 1 , 1 , 1 , 1, 
+				VECTOR2((SCREEN_WIDTH * 0.2f), (SCREEN_HEIGHT * 0.2f)) , 1 , 1 , 1 , 1, 
 				".\\data\\TEXTURE\\balloon002.png" , m_BalloonTexture[ texnumber ] );
 
 				m_Balloon -> SetStartAnimation( false );
