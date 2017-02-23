@@ -236,7 +236,7 @@ void CNetwork::ReceiveData(void)
 		if(!m_ifMatched)
 		{
 			int whatplayer = -1;
-			sscanf(m_ReceiveData, "%d", &whatplayer);
+			sscanf(m_ReceiveData, "TAG:%d", &whatplayer);
 			if(whatplayer >= 0)
 			{
 				CManager::SetWhatPlayer(whatplayer);

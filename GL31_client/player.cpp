@@ -291,24 +291,28 @@ void CPlayer::Update(void)
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
 				if ( m_Gauge > 100 )
-				{/*
+				{
+					int bulletNum = 0;
+
 					// 取得したデータをセット
 					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
 					{
-						if(CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use == false)
+						if(CNetwork::m_BulletInstance[m_PlayerNumber][j].Use == false)
 						{
-							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Instance = CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
-							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = true;
+							CNetwork::m_BulletInstance[m_PlayerNumber][j].Instance
+								= CBullet::Create(m_PlayerNumber, j, m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+							CNetwork::m_BulletInstance[m_PlayerNumber][j].Use = true;
+							bulletNum = j;
 							break;
 						}
 					}
 
 					char str[1024] ={ NULL };
-					sprintf(str, "2, %f, %f, %f, %f, %f, %f, %f",
-						m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
-					CNetwork::SendData(str);*/
+					sprintf(str, "TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
+						m_PlayerNumber, bulletNum, m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+					CNetwork::SendData(str);
 
-					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					//CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);
 				}
 			}
@@ -481,15 +485,17 @@ void CPlayer::Update(void)
 	// 自プレイヤーの場合、位置を送信
 	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
+		static char str[1024] = { NULL };
 		if(CGame::GetFrame() % 10 == 0)
 		{
-			char str[1024] ={ NULL };
+			memset(str, NULL, sizeof(str));
 
-			sprintf(str, "1, %d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
+			sprintf(str, "TAG:1, %d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
 				CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 			CNetwork::SendData(str);
 		}
+		CDebugProcGL::DebugProc("%s\n", str);
 	}
 
 	//風船更新
@@ -554,7 +560,7 @@ void CPlayer::Draw(void)
 	//風船描画
 	m_pLife->Draw();
 
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================

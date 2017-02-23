@@ -220,10 +220,10 @@ void CNetwork::Update(void)
 			vec[i] = CGame::GetPlayer()[i]->GetVec();
 		}
 
-		SendData("1, POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
-			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
-			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
-			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f)",
+		SendData("TAG:1, POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f)",
 
 			pos[0].x, pos[0].y, pos[0].z,
 			rot[0].x, rot[0].y, rot[0].z,
@@ -332,7 +332,7 @@ void CNetwork::ReceiveData(void)
 	
 	DATA_TAG dataTag = DT_MAX;
 
-	sscanf(m_ReceiveData, "%d, ", &dataTag);
+	sscanf(m_ReceiveData, "TAG:%d, ", &dataTag);
 	RemoveDataTag(m_ReceiveData);
 
 	switch(dataTag)
@@ -353,7 +353,7 @@ void CNetwork::ReceiveData(void)
 		break;
 
 	case 2:	// プレイヤーデータ
-		//CreateBullet();
+		CreateBullet();
 		break;
 
 	default:
@@ -468,27 +468,15 @@ void CNetwork::CreateBullet(void)
 	VECTOR3				pos		= VEC3_ZERO;
 	VECTOR3				rot		= VEC3_ZERO;
 	float				speed	= 0.0f;
+	int playerNum = 0, bulletNum = 0;
 
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f, %d",
+		&playerNum, &bulletNum, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &speed);
 
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
-	{
-		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
-		{
-			// 受信データからデータを取得
-			sscanf(m_ReceiveData, "%f, %f, %f, %f, %f, %f, %f",
-				&pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &speed);
-
-			// 取得したデータをセット
-			for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
-			{
-				if(m_BulletInstance[i][j].Use = false)
-				{
-					m_BulletInstance[i][j].Instance = CBullet::Create(pos, rot, speed, i);
-					m_BulletInstance[i][j].Use = true;
-				}
-			}
-		}
-	}
+	// 取得したデータをセット
+	m_BulletInstance[playerNum][bulletNum].Instance = CBullet::Create(playerNum, bulletNum, pos, rot, speed, playerNum);
+	m_BulletInstance[playerNum][bulletNum].Use = true;
 }
 
 //=============================================================================
