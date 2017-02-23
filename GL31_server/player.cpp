@@ -445,11 +445,12 @@ void CPlayer::Update(void)
 
 
 	// 自プレイヤーの場合、位置を送信
-	if (m_PlayerNumber == CManager::GetWhatPlayer())
+	//if(m_PlayerNumber == CManager::GetWhatPlayer())
+	if(0)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+		sprintf(str, "1, %d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
 			CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
