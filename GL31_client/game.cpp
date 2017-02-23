@@ -66,10 +66,10 @@ void CGame::Init(void)
 
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/rock.png");
 
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, 2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, -2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	CSquare::Create(VECTOR3(1100.0f, 50.0f, 1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 	CSquare::Create(VECTOR3(-1100.0f, 50.0f, 1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -98,7 +98,7 @@ void CGame::Init(void)
 //	CConfetti::MasterCreate( );
 
 	// 2D
-	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	//CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 	CBulletGauge::Create( );
 	//CTrickGauge::Create( );
 
