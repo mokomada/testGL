@@ -36,6 +36,8 @@ private://自分しか使えない
 	float m_GaugeMax[GAUGENUMBER];
 	//はば
 	float m_GaugeWidth[GAUGENUMBER];
+	//カラー
+	VECTOR4 m_color[GAUGENUMBER];
 	//現在のゲージ
 	float m_Gauge;
 };

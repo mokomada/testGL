@@ -286,7 +286,23 @@ void CPlayer::Update(void)
 			if (CInput::GetKeyboardTrigger(DIK_L))
 			{
 				if ( m_Gauge > 100 )
-				{
+				{/*
+					// 取得したデータをセット
+					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+					{
+						if(CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use == false)
+						{
+							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Instance = CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+							CNetwork::m_BulletInstance[CManager::GetWhatPlayer()][j].Use = true;
+							break;
+						}
+					}
+
+					char str[1024] ={ NULL };
+					sprintf(str, "2, %f, %f, %f, %f, %f, %f, %f",
+						m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+					CNetwork::SendData(str);*/
+
 					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);
 				}
@@ -400,7 +416,7 @@ void CPlayer::Update(void)
 														 // 球ヒットエフェクト生成
 					CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
 					CBullet *bullet = (CBullet*)list;
-					bullet->SetLife(0);
+					bullet->SetLife(-100);
 				}
 				//				Release();
 				//				return;
@@ -413,6 +429,7 @@ void CPlayer::Update(void)
 	if (m_Pos.y < 25.0f)
 	{
 		m_Pos.y = 25.0f;
+		m_Move.y = 0;
 		m_RotMove.x = 0;
 		m_RotMove.y = 0;
 		m_RotMove.z = 0;
@@ -452,8 +469,8 @@ void CPlayer::Update(void)
 	{
 		char str[1024] = { NULL };
 
-		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+		sprintf(str, "1, %d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+			CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
 		CNetwork::SendData(str);
 	}
@@ -497,7 +514,7 @@ void CPlayer::Draw(void)
 		glEnable(GL_DEPTH_TEST);
 		glAlphaFunc(GL_GEQUAL, 0.1);
 		glEnable(GL_ALPHA_TEST);
-		glDepthMask(GL_FALSE);
+//		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL_BLEND);
 		Scene3D[0]->Draw();
@@ -508,7 +525,7 @@ void CPlayer::Draw(void)
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glDepthMask(TRUE);
+//		glDepthMask(TRUE);
 		glDepthMask(GL_TRUE);
 
 		glEnable(GL_CULL_FACE);

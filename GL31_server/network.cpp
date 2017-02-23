@@ -28,7 +28,8 @@
 CONNECT_PROTOCOL CNetwork::m_ConnectProtocol = { "127.0.0.1", "239.0.0.1", 20000, 20000 };
 
 int			CNetwork::m_PlayerNum = 0;
-CLIENT		CNetwork::m_Client[PLAYER_NUM];
+//CLIENT		CNetwork::m_Client[PLAYER_NUM];
+SOCKET		CNetwork::m_ClientSock[PLAYER_NUM];
 SOCKET		CNetwork::m_SockSend;
 SOCKET		CNetwork::m_SockRecv;
 sockaddr_in	CNetwork::m_AddrClient[4];
@@ -42,7 +43,7 @@ HANDLE		CNetwork::m_hTh;
 bool		CNetwork::m_ifInitialize = false;
 int			CNetwork::m_ifBindSuccess = -1;
 
-list<CBullet*>	CNetwork::m_BulletInstance[PLAYER_NUM];
+BULLETDATA	CNetwork::m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
 
 //=============================================================================
 //	関数名	:Init
@@ -108,11 +109,21 @@ void CNetwork::Init(void)
 	// 同時接続クライアント数設定
 	listen(m_SockRecv, 5);
 
-	// 初期化終了告知
-	m_ifInitialize = true;
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+		{
+			m_BulletInstance[i][j].Instance	= NULL;
+			m_BulletInstance[i][j].Use		= false;
+			m_BulletInstance[i][j].IfUninit	= false;
+		}
+	}
 
 	// †スレッド起動†
 	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
+
+	// 初期化終了告知
+	m_ifInitialize = true;
 }
 
 //=============================================================================
@@ -129,11 +140,12 @@ uint __stdcall CNetwork::MatchThread(void* p)
 	while(m_PlayerNum < PLAYER_NUM)
 	{
 		len = sizeof(m_AddrClient[m_PlayerNum]);
-		m_Client[m_PlayerNum].Sock = accept(m_SockRecv, (sockaddr*)&addr, &len);
+
+		m_ClientSock[m_PlayerNum] = accept(m_SockRecv, (sockaddr*)&addr, &len);
 
 		// 同じ接続先の場合カウントしない
 		int i = 0;
-		for(i = 0 ; i < 4 ; i++)
+		for(i = 0 ; i < m_PlayerNum ; i++)
 		{
 			if(m_AddrClient[i].sin_addr.s_addr == addr.sin_addr.s_addr)
 			{
@@ -143,14 +155,14 @@ uint __stdcall CNetwork::MatchThread(void* p)
 
 		char buff[1024] ={ NULL };
 
-		if(i <= 3)
+		if(i < m_PlayerNum)
 		{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
 
 			// 重複しているプレイヤー番号をセット
 			sprintf(buff, "0, %d", i);
 
 			// プレイヤー番号を送信
-			send(m_Client[i].Sock, buff, strlen(buff), 0);
+			send(m_ClientSock[i], buff, strlen(buff), 0);
 		}
 		else
 		{// そうでない場合、現在のプレイヤー番号を返信する
@@ -162,7 +174,7 @@ uint __stdcall CNetwork::MatchThread(void* p)
 			sprintf(buff, "0, %d", m_PlayerNum);
 
 			// プレイヤー番号のセット
-			send(m_Client[m_PlayerNum].Sock, buff, strlen(buff), 0);
+			send(m_ClientSock[m_PlayerNum], buff, strlen(buff), 0);
 
 			m_PlayerNum++;
 		}
@@ -195,18 +207,19 @@ void CNetwork::Uninit(void)
 //=============================================================================
 void CNetwork::Update(void)
 {
-	VECTOR3 pos[PLAYER_NUM] ={ VEC3_ZERO };
-	VECTOR3 rot[PLAYER_NUM] ={ VEC3_ZERO };
-	VECTOR3 vec[PLAYER_NUM] ={ VEC3_ZERO };
-	for(int i = 0 ; i < m_PlayerNum ; i++)
-	{
-		pos[i] = CGame::GetPlayer()[i]->GetPos();
-		rot[i] = CGame::GetPlayer()[i]->GetRot();
-		vec[i] = CGame::GetPlayer()[i]->GetVec();
-	}
+	VECTOR3 pos[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO};
+	VECTOR3 rot[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO };
+	VECTOR3 vec[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO };
 
 	if(CManager::GetModeState() == MODE_GAME)
 	{
+		for(int i = 0 ; i < m_PlayerNum ; i++)
+		{
+			pos[i] = CGame::GetPlayer()[i]->GetPos();
+			rot[i] = CGame::GetPlayer()[i]->GetRot();
+			vec[i] = CGame::GetPlayer()[i]->GetVec();
+		}
+
 		SendData("1, POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
 			"POS(%.1f,%.1f,%.1f), ROT(%.1f,%.1f,%.1f), VEC(%.1f,%.1f,%.1f), "
@@ -244,6 +257,29 @@ void CNetwork::Draw(void)
 }
 
 //=============================================================================
+//	関数名	:SendData
+//	引数	:char *format	->	送信データ
+//	戻り値	:無し
+//	説明	:データの送信を行う。
+//=============================================================================
+void CNetwork::SendData(char* format, ...)
+{
+	va_list list;
+	char str[65535];
+
+	// フォーマット変換
+	va_start(list, format);
+	vsprintf_s(str, format, list);
+	va_end(list);
+
+	// データ送信
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		send(m_ClientSock[m_PlayerNum], str, strlen(str) + 1, 0);
+	}
+}
+
+//=============================================================================
 //	関数名	:ReceiveThread
 //	引数	:void* p
 //	戻り値	:無し
@@ -267,29 +303,6 @@ uint __stdcall CNetwork::ReceiveThread(void* p)
 }
 
 //=============================================================================
-//	関数名	:SendData
-//	引数	:char *format	->	送信データ
-//	戻り値	:無し
-//	説明	:データの送信を行う。
-//=============================================================================
-void CNetwork::SendData(char* format, ...)
-{
-	va_list list;
-	char str[65535];
-
-	// フォーマット変換
-	va_start(list, format);
-	vsprintf_s(str, format, list);
-	va_end(list);
-
-	// データ送信
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
-	{
-		send(m_Client[m_PlayerNum].Sock, str, strlen(str) + 1, 0);
-	}
-}
-
-//=============================================================================
 //	関数名	:ReceiveData
 //	引数	:char *str	->	送信データ
 //	戻り値	:無し
@@ -304,9 +317,9 @@ void CNetwork::ReceiveData(void)
 //#pragma omp parallel for
 	for(int i = 0 ; i < m_PlayerNum ; i++)
 	{
-		if(CheckReceivable(m_Client[i].Sock))
+		if(CheckReceivable(m_ClientSock[i]))
 		{
-			recv(m_Client[i].Sock, m_ReceiveData, sizeof(m_ReceiveData), 0);
+			recv(m_ClientSock[i], m_ReceiveData, sizeof(m_ReceiveData), 0);
 		}
 	}
 	//recvfrom(m_SockRecv, m_ReceiveData, sizeof(m_ReceiveData), 0, (sockaddr*)&m_RecvClient, &len);
@@ -337,6 +350,10 @@ void CNetwork::ReceiveData(void)
 
 	case 1:	// プレイヤーデータ
 		SetPlayerData();
+		break;
+
+	case 2:	// プレイヤーデータ
+		//CreateBullet();
 		break;
 
 	default:
@@ -449,6 +466,7 @@ void CNetwork::CreateBullet(void)
 {
 	vector<CPlayer*>	player	= CGame::GetPlayer();
 	VECTOR3				pos		= VEC3_ZERO;
+	VECTOR3				rot		= VEC3_ZERO;
 	float				speed	= 0.0f;
 
 
@@ -457,11 +475,18 @@ void CNetwork::CreateBullet(void)
 		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
 		{
 			// 受信データからデータを取得
-			sscanf(m_ReceiveData, "%f, %f, %f, %f, %f, %f, %f, %f, %f",
-				&pos.x, &pos.y, &pos.z, &speed);
+			sscanf(m_ReceiveData, "%f, %f, %f, %f, %f, %f, %f",
+				&pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &speed);
 
 			// 取得したデータをセット
-			m_BulletInstance[i].push_back(CBullet::Create(pos, VEC3_ZERO, speed, 0));
+			for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+			{
+				if(m_BulletInstance[i][j].Use = false)
+				{
+					m_BulletInstance[i][j].Instance = CBullet::Create(pos, rot, speed, i);
+					m_BulletInstance[i][j].Use = true;
+				}
+			}
 		}
 	}
 }
@@ -474,13 +499,7 @@ void CNetwork::CreateBullet(void)
 //=============================================================================
 void CNetwork::DeleteBullet(void)
 {
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
-	{
-		if(m_AddrClient[i].sin_addr.s_addr == m_RecvClient.sin_addr.s_addr)
-		{
-			if(m_BulletInstance[i].size()) m_BulletInstance[i].pop_front();
-		}
-	}
+
 }
 
 //=============================================================================
