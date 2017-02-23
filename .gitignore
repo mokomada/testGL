@@ -9,7 +9,6 @@
 *.o
 *.db
 *.opendb
-*.opensdf
 
 # Precompiled Headers
 *.gch
@@ -40,5 +39,3 @@
 
 # Release Files
 */Release/*
-
-ipch/

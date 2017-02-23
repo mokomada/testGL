@@ -55,7 +55,7 @@ VECTOR3 g_PosOld = VECTOR3(0.0f,0.0f,0.0f);// 実装され次第消去
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
+void CPlayer::Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
@@ -63,11 +63,11 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	m_PlayerNumber = whatPlayer;
 
 	// 各種初期化
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	SetPos(pos);
+	SetRot(rot);
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
 	m_RotMove		= VECTOR3(0.0f, 0.0f, 0.0f);
-	m_MoveDirection = VECTOR3(0.0f, 0.0f, 0.0f);
+	m_MoveDirection = rot;
 	m_bJump			= false;
 	m_Scale			= VECTOR3(1.0f, 1.0f, 1.0f);
 
@@ -419,6 +419,8 @@ void CPlayer::Update(void)
 		}
 	}
 
+	//CCollision::GetInstance()->SphereToBoard(m_Pos, m_Radius, VECTOR3(-200.0f, 100.0f, 500.0f), VECTOR3(200.0f, 100.0f, 500.0f), VECTOR3(-200.0f, 0.0f, 0.0f), VECTOR3(200.0f, 0.0f, 0.0f));
+
 	//CCollision::GetInstance()->PlayerToPlayer(m_Pos, m_Radius, VECTOR3(0.0f, 0.0f, 500.0f), 50.0f);
 
 	if (m_PlayerNumber != CManager::GetWhatPlayer())
@@ -569,13 +571,13 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
+CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CPlayer *player;
 
 	player = new CPlayer;
 
-	player->Init(whatPlayer, pos);
+	player->Init(whatPlayer, pos, rot);
 
 	return player;
 }
