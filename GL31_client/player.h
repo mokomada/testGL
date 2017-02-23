@@ -54,7 +54,7 @@ public:
 	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_PLAYER);
 	~CPlayer();
 
-	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3 rot = VECTOR3(0.0f, 0.0f, 0.0f));
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
