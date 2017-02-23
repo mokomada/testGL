@@ -444,7 +444,7 @@ void CNetwork::SetPlayerData(void)
 
 
 	// 受信データからデータを取得
-	sscanf(m_ReceiveData, "%d, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+	sscanf(m_ReceiveData, "%d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
 		&num, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &vec.x, &vec.y, &vec.z);
 
 	if(num < m_PlayerNum)
