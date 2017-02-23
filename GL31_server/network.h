@@ -15,7 +15,7 @@
 //	マクロ定義
 //=============================================================================
 const int PLAYER_NUM		= 4;
-const int BULLET_NUM_MAX	= 100;
+const int BULLET_NUM_MAX	= 20;
 
 //=============================================================================
 //	構造体
@@ -40,6 +40,12 @@ typedef struct {
 	sockaddr_in	Addr;	// アドレス情報
 } CLIENT;				// クライアント情報
 
+typedef struct {
+	CBullet*	Instance;
+	bool		IfUninit;
+	bool		Use;
+}BULLETDATA;
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -59,6 +65,8 @@ public:
 
 	static bool	m_ifInitialize;	// Init()が終了したかどうか
 
+	static BULLETDATA m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+
 private:
 	static void Matching(void);
 	static void	SetPlayerData(void);
@@ -71,7 +79,8 @@ private:
 	static int			m_PlayerNum;	// プレイヤー数
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
-	static CLIENT		m_Client[PLAYER_NUM];		// クライアント情報
+	//static CLIENT		m_ClientSock[PLAYER_NUM];		// クライアント情報
+	static SOCKET		m_ClientSock[PLAYER_NUM];		// クライアント情報
 	static SOCKET		m_SockSend;					// UDPソケット
 	static SOCKET		m_SockRecv;					// UDPソケット
 	static sockaddr_in	m_AddrClient[PLAYER_NUM];	// 送信アドレス情報
@@ -85,8 +94,6 @@ private:
 	static HANDLE		m_hTh;	// スレッドハンドル1
 
 	static int m_ifBindSuccess;
-
-	static list<CBullet*> m_BulletInstance[PLAYER_NUM];
 };
 
 #endif
