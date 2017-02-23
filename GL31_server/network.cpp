@@ -159,7 +159,7 @@ uint __stdcall CNetwork::MatchThread(void* p)
 		{// 一度接続されたクライアントの場合、そのプレイヤー番号を返信する
 
 			// 重複しているプレイヤー番号をセット
-			sprintf(buff, "0, %d", i);
+			sprintf(buff, "TAG:0, %d", i);
 
 			// プレイヤー番号を送信
 			send(m_ClientSock[i], buff, strlen(buff), 0);
@@ -171,7 +171,7 @@ uint __stdcall CNetwork::MatchThread(void* p)
 			m_AddrClient[m_PlayerNum] = addr;
 
 			// 現在のプレイヤー番号をセット
-			sprintf(buff, "0, %d", m_PlayerNum);
+			sprintf(buff, "TAG:0, %d", m_PlayerNum);
 
 			// プレイヤー番号のセット
 			send(m_ClientSock[m_PlayerNum], buff, strlen(buff), 0);

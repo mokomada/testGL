@@ -99,8 +99,8 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	//m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
-	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
+	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
@@ -224,7 +224,7 @@ void CNetwork::ReceiveData(void)
 	
 	DATA_TAG dataTag = DT_MAX;
 
-	sscanf(m_ReceiveData, "%d, ", &dataTag);
+	sscanf(m_ReceiveData, "TAG:%d, ", &dataTag);
 	RemoveDataTag(m_ReceiveData);
 
 	int whatPlayer = -1;
@@ -235,7 +235,7 @@ void CNetwork::ReceiveData(void)
 		if(!m_ifMatched)
 		{
 			int whatplayer = -1;
-			sscanf(m_ReceiveData, "TAG:%d", &whatplayer);
+			sscanf(m_ReceiveData, "%d", &whatplayer);
 			if(whatplayer >= 0)
 			{
 				CManager::SetWhatPlayer(whatplayer);
