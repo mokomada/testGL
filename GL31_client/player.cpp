@@ -501,7 +501,7 @@ void CPlayer::Update(void)
 
 			CNetwork::SendData(str);
 		}
-		CDebugProcGL::DebugProc("%s\n", str);
+		//CDebugProcGL::DebugProc("%s\n", str);
 	}
 
 	//風船更新

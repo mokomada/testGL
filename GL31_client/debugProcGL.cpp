@@ -194,7 +194,7 @@ void CDebugProcGL::Draw(void)
 void CDebugProcGL::DebugProc(char* format, ...)
 {
 	va_list list;
-	char str[256];
+	char str[65535];
 
 	va_start(list, format);
 

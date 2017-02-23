@@ -210,37 +210,36 @@ void CNetwork::Update(void)
 	VECTOR3 pos[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO};
 	VECTOR3 rot[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO };
 	VECTOR3 vec[PLAYER_NUM] = { VEC3_ZERO, VEC3_ZERO, VEC3_ZERO, VEC3_ZERO };
+	int mode = CManager::GetModeState();
 
-	if(CManager::GetModeState() == MODE_GAME)
+
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
-		for(int i = 0 ; i < m_PlayerNum ; i++)
-		{
-			pos[i] = CGame::GetPlayer()[i]->GetPos();
-			rot[i] = CGame::GetPlayer()[i]->GetRot();
-			vec[i] = CGame::GetPlayer()[i]->GetVec();
-		}
-
-		SendData("TAG:1, POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
-			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
-			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
-			"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f)",
-
-			pos[0].x, pos[0].y, pos[0].z,
-			rot[0].x, rot[0].y, rot[0].z,
-			vec[0].x, vec[0].y, vec[0].z,
-
-			pos[1].x, pos[1].y, pos[1].z,
-			rot[1].x, rot[1].y, rot[1].z,
-			vec[1].x, vec[1].y, vec[1].z,
-
-			pos[2].x, pos[2].y, pos[2].z,
-			rot[2].x, rot[2].y, rot[2].z,
-			vec[2].x, vec[2].y, vec[2].z,
-
-			pos[3].x, pos[3].y, pos[3].z,
-			rot[3].x, rot[3].y, rot[3].z,
-			vec[3].x, vec[3].y, vec[3].z);
+		pos[i] = CGame::GetPlayer()[i]->GetPos();
+		rot[i] = CGame::GetPlayer()[i]->GetRot();
+		vec[i] = CGame::GetPlayer()[i]->GetVec();
 	}
+
+	SendData("TAG:1, POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+		"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+		"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f), "
+		"POS(%f,%f,%f), ROT(%f,%f,%f), VEC(%f,%f,%f)",
+
+		pos[0].x, pos[0].y, pos[0].z,
+		rot[0].x, rot[0].y, rot[0].z,
+		vec[0].x, vec[0].y, vec[0].z,
+
+		pos[1].x, pos[1].y, pos[1].z,
+		rot[1].x, rot[1].y, rot[1].z,
+		vec[1].x, vec[1].y, vec[1].z,
+
+		pos[2].x, pos[2].y, pos[2].z,
+		rot[2].x, rot[2].y, rot[2].z,
+		vec[2].x, vec[2].y, vec[2].z,
+
+		pos[3].x, pos[3].y, pos[3].z,
+		rot[3].x, rot[3].y, rot[3].z,
+		vec[3].x, vec[3].y, vec[3].z);
 }
 
 //=============================================================================
@@ -275,7 +274,7 @@ void CNetwork::SendData(char* format, ...)
 	// データ送信
 	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
-		send(m_ClientSock[m_PlayerNum], str, strlen(str) + 1, 0);
+		send(m_ClientSock[i], str, strlen(str) + 1, 0);
 	}
 }
 

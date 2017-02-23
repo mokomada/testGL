@@ -99,8 +99,8 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
@@ -158,7 +158,7 @@ void CNetwork::Update(void)
 void CNetwork::Draw(void)
 {
 #ifdef _DEBUG
-	CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
+	//CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
 #endif
 }
 
@@ -199,6 +199,8 @@ void CNetwork::SendData(char* format, ...)
 	// データ送信
 	send(m_SockSend, str, strlen(str) + 1, 0);
 	//sendto(m_SockSend, str, strlen(str) + 1, 0, (SOCKADDR*)&m_AddrServer, sizeof(m_AddrServer));
+
+	memset(str, NULL, sizeof(str));
 }
 
 //=============================================================================
