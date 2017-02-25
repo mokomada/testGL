@@ -44,6 +44,7 @@ bool		CNetwork::m_ifInitialize = false;
 int			CNetwork::m_ifBindSuccess = -1;
 
 BULLETDATA	CNetwork::m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+vector<int> CNetwork::m_Ranking;
 
 //=============================================================================
 //	関数名	:Init
@@ -109,21 +110,34 @@ void CNetwork::Init(void)
 	// 同時接続クライアント数設定
 	listen(m_SockRecv, 5);
 
-	for(int i = 0 ; i < PLAYER_NUM ; i++)
-	{
-		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
-		{
-			m_BulletInstance[i][j].Instance	= NULL;
-			m_BulletInstance[i][j].Use		= false;
-			m_BulletInstance[i][j].IfUninit	= false;
-		}
-	}
+	Clear();
 
 	// †スレッド起動†
 	m_hThMatch = (HANDLE)_beginthreadex(NULL, 0, MatchThread, NULL, 0, &m_thIDMatch);
 
 	// 初期化終了告知
 	m_ifInitialize = true;
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:初期化処理を行う。
+//=============================================================================
+void CNetwork::Clear(void)
+{
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+		{
+			m_BulletInstance[i][j].Instance	= NULL;
+			m_BulletInstance[i][j].Use		= false;
+			m_BulletInstance[i][j].IfUninit	= true;
+		}
+	}
+
+	m_Ranking.clear();
 }
 
 //=============================================================================
@@ -240,6 +254,9 @@ void CNetwork::Update(void)
 		pos[3].x, pos[3].y, pos[3].z,
 		rot[3].x, rot[3].y, rot[3].z,
 		vec[3].x, vec[3].y, vec[3].z);
+
+	DeleteBullet();
+	GameEnd();
 }
 
 //=============================================================================
@@ -251,7 +268,7 @@ void CNetwork::Update(void)
 void CNetwork::Draw(void)
 {
 	CDebugProcGL::DebugProc("PLAYER_NUM:%d\n", m_PlayerNum);
-	CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
+	//CDebugProcGL::DebugProc("LASTDATA:%s\n", m_LastMessage);
 	//CDebugProcGL::DebugProc("BIND:%d\n", m_ifBindSuccess);
 }
 
@@ -359,6 +376,11 @@ void CNetwork::ReceiveData(void)
 
 				break;
 
+
+			case 100:	// ゲーム終了
+
+				break;
+
 			default:
 				break;
 			}
@@ -450,12 +472,16 @@ void CNetwork::CreateBullet(void)
 	int playerNum = 0, bulletNum = 0;
 
 	// 受信データからデータを取得
-	sscanf(m_ReceiveData, "%d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f, %d",
+	sscanf(m_ReceiveData, "%d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
 		&playerNum, &bulletNum, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &speed);
 
 	// 取得したデータをセット
 	m_BulletInstance[playerNum][bulletNum].Instance = CBullet::Create(playerNum, bulletNum, pos, rot, speed, playerNum);
 	m_BulletInstance[playerNum][bulletNum].Use = true;
+
+	// 弾の生成をクライアントに知らせる
+	SendData("TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
+		playerNum, bulletNum, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, speed);
 }
 
 //=============================================================================
@@ -466,7 +492,46 @@ void CNetwork::CreateBullet(void)
 //=============================================================================
 void CNetwork::DeleteBullet(void)
 {
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
+	{
+		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+		{
+			if(!m_BulletInstance[i][j].Use && !m_BulletInstance[i][j].IfUninit)
+			{
+				SafetyRelease(m_BulletInstance[i][j].Instance);
+				m_BulletInstance[i][j].IfUninit = false;
 
+				SendData("TAG:3, %d, %d", i, j);
+			}
+		}
+	}
+}
+
+//=============================================================================
+//	関数名	:PlayerDamage
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ゲームの終了メッセージと共にランキング情報をクライアントに一斉送信。
+//=============================================================================
+void CNetwork::PlayerDamage(int playerNum)
+{
+	SendData("TAG:10, %d", playerNum);
+}
+
+//=============================================================================
+//	関数名	:GameEnd
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ゲームの終了メッセージと共にランキング情報をクライアントに一斉送信。
+//=============================================================================
+void CNetwork::GameEnd(void)
+{
+	if((int)m_Ranking.size() == (PLAYER_NUM - 1))
+	{
+		m_Ranking.push_back(6 - m_Ranking[0] - m_Ranking[1] - m_Ranking[2]);
+
+		SendData("TAG:100, %d, %d, %d, %d", m_Ranking[3], m_Ranking[2], m_Ranking[1], m_Ranking[0]);
+	}
 }
 
 //=============================================================================

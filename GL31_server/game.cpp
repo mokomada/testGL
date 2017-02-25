@@ -30,6 +30,8 @@
 #include "textureManager.h"
 #include "skybox.h"
 #include "bulletgauge.h"
+#include "network.h"
+
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -54,7 +56,7 @@ void CGame::Init(void)
 //	m_Meshfield	= CMeshfield::Create();
 	// 3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
-	
+
 	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -1800.0f), VECTOR3(0.0f, 0.0f, 0.0f)));
 	m_Player.push_back(CPlayer::Create(1, VECTOR3(-1800.0f, 50.0f, 0.0f), VECTOR3(0.0f, PI * 0.5f, 0.0f)));
 	m_Player.push_back(CPlayer::Create(2, VECTOR3(1800.0f, 50.0f, 0.0f), VECTOR3(0.0f, -PI * 0.5f, 0.0f)));
@@ -100,6 +102,7 @@ void CGame::Init(void)
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
+	CNetwork::Clear();
 
 	m_GamaFrame = 0;
 }
@@ -129,7 +132,7 @@ void CGame::Update(void)
 	CSceneGL::UpdateAll();
 	if(KT_ENTER)
 	{
-		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
+		CFade::Start(new CGame, MODE_GAME, FS_OUT);
 	}
 
 	m_GamaFrame++;

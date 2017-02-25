@@ -14,8 +14,9 @@
 #include "scene2DGL.h"
 #include "rendererGL.h"
 #include "manager.h"
-#include "player.h"
 #include "game.h"
+#include "player.h"
+#include "network.h"
 
 /******************************************************************************
 マクロ定義
@@ -104,62 +105,66 @@ void CBulletGauge::Update(void)
 	CGame *game;
 	game = (CGame*)CManager::GetMode( );
 	vector<CPlayer*> sceneModel = game->GetPlayer( );
-	m_Gauge = sceneModel[0]->GetGauge( );
-	if ( m_Gauge <= 0 )
-	{
-		m_Pa[0] = 0.0f;
-	}
-	else if ( m_Gauge >= BULLETGAUGEMAX )
-	{
-		m_Pa[0] = 1.0f;
-	}
-	else
-	{
-		//1以上99以下
-		m_Pa[0] = m_Gauge / BULLETGAUGEMAX;
-		//m_Pa[0] = BULLETGAUGEMAX / ( (int)m_Gauge % (int)BULLETGAUGEMAX );
-	}
 
-	if ( m_Gauge <= BULLETGAUGEMAX )
+	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
-		m_Pa[1] = 0;
-	}
-	else if ( m_Gauge >= BULLETGAUGEMAX2 )
-	{
-		m_Pa[1] = 1.0f;
-	}
-	else
-	{
-		//101以上199以下
-		m_Pa[1] = m_Gauge / BULLETGAUGEMAX2;
-	}
+		m_Gauge = sceneModel[i]->GetGauge();
+		if(m_Gauge <= 0)
+		{
+			m_Pa[0] = 0.0f;
+		}
+		else if(m_Gauge >= BULLETGAUGEMAX)
+		{
+			m_Pa[0] = 1.0f;
+		}
+		else
+		{
+			//1以上99以下
+			m_Pa[0] = m_Gauge / BULLETGAUGEMAX;
+			//m_Pa[0] = BULLETGAUGEMAX / ( (int)m_Gauge % (int)BULLETGAUGEMAX );
+		}
 
-	if ( m_Gauge <= BULLETGAUGEMAX2 )
-	{
-		m_Pa[2] = 0;
-	}
-	else if ( m_Gauge >= BULLETGAUGEMAX3 )
-	{
-		m_Pa[2] = 1.0f;
-	}
-	else
-	{
-		//201以上299以下
-		m_Pa[2] = m_Gauge / BULLETGAUGEMAX3;
-	}
+		if(m_Gauge <= BULLETGAUGEMAX)
+		{
+			m_Pa[1] = 0;
+		}
+		else if(m_Gauge >= BULLETGAUGEMAX2)
+		{
+			m_Pa[1] = 1.0f;
+		}
+		else
+		{
+			//101以上199以下
+			m_Pa[1] = m_Gauge / BULLETGAUGEMAX2;
+		}
 
-	if ( m_Gauge < 0 )
-	{
-		m_Gauge = 0;
-	}
-	if ( m_Gauge >= BULLETGAUGEMAX3 )
-	{
-		m_Gauge = BULLETGAUGEMAX3;
-	}
-	else
-	{
-		//ゲージ回復
-		sceneModel[0]->AddGauge(ADDGAUGE);
+		if(m_Gauge <= BULLETGAUGEMAX2)
+		{
+			m_Pa[2] = 0;
+		}
+		else if(m_Gauge >= BULLETGAUGEMAX3)
+		{
+			m_Pa[2] = 1.0f;
+		}
+		else
+		{
+			//201以上299以下
+			m_Pa[2] = m_Gauge / BULLETGAUGEMAX3;
+		}
+
+		if(m_Gauge < 0)
+		{
+			m_Gauge = 0;
+		}
+		if(m_Gauge >= BULLETGAUGEMAX3)
+		{
+			m_Gauge = BULLETGAUGEMAX3;
+		}
+		else
+		{
+			//ゲージ回復
+			sceneModel[i]->AddGauge(ADDGAUGE);
+		}
 	}
 }
 

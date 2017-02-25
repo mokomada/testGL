@@ -45,13 +45,13 @@ public:
 
 	void SetLife(int life) { m_life = life; }
 
+	int m_PlayerNum;
+	int m_BulletNum;
+
 private:
 	int m_playerNumber;	//プレイヤーが何Pかを保存
 	int m_life;		//弾の寿命
 	float m_speed;
 	CShadow *m_myShadow;	//自分の影
 	unsigned int		*m_Texture;	// テクスチャ
-
-	int m_PlayerNum;
-	int m_BulletNum;
 };

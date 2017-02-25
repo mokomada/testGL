@@ -15,7 +15,7 @@
 //	マクロ定義
 //=============================================================================
 const int PLAYER_NUM		= 4;
-const int BULLET_NUM_MAX	= 20;
+const int BULLET_NUM_MAX	= 1000;
 
 //=============================================================================
 //	構造体
@@ -56,6 +56,7 @@ public:
 	static uint __stdcall ReceiveThread(void*);
 
 	static void	Init(void);
+	static void	Clear(void);
 	static void	Uninit(void);
 	static void	Update(void);
 	static void	Draw(void);
@@ -66,12 +67,15 @@ public:
 	static bool	m_ifInitialize;	// Init()が終了したかどうか
 
 	static BULLETDATA m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+	static vector<int> m_Ranking;
 
 private:
 	static void Matching(int playerNum);
 	static void	SetPlayerData(void);
 	static void	CreateBullet(void);
 	static void	DeleteBullet(void);
+	static void	PlayerDamage(int playerNum);
+	static void	GameEnd(void);
 	static void RemoveDataTag(char* data);
 	static void	ReadConnetProtocol(CONNECT_PROTOCOL* cp);
 	static int CheckReceivable(int fd);

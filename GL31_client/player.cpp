@@ -310,10 +310,8 @@ void CPlayer::Update(void)
 						}
 					}
 
-					char str[1024] ={ NULL };
-					sprintf(str, "TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
+					CNetwork::SendData("TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
 						m_PlayerNumber, bulletNum, m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
-					CNetwork::SendData(str);
 
 					//CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);

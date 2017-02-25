@@ -12,6 +12,7 @@
 #include "network.h"
 #include "main.h"
 #include "game.h"
+#include "fade.h"
 #include "player.h"
 #include <process.h>
 #include <mbstring.h>
@@ -36,6 +37,7 @@ uint		CNetwork::m_thID;
 HANDLE		CNetwork::m_hTh;
 
 BULLETDATA	CNetwork::m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+vector<int> CNetwork::m_Ranking;
 
 //=============================================================================
 //	関数名	:Init
@@ -99,12 +101,30 @@ void CNetwork::Init(void)
 
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
-	m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//m_AddrServer.sin_addr.s_addr = inet_addr("172.29.17.57");
+	//m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
+	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.11.6");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
 
+	Clear();
+
+	// 初期化終了告知
+	m_ifInitialize = true;
+	
+	// マッチング登録
+	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
+	//send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
+}
+
+//=============================================================================
+//	関数名	:Init
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:初期化処理を行う。
+//=============================================================================
+void CNetwork::Clear(void)
+{
 	for(int i = 0 ; i < PLAYER_NUM ; i++)
 	{
 		for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
@@ -115,12 +135,7 @@ void CNetwork::Init(void)
 		}
 	}
 
-	// 初期化終了告知
-	m_ifInitialize = true;
-	
-	// マッチング登録
-	connect(m_SockSend, (sockaddr*)&m_AddrServer, sizeof(m_AddrServer));
-	//send(m_SockSend, "0, entry", strlen("0, entry") + 1, 0);
+	m_Ranking.clear();
 }
 
 //=============================================================================
@@ -249,6 +264,20 @@ void CNetwork::ReceiveData(void)
 	case 1:
 		SetPlayerData();
 		break;
+	case 2:
+		CreateBullet();
+		break;
+	case 3:
+		DeleteBullet();
+		break;
+
+	case 10:
+		PlayerDamage();
+		break;
+
+	case 100:
+		GameEnd();
+		break;
 
 	default:
 		break;
@@ -290,6 +319,92 @@ void CNetwork::SetPlayerData(void)
 			//player[i]->SetVec(vec[i]);
 		}
 	}
+}
+
+//=============================================================================
+//	関数名	:CreateBullet
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:弾のデータを生成、同期を開始する。
+//=============================================================================
+void CNetwork::CreateBullet(void)
+{
+	vector<CPlayer*>	player	= CGame::GetPlayer();
+	VECTOR3				pos		= VEC3_ZERO;
+	VECTOR3				rot		= VEC3_ZERO;
+	float				speed	= 0.0f;
+	int playerNum = 0, bulletNum = 0;
+
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
+		&playerNum, &bulletNum, &pos.x, &pos.y, &pos.z, &rot.x, &rot.y, &rot.z, &speed);
+
+	if(playerNum != CManager::GetWhatPlayer())
+	{
+		// 取得したデータをセット
+		m_BulletInstance[playerNum][bulletNum].Instance = CBullet::Create(playerNum, bulletNum, pos, rot, speed, playerNum);
+		m_BulletInstance[playerNum][bulletNum].Use = true;
+	}
+}
+
+//=============================================================================
+//	関数名	:DeleteBullet
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:受信したプレイヤーのデータをセットする。
+//=============================================================================
+void CNetwork::DeleteBullet(void)
+{
+	int playerNum = 0, bulletNum = 0;
+
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %d",	&playerNum, &bulletNum);
+
+	if(m_BulletInstance[playerNum][bulletNum].Use)
+	{
+		m_BulletInstance[playerNum][bulletNum].Instance->SetLife(-100);
+	}
+}
+
+//=============================================================================
+//	関数名	:PlayerDamage
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ゲームの終了メッセージと共にランキング情報をクライアントに一斉送信。
+//=============================================================================
+void CNetwork::PlayerDamage(void)
+{
+	int playerNum = -1;
+
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d", &playerNum);
+
+	if(playerNum >= 0)
+	{
+		CGame::GetPlayer()[playerNum]->HitBullet();
+	}
+}
+
+//=============================================================================
+//	関数名	:GameEnd
+//	引数	:無し
+//	戻り値	:無し
+//	説明	:ゲームの終了メッセージと共にランキング情報をクライアントに一斉送信。
+//=============================================================================
+void CNetwork::GameEnd(void)
+{
+	int ranking[PLAYER_NUM];
+
+	// 受信データからデータを取得
+	sscanf(m_ReceiveData, "%d, %d, %d, %d", &ranking[0], &ranking[1], &ranking[2], &ranking[3]);
+
+	m_Ranking.push_back(ranking[0]);
+	m_Ranking.push_back(ranking[1]);
+	m_Ranking.push_back(ranking[2]);
+	m_Ranking.push_back(ranking[3]);
+
+	// リザルトへ
+	CFade::Start(new CResult, MODE_RESULT, FS_OUT);
 }
 
 //=============================================================================

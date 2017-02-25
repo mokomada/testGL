@@ -121,7 +121,7 @@ void CBullet::Update( void )
 	//エフェクトを生成
 	CEffect::Create( m_Pos , m_playerNumber );
 
-	m_life--;
+	//m_life--;
 
 	m_Pos.x -= -sinf( m_Rot.y ) * m_speed;
 	m_Pos.z -= -cosf( m_Rot.y ) * m_speed;

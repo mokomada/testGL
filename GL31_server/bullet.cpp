@@ -140,7 +140,8 @@ void CBullet::Update( void )
 		CEffect2D::Create( m_Pos , VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );
 		m_myShadow->DeleteFlag( true );	//‰e‚Ìíœƒtƒ‰ƒO‚ğON
 		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].Use = false;
-		CSceneGL::Release();
+		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].IfUninit = false;
+		//CSceneGL::Release();
 	}
 
 
