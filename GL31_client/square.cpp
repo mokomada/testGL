@@ -19,7 +19,7 @@
 #include "scene3DGL.h"
 #include "square.h"
 
-#define SQUARE_SIZE_MAX (50.0f)
+#define SQ_SIZE_MAX (50.0f)
 
 
 /********************************************
