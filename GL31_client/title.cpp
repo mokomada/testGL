@@ -43,7 +43,7 @@ void CTitle::Init(void)
 	
 	m_Title -> SetStartAnimation( false );
 
-	m_Title -> SetMove( CSceneMove::Create( m_Title -> GetPositionP( ) , m_Title -> GetRotationP( ) , VECTOR3( 0.0f , -5.0f , 0.0f ) , VECTOR3( 0.0f , 0.0f , 0.0f ) , 230 , MOVETYPE_STRAIGHT ) );
+	m_Title -> SetMove( CSceneMove::Create( m_Title -> GetPositionP( ) , m_Title -> GetRotationP( ) , VECTOR3( 0.0f , -10.0f , 0.0f ) , VECTOR3( 0.0f , 0.0f , 0.0f ) , 115 , MOVETYPE_STRAIGHT ) );
 			
 	m_PushEnter = CScene2DGLAnimation::Create(VECTOR3(SCREEN_WIDTH_HALF, ( SCREEN_HEIGHT * 0.8f), 0.0f),
 		VECTOR2((SCREEN_WIDTH * 0.5f), (SCREEN_HEIGHT * 0.6f)) , 2 , 2 , 3 , 4, 
@@ -59,7 +59,7 @@ void CTitle::Init(void)
 	m_BalloonTexture[ 2 ] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\balloon002.png");
 	m_BalloonTexture[ 3 ] = renderer->CreateTextureTGA(".\\data\\TEXTURE\\balloon003.png");
 
-	for( int nCntDepth = 0 ; nCntDepth < 2 ; nCntDepth++ )
+	for( int nCntDepth = 0 ; nCntDepth < 1 ; nCntDepth++ )
 	{
 		for( int nCntBalloon = 0 ; nCntBalloon < TITLE_BALLOON ; nCntBalloon++ )
 		{
@@ -73,7 +73,7 @@ void CTitle::Init(void)
 
 				m_Balloon -> SetStartAnimation( false );
 
-				m_Balloon -> SetMove( CSceneMove::Create( m_Balloon -> GetPositionP( ) , m_Balloon -> GetRotationP( ) , VECTOR3( 0.0f , -5.0f , 0.0f ) , VECTOR3( 0.0f , 0.0f , 0.0f ) , 600 , MOVETYPE_STRAIGHT ) );
+				m_Balloon -> SetMove( CSceneMove::Create( m_Balloon -> GetPositionP( ) , m_Balloon -> GetRotationP( ) , VECTOR3( 0.0f , -10.0f , 0.0f ) , VECTOR3( 0.0f , 0.0f , 0.0f ) , 300 , MOVETYPE_STRAIGHT ) );
 			}
 		}
 	}
@@ -101,18 +101,18 @@ void CTitle::Update(void)
 {
 	// シーン更新
 	CSceneGL::UpdateAll();
-	if(KT_ENTER && CFade::m_FadeState == FS_NONE )
+	if(( KT_ENTER || KT_SPACE || KT_X || KT_J || KT_L ) && CFade::m_FadeState == FS_NONE )
 	{
 		CFade::Start(new CTutorial, MODE_TUTORIAL, FS_OUT);
 		m_PushEnter -> SetStartAnimation( true );
 	}
 }
-
+   
 //=============================================================================
 //	関数名	:Draw
 //	引数	:無し
 //	戻り値	:無し
-//	説明	:描画処理を行う。
+//	説明	:描画処理を行う。bcb
 //=============================================================================
 void CTitle::Draw(void)
 {
