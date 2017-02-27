@@ -84,7 +84,7 @@ void CParticle::Update(void)
 		int RandHosei = rand()%40 - 20;
 		
 		// パーティクル生成
-		CEffect2D::Create(VECTOR3(m_Particle.pos.x + RandHosei,m_Particle.pos.y,m_Particle.pos.z),m_Particle.m_Size,ETYPE_SMOKE01);
+		CEffect2D::Create(VECTOR3(m_Particle.pos.x + RandHosei,m_Particle.pos.y,m_Particle.pos.z),VECTOR3(0.0f,0.0f,0.0f),m_Particle.m_Size,ETYPE_SMOKE01);
 		
 		// カウンタ初期化
 		m_Particle.nGenerateTime = 0;
