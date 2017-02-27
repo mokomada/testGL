@@ -21,8 +21,8 @@ typedef struct {
 //=============================================================================
 #define	MESHFIELD_TEX_FILENAME000	"./data/TEXTURE/rock.tga"	// テクスチャファイル名
 
-#define	MESHFIELD_VERTICAL		(5)				// メッシュフィールドの縦ブロック数
-#define	MESHFIELD_HORIZONTAL	(5)				// メッシュフィールドの横ブロック数
+#define	MESHFIELD_VERTICAL		(3)				// メッシュフィールドの縦ブロック数
+#define	MESHFIELD_HORIZONTAL	(3)				// メッシュフィールドの横ブロック数
 #define	MESHFIELD_WIDTH			(1000.0f)			// ポリゴンの横幅
 #define	MESHFIELD_HEIGHT		(1000.0f)			// ポリゴンの縦幅
 
