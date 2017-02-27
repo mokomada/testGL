@@ -102,7 +102,7 @@ void CNetwork::Init(void)
 	// IPアドレス設定
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//m_AddrServer.sin_addr.s_addr = inet_addr("127.0.0.1");
-	m_AddrServer.sin_addr.s_addr = inet_addr("172.29.33.47");
+	m_AddrServer.sin_addr.s_addr = inet_addr("192.168.56.1");
 
 	// バインド
 	bind(m_SockRecv, (sockaddr*)&addr, sizeof(addr));
@@ -274,7 +274,7 @@ void CNetwork::ReceiveData(void)
 	case 10:
 		PlayerDamage();
 		break;
-
+		
 	case 100:
 		GameEnd();
 		break;
@@ -362,7 +362,8 @@ void CNetwork::DeleteBullet(void)
 
 	if(m_BulletInstance[playerNum][bulletNum].Use)
 	{
-		m_BulletInstance[playerNum][bulletNum].Instance->SetLife(-100);
+		m_BulletInstance[playerNum][bulletNum].Instance->SetLife(0);
+		m_BulletInstance[playerNum][bulletNum].Use = false;
 	}
 }
 

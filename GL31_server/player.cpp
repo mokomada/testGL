@@ -158,7 +158,7 @@ void CPlayer::Update(void)
 			CDebugProcGL::DebugProc("HitBox\n");
 		}
 	}
-
+	/*
 	for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
 	{
 		if (CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(), list->GetPos(), list->GetRadius()))
@@ -181,7 +181,7 @@ void CPlayer::Update(void)
 //				Release();
 //				return;
 		}
-	}
+	}*/
 
 
 	//************* HP0時演出テストここから *****************

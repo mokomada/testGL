@@ -324,6 +324,38 @@ void CPlayer::Update(void)
 
 		// 回転量を設定
 		m_Rot.y += (m_MoveDirection.y - m_Rot.y) * 0.1f;
+
+
+		for(int i = 0 ; i < 4 ; i++)
+		{
+			for(int j = 0 ; j < 1000 ; j++)
+			{
+				if(CNetwork::m_BulletInstance[i][j].Use == true)
+				{
+					if(CCollision::GetInstance()->SphereToSphere(m_Pos, GetRadius(),
+						CNetwork::m_BulletInstance[i][j].Instance->GetPos(), CNetwork::m_BulletInstance[i][j].Instance->GetRadius()))
+					{
+						if(m_PlayerNumber != i)
+						{
+							if(m_HitEffectTime <= 0) {
+								m_pLife->HitDamage();
+								if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+																	// 球ヒットエフェクト生成
+								CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
+
+								CNetwork::m_BulletInstance[i][j].Instance->SetLife(0);
+
+								// ダメージ判定
+								CNetwork::SendData("TAG:10, %d", m_PlayerNumber);
+							}
+						}
+						//				Release();
+						//				return;
+					}
+				}
+			}
+		}
 	}
 
 	//************* HP0時演出テストここから *****************

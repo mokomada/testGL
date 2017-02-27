@@ -373,7 +373,17 @@ void CNetwork::ReceiveData(void)
 
 
 			case 10:	// プレイヤーがダメージを負った
+			{
+				int playerNum = -1;
 
+				// 受信データからデータを取得
+				sscanf(m_ReceiveData, "%d", &playerNum);
+
+				if(playerNum >= 0)
+				{
+					SendData("TAG:10, %d", playerNum);
+				}
+			}
 				break;
 
 

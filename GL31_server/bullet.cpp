@@ -141,7 +141,7 @@ void CBullet::Update( void )
 		m_myShadow->DeleteFlag( true );	//‰e‚Ìíœƒtƒ‰ƒO‚ğON
 		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].Use = false;
 		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].IfUninit = false;
-		//CSceneGL::Release();
+		CSceneGL::Release();
 	}
 
 
