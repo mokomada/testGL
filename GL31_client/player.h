@@ -72,6 +72,7 @@ public:
 
 private:
 	uint	m_PlayerNumber;	// プレイヤー番号
+	uint	m_BulletNumber;	// プレイヤー番号
 
 	VECTOR3	m_OldPos;		// 前フレームの座標
 	VECTOR3	m_Scale;		// スケール
