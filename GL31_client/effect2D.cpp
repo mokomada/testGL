@@ -10,12 +10,55 @@
 //	インクルードヘッダ
 //=============================================================================
 #include "main.h"
+#include "player.h"
 #include "manager.h"
 #include "rendererGL.h"
 #include "effect2D.h"
 #include "textureManager.h"
 #include "sceneGL.h"
 #include <time.h>
+
+
+//=============================================================================
+//	マクロ定義
+//=============================================================================
+/////////////////////////////////
+/*   アニメーショングリッド    */
+/////////////////////////////////
+#define EXPLODE00_X	(8)
+#define EXPLODE00_Y	(1)
+#define EXPLODE01_X	(7)
+#define EXPLODE01_Y	(1)
+#define SMOKE00_X	(10)
+#define SMOKE00_Y	(1)
+#define RAND00_X	(5)//(6)
+#define RAND00_Y	(1)
+
+/////////////////
+/*   その他    */
+/////////////////
+#define MOVE_SPEED_PSMOKEX		(0.5f)		// 煙パーティクルの移動スピード(Y軸)
+#define MOVE_SPEED_PSMOKEY		(0.5f)		// 煙パーティクルの移動スピード(Y軸)
+#define PHEIGHT_LIMIT_SMOKE00	(400.0f)	// 煙パーティクルの高度制限
+#define PHEIGHT_LIMIT_SMOKE01	(400.0f)	// 煙パーティクルの高度制限
+#define PHEIGHT_LIMIT_SMOKE02	(400.0f)	// 煙パーティクルの高度制限
+#define PUP_SCALE_SMOKE01		(0.5f)		// 煙パーティクルの拡大倍率
+#define PUP_SCALE_SMOKE02		(0.5f)		// 煙パーティクルの拡大倍率
+#define PALPHA_PLUS_SMOKE02		(0.0020f)	// 煙パーティクルのα値減算量
+#define PALPHA_MINUS_SMOKE00	(0.0020f)	// 煙パーティクルのα値減算量
+#define PALPHA_MINUS_SMOKE01	(0.0020f)	// 煙パーティクルのα値減算量
+
+#define SELFSMOKE_LENGTH		(40)		// 車と走行時発生スモークの距離
+#define SELFSMOKE_LENGTH_Y		(20)		// 車と走行時発生スモークの距離(Y)
+
+////	アニメーションが切り替わるまでのフレーム数
+//////////////////////////////////////////////////////////////
+#define DEFAULT_ANIMATION_CHANGE_FRAME	(15)	// デフォルト
+#define EXPLODE_ANIMATION_CHANGE_FRAME	(5)		// 爆発
+#define SMOKE_ANIMATION_CHANGE_FRAME	(2)		// 土煙
+#define RAND_ANIMATION_CHANGE_FRAME		(3)	// 着地エフェクト
+
+#define NOT_ANIMATION_CHANGE_FRAME		(-1)	// アニメーションしない画像用
 
 //=============================================================================
 //	関数名	:CSceneBillboard()
@@ -43,31 +86,34 @@ CEffect2D::~CEffect2D()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CEffect2D::Init(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
+void CEffect2D::Init(VECTOR3 pos, VECTOR3 rot,VECTOR2 size, EFFECTTYPE etype)
 {
-	////	各種変数初期設定
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		各種変数初期設定
+	//------------------------------------------------------------------------
 	SetPos(VECTOR3(pos.x, pos.y, pos.z));	// 中心点座標
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));		// 回転角度
+	SetRot(VECTOR3(rot.x, rot.y, rot.z));	// 回転角度
 	m_Size		= size;						// 拡大倍率
 	m_nAnimCntX = 0;						// 現在のアニメーションのXの位置	
 	m_nAnimCntY = 0;						// 現在のアニメーションのYの位置
-	m_nAnimChangeFrame = 0;					// アニメーション切り替えまでのフレーム数
-	m_nAnimChangeFrameCnt = 0;				// アニメーション切り替えまでのフレームカウンタ
-	m_bEndFlugE = false;					// 自殺フラグ(通常エフェクト)
-	m_bEndFlugP = false;					// 自殺フラグ(パーティクルエフェクト)
+	m_nAnimChangeFrame		= 0;			// アニメーション切り替えまでのフレーム数
+	m_nAnimChangeFrameCnt	= 0;			// アニメーション切り替えまでのフレームカウンタ
+	m_bEndFlugE		= false;				// 自殺フラグ(通常エフェクト)
+	m_bEndFlugP		= false;				// 自殺フラグ(パーティクルエフェクト)
+	m_bKasanFlug	= false;				// 加算合成フラグ
+	m_aColor.Red	= 1.0f;					// 色設定 R
+	m_aColor.Green	= 1.0f;					// 色設定 G
+	m_aColor.Blue	= 1.0f;					// 色設定 B
+	m_aColor.Alpha	= 1.0f;					// 色設定 A
 
-	m_Color.Red		= 1.0f;		// R
-	m_Color.Green	= 1.0f;		// G
-	m_Color.Blue	= 1.0f;		// B
-	m_Color.Alpha	= 1.0f;		// A
-
-	////	乱数生成
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		乱数生成
+	//------------------------------------------------------------------------
 	srand((unsigned)time( NULL ));
 
-	////	エフェクトタイプ別の初期化処理
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		エフェクトタイプ別の初期化処理
+	//------------------------------------------------------------------------
 	TypeInit(etype);
 }
 
@@ -88,11 +134,14 @@ void CEffect2D::Uninit(bool isLast)
 //=============================================================================
 void CEffect2D::Update(void)
 {
-	////	エフェクトタイプ別の初期化処理
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		エフェクトタイプ別の更新処理
+	//------------------------------------------------------------------------
 	TypeUpdate(m_Etype);
 
-	/* 一定フレーム数経過 */
+	//------------------------------------------------------------------------
+	//		アニメーション更新処理
+	//------------------------------------------------------------------------
 	if(m_nAnimChangeFrameCnt == m_nAnimChangeFrame)
 	{
 		////	アニメーション切り替え用フレームカウンタをリセット
@@ -123,20 +172,20 @@ void CEffect2D::Update(void)
 		}
 	}
 
-	//////	終了フラグが立っている場合の処理(パーティクルでない)
-	///////////////////////////////////////////////////////////////////
-	//if(m_Etype != ETYPE_SMOKE01)
-	//{
-	//	////	アニメーション切り替え用フレームカウンタ加算
-		/////////////////////////////////////////////////////////////////
-		m_nAnimChangeFrameCnt++;
-		if(m_bEndFlugE || m_bEndFlugP)
-		{
-			// 終了処理
-			Release();
-			return;
-		}
-	//}
+	//------------------------------------------------------------------------
+	//		アニメーション切り替え用フレームカウンタ加算
+	//------------------------------------------------------------------------
+	m_nAnimChangeFrameCnt++;
+	
+	//------------------------------------------------------------------------
+	//		終了条件判別
+	//------------------------------------------------------------------------
+	if(m_bEndFlugE || m_bEndFlugP)
+	{
+		// 終了処理
+		Release();
+		return;
+	}
 }
 
 //=============================================================================
@@ -147,72 +196,103 @@ void CEffect2D::Update(void)
 //=============================================================================
 void CEffect2D::Draw(void)
 {
-	////	モデルビュー変換行列の操作用
-	/////////////////////////////////////////////////////////////
-	GLdouble m[16];
+	//------------------------------------------------------------------------
+	//		マトリクスの設定
+	//------------------------------------------------------------------------
+		////	モデルビュー変換行列の操作用
+		/////////////////////////////////////////////////////////////
+		GLdouble m[16];
 
-	////	モデルビューマトリクスの設定
-	/////////////////////////////////////////////////////////////
-	glMatrixMode(GL_MODELVIEW);
+		////	モデルビューマトリクスの設定
+		/////////////////////////////////////////////////////////////
+		glMatrixMode(GL_MODELVIEW);
 
-	////	マトリクスの退避
-	/////////////////////////////////////////////////////////////
-	glPushMatrix();
+		////	マトリクスの退避
+		/////////////////////////////////////////////////////////////
+		glPushMatrix();
 
+		////	ワールドマトリクスの設定
+		/////////////////////////////////////////////////////////////
+		glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
 
-	////	ワールドマトリクスの設定
-	/////////////////////////////////////////////////////////////
-	glTranslatef(m_Pos.x, m_Pos.y, m_Pos.z);
-	glScalef(1.0f, 1.0f, 1.0f);
+		glRotatef((GLfloat)(m_Rot.z * 180.0 / PI), 0.0f, 0.0f, 1.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.y * 180.0 / PI), 0.0f, 1.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
+		glRotatef((GLfloat)(m_Rot.x * 180.0 / PI), 1.0f, 0.0f, 0.0f);	// 回転マトリックスの設定、角度は度数法で
 
-	// 現在のモデルビュー変換行列を取り出す
-	glGetDoublev(GL_MODELVIEW_MATRIX, m);
+		glScalef(1.0f, 1.0f, 1.0f);
 
-	// 左上 3x3 要素を単位行列にする
-	m[0] = m[5] = m[10] = 1.0;
-	m[1] = m[2] = m[4] = m[6] = m[8] = m[9] = 0.0;
+		////	現在のモデルビュー変換行列を取り出す
+		/////////////////////////////////////////////////////////////
+		glGetDoublev(GL_MODELVIEW_MATRIX, m);
 
-	// 書き換えた行列を書き戻す
-	glLoadMatrixd(m);
+		////	左上 3x3 要素を単位行列にする
+		/////////////////////////////////////////////////////////////
+		m[0] = m[5] = m[10] = 1.0;
+		m[1] = m[2] = m[4] = m[6] = m[8] = m[9] = 0.0;
 
-	// 回転角を適応させる
-	glRotatef((m_Rot.z * 180 / PI), 0.0f, 0.0f, 1.0f);
+		////	書き換えた行列を書き戻す
+		/////////////////////////////////////////////////////////////
+		glLoadMatrixd(m);
 
-	////	描画処理
-	/////////////////////////////////////////////////////////////
+		////	回転角を適応させる
+		/////////////////////////////////////////////////////////////
+		glRotatef((m_Rot.z * 180 / PI), 0.0f, 0.0f, 1.0f);
 
-		////	各種描画設定
-		/////////////////////////////////////////////////////////
-		glBindTexture(GL_TEXTURE_2D, *m_Texture);			// テクスチャバインド
-		glEnable(GL_TEXTURE_2D);							// テクスチャ有効化
-		glEnable(GL_DEPTH_TEST);							// 深度バッファ設定
-		glDisable(GL_LIGHTING);								// ライティングオフ
-		glEnable(GL_BLEND);									// ブレンド有効化
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// αブレンド設定
-		glDepthMask(GL_FALSE);								// 深度バッファへの書き込みを禁止する。(爆風どうしの重なりの解消)
+	//------------------------------------------------------------------------
+	//		タイプ別の各種描画設定
+	//------------------------------------------------------------------------
+		if(m_bKasanFlug)
+		{
+			//// 深度バッファ設定
+			//glDisable(GL_DEPTH_TEST);
+			glEnable(GL_DEPTH_TEST);
+			glAlphaFunc(GL_GEQUAL, 0.1 );
+			glEnable( GL_ALPHA_TEST );
+			glDepthMask( GL_FALSE );
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			glEnable(GL_BLEND);
+			//// ライティングオフ
+			glDisable(GL_LIGHTING);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		}
 
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, *m_Texture);			// テクスチャバインド
+			glEnable(GL_TEXTURE_2D);							// テクスチャ有効化
+			glEnable(GL_DEPTH_TEST);							// 深度バッファ設定
+			glDisable(GL_LIGHTING);								// ライティングオフ
+			glEnable(GL_BLEND);									// ブレンド有効化
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// αブレンド設定
+			glDepthMask(GL_FALSE);								// 深度バッファへの書き込みを禁止する。(爆風どうしの重なりの解消)
+		}
+
+	//------------------------------------------------------------------------
+	//		描画処理
+	//------------------------------------------------------------------------
 		////	描画開始
 		/////////////////////////////////////////////////////////
 		glBegin(GL_TRIANGLE_STRIP);
 		{
 			////	頂点色設定
 			/////////////////////////////////////////////////////
+				
+				//	通常設定
+				glColor4f(1.0f, 1.0f, 1.0f, m_aColor.Alpha);
 			
-			//	通常
-			glColor4f(1.0f, 1.0f, 1.0f, m_Color.Alpha);
-			
-			// 爆風エフェクト時
-			if(m_Etype == ETYPE_SMOKE01)
-			{
-				glColor4f(m_Color.Red,m_Color.Green,m_Color.Blue,m_Color.Alpha);
-			}
-			
-			// α値が低くなった場合の処理
-			if(m_Color.Alpha<= 0.2f)
-			{
-				glColor4f(0.0f, 0.0f, 0.0f, m_Color.Alpha);
-			}
-
+				// エフェクトタイプ(煙エフェクト(機体爆発時))の時
+				if(m_Etype == ETYPE_SMOKE01)
+				{
+					// 色の反映
+					glColor4f(m_aColor.Red,m_aColor.Green,m_aColor.Blue,m_aColor.Alpha);
+					
+					// α値が低くなった場合の処理
+					if(m_aColor.Alpha<= 0.2f)
+					{
+						glColor4f(0.0f, 0.0f, 0.0f, m_aColor.Alpha);
+					}
+				}
+		
 			////	描画関数呼び出し
 			/////////////////////////////////////////////////////
 			DrawPolygon();
@@ -222,22 +302,38 @@ void CEffect2D::Draw(void)
 		/////////////////////////////////////////////////////////
 		glEnd();
 
+	//------------------------------------------------------------------------
+	//		タイプ別の各種設定引き戻し
+	//------------------------------------------------------------------------
+		if(m_bKasanFlug)
+		{
+			glEnable(GL_LIGHTING);
+			glDisable(GL_TEXTURE_2D);
+			glDisable( GL_ALPHA_TEST );
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
+			glDepthMask( TRUE );
+			glDepthMask(GL_TRUE);
+		}
+		else
+		{
+			glEnable(GL_LIGHTING);			// ライティングON
+			glDisable(GL_TEXTURE_2D);		// テクスチャ無効
+			glDisable(GL_DEPTH_TEST);		// 深度バッファ設定オフ
+			glDisable(GL_BLEND);			// αブレンドOFF
+			glDepthMask(GL_TRUE);			// 深度バッファへの書き込みを許可
+		}
 
-	////	各種設定引き戻し
-	/////////////////////////////////////////////////////////////
-	glEnable(GL_LIGHTING);			// ライティングON
-	glDisable(GL_TEXTURE_2D);		// テクスチャ無効
-	glDisable(GL_DEPTH_TEST);		// 深度バッファ設定オフ
-	glDisable(GL_BLEND);			// αブレンドOFF
-	glDepthMask(GL_TRUE);			// 深度バッファへの書き込みを許可
-
-	////	モデルビューマトリックスの設定
-	/////////////////////////////////////////////////////////////
-	glMatrixMode(GL_MODELVIEW);
+	//------------------------------------------------------------------------
+	//		マトリクスの再設定
+	//------------------------------------------------------------------------
+		////	モデルビューマトリックスの設定
+		/////////////////////////////////////////////////////////////
+		glMatrixMode(GL_MODELVIEW);
 	
-	////	保存マトリックスの取り出し
-	/////////////////////////////////////////////////////////////
-	glPopMatrix();
+		////	保存マトリックスの取り出し
+		/////////////////////////////////////////////////////////////
+		glPopMatrix();
 }
 
 
@@ -249,33 +345,36 @@ void CEffect2D::Draw(void)
 //=============================================================================
 void CEffect2D::DrawPolygon(void)
 {
-	
-	////	描画用の法線・テクスチャ座標・頂点座標設定
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		描画用の法線・テクスチャ座標・頂点座標設定
+	//------------------------------------------------------------------------		
+		////	左上
+		/////////////////////////////////////////////////////////////		
+		glNormal3f(0.0f,1.0f,0.0f);										// 法線ベクトル
+		glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),			// テクスチャ座標X(U)	
+					 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));	// テクスチャ座標X(V)
+		glVertex3f(-m_Size.x * 0.5f, m_Size.y * 0.5f, 0.0f);			// 頂点座標	
 
-	// 左上
-	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),					// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));			// テクスチャ座標X(V)
-	glVertex3f(-m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);					// 頂点座標
-
-	// 右上
-	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));			// テクスチャ座標X(V)
-	glVertex3f(m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);					// 頂点座標
+		////	右上
+		/////////////////////////////////////////////////////////////
+		glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+		glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
+					 float(1.0f - (1.0f / m_nAnimY * m_nAnimCntY)));			// テクスチャ座標X(V)
+		glVertex3f(m_Size.x * 0.5f , m_Size.y * 0.5f , 0.0f);					// 頂点座標
 																						
-	// 左下
-	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),					// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
-	glVertex3f(-m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
+		////	左下
+		/////////////////////////////////////////////////////////////
+		glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+		glTexCoord2d(float((1.0f / m_nAnimX) * m_nAnimCntX),					// テクスチャ座標X(U)
+					 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
+		glVertex3f(-m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
 																						
-	// 右下
-	glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
-	glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
-				 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
-	glVertex3f(m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
+		////	右下
+		/////////////////////////////////////////////////////////////
+		glNormal3f(0.0f, 1.0f, 0.0f);											// 法線ベクトル	
+		glTexCoord2d(float((1.0f / m_nAnimX) * (m_nAnimCntX + 1)),				// テクスチャ座標X(U)
+					 float(1.0f - (1.0f / m_nAnimY * (m_nAnimCntY + 1))));		// テクスチャ座標X(V)
+		glVertex3f(m_Size.x * 0.5f , -m_Size.y * 0.5f , 0.0f);					// 頂点座標
 }																						
 
 //=============================================================================
@@ -286,19 +385,25 @@ void CEffect2D::DrawPolygon(void)
 //=============================================================================
 void CEffect2D::TypeInit(EFFECTTYPE etype)
 {
-	////	ローカル変数
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		ローカル変数
+	//------------------------------------------------------------------------
 	CRendererGL	*renderer = CManager::GetRendererGL();
+	float Lengthinterval = 0.0f;
+	float Posx = 0.0f;
+	float Posy = 0.0f;
+	float Posz = 0.0f;
 
-	////	初期化処理
-	/////////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		タイプ別初期化処理
+	//------------------------------------------------------------------------
 	switch(etype)
 	{
 		// タイプなし
 		case ETYPE_NONE :
 			break;
 
-		// 爆発エフェクト(白) 8x1 
+		// 爆発エフェクト(白) 8x1 (球爆発_ライフ0 or 壁接触)
 		case ETYPE_EXPLODE00 :
 			m_Texture = CTextureManager::GetTexture( TEXTURE_BULLETEXPLODE );	// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = EXPLODE00_X;												// Xの分割数(ヘッダに定義)
@@ -306,7 +411,7 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 			m_nAnimChangeFrame = EXPLODE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
 			break;
 
-		// 爆発エフェクト(赤) 7x1 
+		// 爆発エフェクト(赤) 7x1 (球爆発_プレイヤ接触)
 		case ETYPE_EXPLODE01 :
 			m_Texture = CTextureManager::GetTexture( TEXTURE_PLAYEREXPLODE );	// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = EXPLODE01_X;												// Xの分割数(ヘッダに定義)
@@ -316,25 +421,60 @@ void CEffect2D::TypeInit(EFFECTTYPE etype)
 			
 		// 土煙画像(白)		10x1
 		case ETYPE_SMOKE00 :
+			
+			m_Rot.y += 0.25f;
+
+			////	角度の修正
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (m_Rot.y <= -D3DX_PI)
+			{
+				m_Rot.y += D3DX_PI * 2;
+			}
+
+			if (m_Rot.y >= D3DX_PI)
+			{
+				m_Rot.y -= D3DX_PI * 2;
+			}
+
+			////	位置の算出
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Posx = m_Pos.x - sinf(m_Rot.y) * SELFSMOKE_LENGTH;
+			Posy = m_Pos.y -= SELFSMOKE_LENGTH_Y;
+			Posz = m_Pos.z - cosf(m_Rot.y) * SELFSMOKE_LENGTH;
+			
+			////	出現位置の設定
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			SetPos(VECTOR3(Posx, Posy, Posz));	// 中心点座標
+			
 			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE00 );		// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = SMOKE00_X;											// Xの分割数(ヘッダに定義)
 			m_nAnimY = SMOKE00_Y;											// Yの分割数(ヘッダに定義)
 			m_nAnimChangeFrame = SMOKE_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
-			//m_Size = VECTOR2(1.0f,1.0f);//(0.1f,0.1f);
+			m_aColor.Alpha = 0.3f;
 			break;
 
-		// 煙画像(アニメーション無)
+		// 煙画像(アニメーション無_機体爆発後)
 		case ETYPE_SMOKE01 :
 			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE01 );		// 画像のアドレス(ヘッダに定義)
 			m_nAnimX = 1;													// Xの分割数(ヘッダに定義)
 			m_nAnimY = 1;													// Yの分割数(ヘッダに定義)
-			m_nAnimChangeFrame = -1;										// アニメーション切り替えまでのフレーム数
+			m_nAnimChangeFrame = NOT_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
 			m_Size = VECTOR2(0.1f,0.1f);
+
 			break;
+		
+		// 煙画像(アニメーション無_機体生存時)
+		case ETYPE_SMOKE02 :
+			m_Texture = CTextureManager::GetTexture( TEXTURE_SMOKE01 );		// 画像のアドレス(ヘッダに定義)
+			m_nAnimX = 1;													// Xの分割数(ヘッダに定義)
+			m_nAnimY = 1;													// Yの分割数(ヘッダに定義)
+			m_nAnimChangeFrame = NOT_ANIMATION_CHANGE_FRAME;				// アニメーション切り替えまでのフレーム数
+			m_Size = VECTOR2(0.1f,0.1f);
 	}
 
-	////	エフェクトタイプ代入
-	////////////////////////////////////////////////////////
+	//------------------------------------------------------------------------
+	//		エフェクトタイプ代入
+	//------------------------------------------------------------------------
 	m_Etype = etype;
 }
 
@@ -350,7 +490,8 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 	//				ローカル変数
 	//--------------------------------------------------------------------------------------------//
 	int RandHosei = 0;
-	
+	int RandHoseiHugou = 0;
+
 	//--------------------------------------------------------------------------------------------//
 	//				更新処理
 	//--------------------------------------------------------------------------------------------//
@@ -373,9 +514,9 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 
 			////	色情報変更処理
 			///////////////////////////////////////////////////////
-			m_Color.Red		-= 0.001f;
-			m_Color.Green	-= 0.001f;
-			m_Color.Blue	-= 0.001f;
+			m_aColor.Red	-= 0.001f;
+			m_aColor.Green	-= 0.001f;
+			m_aColor.Blue	-= 0.001f;
 			break;
 			
 		////	土煙画像(白)		10x1
@@ -384,42 +525,31 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 			
 			////	位置更新
 			///////////////////////////////////////////////////////
-			// 乱数生成
-			RandHosei = rand()%2 -4;// - 4;
-			
-			// 位置更新
-			//m_Pos.x += (float)RandHosei;
-			m_Pos.y += MOVE_SPEED_PSMOKEY + (RandHosei/5);
+			m_Pos.y += 2.0f;
+			m_Pos.z = (m_Pos.z - 0.01f*m_Pos.y) - cosf(m_Rot.y - 0.25);
 			
 			////	サイズ更新
 			///////////////////////////////////////////////////////
-			//m_Size.x += PUP_SCALE;
-			//m_Size.y += PUP_SCALE;
+			m_Size.x += 0.5f;//05f;
+			m_Size.y += 0.5f;//05f;
 
-			m_Size.x -= 0.05f;//PUP_SCALE;
-			m_Size.y -= 0.05f;//PUP_SCALE;
-
-			////	アニメーション更新
-			///////////////////////////////////////////////////////
-			m_nAnimCntX  = 6;//(int)(m_Pos.y / (PHEIGHT_LIMIT / 6));
-			
 			////	透明度更新
 			///////////////////////////////////////////////////////
-			//m_Alpha = (1.0f /6) * (6 - m_nAnimCntX);
-			m_Color.Alpha -= PALPHA_MINUS;
+			m_aColor.Alpha -= 0.02f;//PALPHA_MINUS_SMOKE01;
 		
-			////	高度制限と終了処理
+			m_nAnimCntX = 6;
+
+			////	終了条件
 			///////////////////////////////////////////////////////
-			if(PHEIGHT_LIMIT <= m_Pos.y && m_Color.Alpha<= 0.0f)
+			if(m_aColor.Alpha<= 0.0f)
 			{
 				// 終了処理
-				Release();
-				return;
+				m_bEndFlugE = true;
 			}
 
 			break;
 
-		////	煙画像(アニメーションなし)
+		////	煙エフェクト(アニメーションなし_プレイヤ死亡時)
 		////////////////////////////////////////////////////////////////////////////////////////////
 		case ETYPE_SMOKE01 :
 			
@@ -429,7 +559,7 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 			
 			////	回転値更新
 			///////////////////////////////////////////////////////
-			int RandHoseiHugou = rand()%2;
+			RandHoseiHugou = rand()%2;
 			if(RandHoseiHugou == 0)
 			{m_Rot.z += 0.002f;}
 			else if(rand()%2 == 1)
@@ -437,19 +567,49 @@ void CEffect2D::TypeUpdate(EFFECTTYPE etype)
 		
 			////	サイズ更新
 			///////////////////////////////////////////////////////
-			m_Size.x += PUP_SCALE;
-			m_Size.y += PUP_SCALE;
+			m_Size.x += PUP_SCALE_SMOKE01;
+			m_Size.y += PUP_SCALE_SMOKE01;
 			
 			////	透明度更新
 			///////////////////////////////////////////////////////
-			m_Color.Red -= PALPHA_MINUS;
-			m_Color.Green -= PALPHA_MINUS;
-			m_Color.Blue -= PALPHA_MINUS;
-			m_Color.Alpha -= PALPHA_MINUS;			
+			m_aColor.Red	-= PALPHA_MINUS_SMOKE01;
+			m_aColor.Green	-= PALPHA_MINUS_SMOKE01;
+			m_aColor.Blue	-= PALPHA_MINUS_SMOKE01;
+			m_aColor.Alpha	-= PALPHA_MINUS_SMOKE01;		
 			
 			////	高度制限と終了処理
 			///////////////////////////////////////////////////////
-			if(PHEIGHT_LIMIT <= m_Pos.y || m_Color.Alpha<= 0.0f)
+			if(PHEIGHT_LIMIT_SMOKE01 <= m_Pos.y || m_aColor.Alpha<= 0.0f)
+			{
+				// 終了処理
+				m_bEndFlugP = true;
+			}
+
+			break;
+
+		////	煙エフェクト(アニメーションなし_プレイヤ生存時)
+		////////////////////////////////////////////////////////////////////////////////////////////
+		case ETYPE_SMOKE02 :
+			
+			////	位置更新
+			///////////////////////////////////////////////////////
+			m_Pos.y += 0.0f;
+			
+			////	サイズ更新
+			///////////////////////////////////////////////////////
+			m_Size.x += PUP_SCALE_SMOKE02;
+			m_Size.y += PUP_SCALE_SMOKE02;
+			
+			////	透明度更新
+			///////////////////////////////////////////////////////
+			m_aColor.Red	+= PALPHA_PLUS_SMOKE02;
+			m_aColor.Green	+= PALPHA_PLUS_SMOKE02;
+			m_aColor.Blue	+= PALPHA_PLUS_SMOKE02;
+			m_aColor.Alpha	+= PALPHA_PLUS_SMOKE02;			
+			
+			////	高度制限と終了処理
+			///////////////////////////////////////////////////////
+			if(PHEIGHT_LIMIT_SMOKE02 <= m_Pos.y || m_aColor.Alpha<= 0.0f)
 			{
 				// 終了処理
 				m_bEndFlugP = true;
@@ -531,13 +691,13 @@ void CEffect2D::SetEndFlugP(bool flug)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CEffect2D *CEffect2D::Create(VECTOR3 pos, VECTOR2 size, EFFECTTYPE etype)
+CEffect2D *CEffect2D::Create(VECTOR3 pos, VECTOR3 rot, VECTOR2 size, EFFECTTYPE etype)
 {
 	CEffect2D *effect;
 
 	effect = new CEffect2D;
 
-	effect->Init(pos, size, etype);
+	effect->Init(pos, rot, size, etype);
 
 	return effect;
 }
