@@ -53,6 +53,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +95,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="podium.h" />
+    <ClInclude Include="scene2DGLAnimation.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="meshfield.h" />
     <ClInclude Include="game.h" />
@@ -115,6 +117,7 @@
     <ClInclude Include="sceneModel.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skybox.h" />
+    <ClInclude Include="slope.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="square.h" />
     <ClInclude Include="textureManager.h" />
@@ -141,6 +144,7 @@
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="podium.cpp" />
+    <ClCompile Include="scene2DGLAnimation.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="meshfield.cpp" />
     <ClCompile Include="game.cpp" />
@@ -159,6 +163,7 @@
     <ClCompile Include="sceneModel.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="slope.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="square.cpp" />
     <ClCompile Include="textureManager.cpp" />

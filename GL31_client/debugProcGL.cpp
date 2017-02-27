@@ -80,7 +80,7 @@ void CDebugProcGL::Update(void)
 //=============================================================================
 void CDebugProcGL::Draw(void)
 {
-/*	int Length = 0;
+	int Length = 0;
 	int list = 0;
 	std::vector<int> parag;					// 改行情報
 	std::vector<int>::iterator itrParag;	// イテレータ
@@ -179,7 +179,7 @@ void CDebugProcGL::Draw(void)
 	// 保存マトリックスの取り出し
 	glPopMatrix();
 
-	glPopAttrib();*/
+	glPopAttrib();
 	
 	// メモリ初期化
 	memset(m_aStrDebug, 0, sizeof(m_aStrDebug));
@@ -194,7 +194,7 @@ void CDebugProcGL::Draw(void)
 void CDebugProcGL::DebugProc(char* format, ...)
 {
 	va_list list;
-	char str[256];
+	char str[65535];
 
 	va_start(list, format);
 

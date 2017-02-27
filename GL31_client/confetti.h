@@ -40,7 +40,7 @@ typedef struct
 class CConfetti : public CScene3DGL
 {
 public:
-	CConfetti(int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
+	CConfetti(bool ifListAdd = true, int priority = 1, OBJTYPE objtype = OBJTYPE_NONE);
 	~CConfetti();
 	
 	void	Init(VECTOR3 pos, VECTOR2 size , VECTOR3 resistance, VECTOR3 rotaxis , float r , float g , float b , float a ,char* texName );

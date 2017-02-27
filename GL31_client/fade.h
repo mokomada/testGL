@@ -42,10 +42,11 @@ public:
 
 	static void			Start(CMode *nextMode, int nextModeState, FADE_STATE fadeState = FS_OUT);
 
+	static FADE_STATE	m_FadeState;
+
 private:
 	static CMode		*m_NextMode;
 	static int			m_NextModeState;
-	static FADE_STATE	m_FadeState;
 	static int			m_FadeTime;		// フェードの時間
 
 	static float		m_Alpha;

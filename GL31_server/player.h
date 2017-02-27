@@ -54,12 +54,12 @@ public:
 	CPlayer(bool ifListAdd = true, int priority = PRIORITY_PLAYER, OBJTYPE objType = OBJTYPE_PLAYER);
 	~CPlayer();
 
-	void	Init(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	void	Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot);
 	void	Uninit(bool isLast = false);
 	void	Update(void);
 	void	Draw(void);
 
-	static CPlayer	*Create(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f));
+	static CPlayer	*Create(uint whatPlayer = 0, VECTOR3 pos = VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3 rot = VECTOR3(0.0f, 0.0f, 0.0f));
 
 	VECTOR3 GetVec(void) { return m_Move; }
 	VECTOR3 GetOldPos(void) { return m_OldPos; }
@@ -67,6 +67,8 @@ public:
 	void AddGauge(float Gauge) { m_Gauge += Gauge; }
 	void SetGauge(float Gauge) { m_Gauge = Gauge; }
 	int GetPlayerLife(void);
+	void HitBullet(void);
+	void SetRotMove(VECTOR3 rot) { m_MoveDirection = rot; }
 
 private:
 	uint	m_PlayerNumber;	// ÉvÉåÉCÉÑÅ[î‘çÜ

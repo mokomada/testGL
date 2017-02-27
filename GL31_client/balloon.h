@@ -28,7 +28,7 @@
 class CBalloon : public CSceneBillboardGL
 {
 public:
-	CBalloon(PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
+	CBalloon(bool ifListAdd = true, PRIORITY priority = PRIORITY_BALLOON, OBJTYPE objType = OBJTYPE_NONE);
 	~CBalloon();
 
 	static CBalloon * Create( VECTOR3 pos , float r , float g , float b , float a , CSceneGL * parent );

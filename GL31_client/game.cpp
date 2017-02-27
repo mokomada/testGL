@@ -30,6 +30,9 @@
 #include "textureManager.h"
 #include "skybox.h"
 #include "bulletgauge.h"
+#include "slope.h"
+#include "network.h"
+
 //=============================================================================
 //	プロトタイプ
 //=============================================================================
@@ -37,8 +40,9 @@
 //=============================================================================
 //	静的メンバ変数
 //=============================================================================
-CMeshfield	*CGame::m_Meshfield;	// メッシュフィールド
+CMeshfield			*CGame::m_Meshfield;	// メッシュフィールド
 vector<CPlayer*>	CGame::m_Player;		// プレイヤーのインスタンス
+int					CGame::m_GamaFrame;
 
 //=============================================================================
 //	関数名	:Init
@@ -50,60 +54,44 @@ void CGame::Init(void)
 {
 	CTextureManager::Init();
 	CSkybox::Create();
-//	m_Meshfield	= CMeshfield::Create();
-	// 3D
+	//m_Meshfield	= CMeshfield::Create();
+	//3D
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 
-	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -100.0f)));
-	m_Player.push_back(CPlayer::Create(1, VECTOR3(-100.0f, 50.0f, 0.0f)));
-	m_Player.push_back(CPlayer::Create(2, VECTOR3(100.0f, 50.0f, 0.0f)));
-	m_Player.push_back(CPlayer::Create(3, VECTOR3(0.0f, 50.0f, 100.0f)));
+	m_Player.push_back(CPlayer::Create(0, VECTOR3(0.0f, 50.0f, -1800.0f) , VECTOR3(0.0f,0.0f,0.0f)));
+	m_Player.push_back(CPlayer::Create(1, VECTOR3(-1800.0f, 50.0f, 0.0f) , VECTOR3(0.0f, PI * 0.5f, 0.0f) ));
+	m_Player.push_back(CPlayer::Create(2, VECTOR3(1800.0f, 50.0f, 0.0f) , VECTOR3(0.0f, -PI * 0.5f, 0.0f) ));
+	m_Player.push_back(CPlayer::Create(3, VECTOR3(0.0f, 50.0f, 1800.0f) , VECTOR3(0.0f, PI, 0.0f) ));
+
+	//VECTOR3 Pos[4] = {VECTOR3(-200, 100, 500), VECTOR3(200, 100, 500) , VECTOR3(-200, 0, 0), VECTOR3(200, 0, 0) };
+	//CSlope::Create(Pos, VECTOR3(0, 0, 0), "./data/TEXTURE/rocklong.png");
 
 	//CSceneBillboardGL::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR2(100.0f, 100.0f), "./data/TEXTURE/rock.png");
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rocklong.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(500.0f, 50.0f, 500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-500.0f, 50.0f, 500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(500.0f, 50.0f, -500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-500.0f, 50.0f, -500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, 2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, -2500.0f), VECTOR3(5000.0f, 100.0f, 1.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-2500.0f, 50.0f, 0.0f), VECTOR3(1.0f, 100.0f, 5000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(500.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-500.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(1100.0f, 50.0f, 1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-1100.0f, 50.0f, 1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(1000.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1000.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(1100.0f, 50.0f, -1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-1100.0f, 50.0f, -1700.0f), VECTOR3(1200.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(1000.0f, 50.0f, 1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1000.0f, 50.0f, 1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(1000.0f, 50.0f, -1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1000.0f, 50.0f, -1000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(1700.0f, 50.0f, -1100.0f), VECTOR3(50.0f, 100.0f, 1200.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(1700.0f, 50.0f, 1100.0f), VECTOR3(50.0f, 100.0f, 1200.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(1500.0f, 50.0f, 1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1500.0f, 50.0f, 1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(1500.0f, 50.0f, -1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1500.0f, 50.0f, -1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-1700.0f, 50.0f, -1100.0f), VECTOR3(50.0f, 100.0f, 1200.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-1700.0f, 50.0f, 1100.0f), VECTOR3(50.0f, 100.0f, 1200.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -1500.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(1500.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-1500.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3( 0.0f, 50.0f, 1000.0f), VECTOR3(1000.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, -1000.0f), VECTOR3(1000.0f, 100.0f, 50.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(0.0f, 50.0f, 2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(0.0f, 50.0f, -2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(2000.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-2000.0f, 50.0f, 0.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(1000.0f, 50.0f, 0.0f), VECTOR3(50.0f, 100.0f, 1000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(-1000.0f, 50.0f, 0.0f), VECTOR3(50.0f, 100.0f, 1000.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	CSquare::Create(VECTOR3(2000.0f, 50.0f, 2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-2000.0f, 50.0f, 2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(2000.0f, 50.0f, -2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
-	CSquare::Create(VECTOR3(-2000.0f, 50.0f, -2000.0f), VECTOR3(100.0f, 100.0f, 100.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	CSquare::Create(VECTOR3(0.0f, 50.0f, 0.0f), VECTOR3(500.0f, 100.0f, 500.0f), "./data/TEXTURE/rock.png", VECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//CWall::Create(VECTOR3(0.0f, 0.0f, 0.0f), VECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 50.0f, "./data/TEXTURE/rock.png");
 
@@ -112,12 +100,14 @@ void CGame::Init(void)
 //	CConfetti::MasterCreate( );
 
 	// 2D
-	CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
+	//CScore::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT * 0.1f, 0.0f), VECTOR2(400.0f, 100.0f), 4);
 	CBulletGauge::Create( );
 	//CTrickGauge::Create( );
 
 	// BGM再生
 	CSound::Play(SOUNDLABEL_BGM000);
+
+	CNetwork::Clear();
 }
 
 //=============================================================================
@@ -147,6 +137,8 @@ void CGame::Update(void)
 	{
 		CFade::Start(new CResult, MODE_RESULT, FS_OUT);
 	}
+
+	m_GamaFrame++;
 }
 
 //=============================================================================

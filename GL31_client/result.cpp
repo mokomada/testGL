@@ -25,6 +25,8 @@
 #include "effect2D.h"
 #include "particle.h"
 #include "textureManager.h"
+#include "network.h"
+
 //=============================================================================
 //	関数名	:Init
 //	引数	:無し
@@ -39,7 +41,6 @@ void CResult::Init(void)
 	camera->m_CameraState.posR = VECTOR3(20.0f, 70.0f, 0.0f);
 	
 	CTextureManager::Init();
-	int A[4] = { 3 , 2 , 1 , 0};	//4位,3位,2位,1位
 
 	CMeshfield::Create(VECTOR3(0.0f, 0.0f, 0.0f));
 	m_Model[0] = CSceneModel::Create("./data/MODEL/car1.obj" , VEC3_ZERO);
@@ -47,15 +48,15 @@ void CResult::Init(void)
 	m_Model[2] = CSceneModel::Create("./data/MODEL/car3.obj" , VEC3_ZERO);
 	m_Model[3] = CSceneModel::Create("./data/MODEL/car4.obj" , VEC3_ZERO);
 
-	m_Model[ A[0] ] ->SetPos(VECTOR3(0.0f , 100.0f , 0.0f));	//一位
-	m_Model[ A[1] ] ->SetPos(VECTOR3(75.0f , 70.0f , 0.0f));	//二位
-	m_Model[ A[2] ] ->SetPos(VECTOR3(-75.0f ,50.0f , 0.0f));	//三位
-	m_Model[ A[3] ] ->SetPos(VECTOR3(-300.0f , 0.0f , -400.0f));	//四位
+	m_Model[CNetwork::m_Ranking[0]] ->SetPos(VECTOR3(0.0f , 100.0f , 0.0f));	//一位
+	m_Model[CNetwork::m_Ranking[1]] ->SetPos(VECTOR3(75.0f , 70.0f , 0.0f));	//二位
+	m_Model[CNetwork::m_Ranking[2]] ->SetPos(VECTOR3(-75.0f ,50.0f , 0.0f));	//三位
+	m_Model[CNetwork::m_Ranking[3]] ->SetPos(VECTOR3(-300.0f , 0.0f , -400.0f));	//四位
 
-		// パーティクルオブジェクト生成
-	m_Particle = CParticle::Create(VECTOR3(150.0f , 0.0f , -100.0f), VECTOR2(80.0f,80.0f), PARTICLE_DEADSMOKE, m_Model[0]);
+	// パーティクルオブジェクト生成
+	m_Particle = CParticle::Create(VECTOR3(-300.0f, 0.0f, -400.0f), VECTOR2(80.0f,80.0f), PARTICLE_DEADSMOKE, m_Model[CNetwork::m_Ranking[3]]);
 
-	m_Model[A[3]] ->SetRot(VECTOR3(1.3f ,0.0f,0.0f));
+	m_Model[CNetwork::m_Ranking[3]] ->SetRot(VECTOR3(1.3f ,0.0f,0.0f));
 	//CEffect2D::Create(m_Model[A[3]] ->GetPos() , VECTOR2(500.0f -  m_Model[A[3]] ->GetPos().y , 500.0f -  m_Model[A[3]] ->GetPos().y) , ETYPE_EXPLODE01);
 	/*m_ResultBG = CScene2DGL::Create(VECTOR3(SCREEN_WIDTH_HALF, SCREEN_HEIGHT_HALF, 0.0f),
 		VECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT),

@@ -36,14 +36,17 @@ public:
 	CBullet(bool ifListAdd = true, int priority = PRIORITY_BULLET, OBJTYPE objType = OBJTYPE_BULLET);
 	~CBullet();
 
-	static CBullet * Create( VECTOR3 pos , VECTOR3 rot , float speed , int color );
+	static CBullet * Create(int playerNum, int bulletNum, VECTOR3 pos, VECTOR3 rot, float speed, int color);
 
-	void Init( VECTOR3 pos , VECTOR3 rot , float speed , int color );
-	void Uninit( void );
-	void Update( void );
-	void Draw( void );
+	void Init(int playerNum, int bulletNum, VECTOR3 pos, VECTOR3 rot, float speed, int color);
+	void Uninit(void);
+	void Update(void);
+	void Draw(void);
 
-	void SetLife( int life ) { m_life = life; }
+	void SetLife(int life) { m_life = life; }
+
+	int m_PlayerNum;
+	int m_BulletNum;
 
 private:
 	int m_playerNumber;	//ÉvÉåÉCÉÑÅ[Ç™âΩPÇ©Çï€ë∂

@@ -9,10 +9,14 @@
 //
 //=============================================================================
 #include "number.h"
+#include "bullet.h"
+#include "player.h"
 
 //=============================================================================
 //	マクロ定義
 //=============================================================================
+const int PLAYER_NUM		= 4;
+const int BULLET_NUM_MAX	= 1000;
 
 //=============================================================================
 //	構造体
@@ -30,6 +34,12 @@ typedef struct {
 	char*	pAddr;	// 通信先IPアドレス
 } CONNECT_PROTOCOL;		// 通信情報
 
+typedef struct {
+	CBullet*	Instance;
+	bool		IfUninit;
+	bool		Use;
+}BULLETDATA;
+
 //=============================================================================
 //	クラス定義
 //=============================================================================
@@ -39,6 +49,7 @@ public:
 	static uint __stdcall ReceveThread(void *);
 
 	static void	Init(void);
+	static void	Clear(void);
 	static void	Uninit(void);
 	static void	Update(void);
 	static void	Draw(void);
@@ -46,11 +57,17 @@ public:
 	static void SendData(char* format, ...);
 	static void ReceiveData(void);
 
+	static BULLETDATA m_BulletInstance[PLAYER_NUM][BULLET_NUM_MAX];
+	static vector<int> m_Ranking;
 
 private:
 	static void RemoveDataTag(char* data);
 	static void	ReadConnetProtocol(CONNECT_PROTOCOL *cp);
 	static void	SetPlayerData(void);
+	static void	CreateBullet(void);
+	static void	DeleteBullet(void);
+	static void	PlayerDamage(void);
+	static void	GameEnd(void);
 	static CONNECT_PROTOCOL	m_ConnectProtocol;	// 送信先情報
 
 	static bool	m_ifInitialize;	// Init()が終了したかどうか

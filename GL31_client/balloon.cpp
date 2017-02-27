@@ -39,7 +39,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CBalloon::CBalloon(PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(priority, objType)
+CBalloon::CBalloon(bool ifListAdd, PRIORITY priority, OBJTYPE objType) : CSceneBillboardGL(ifListAdd, priority, objType)
 {
 	m_deleteFlag = false;
 	m_u = 0.0f;

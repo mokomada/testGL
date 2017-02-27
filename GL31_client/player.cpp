@@ -6,6 +6,9 @@
 //	作成日		2016/12/5
 //
 //=============================================================================
+
+#define _CRT_SECURE_NO_WARNINGS // fscanf/fopenの警告対策
+
 //=============================================================================
 //	インクルード
 //=============================================================================
@@ -54,7 +57,7 @@ CPlayer::~CPlayer()
 //	戻り値	:無し
 //	説明	:初期化処理を行うと共に、初期位置を設定する。
 //=============================================================================
-void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
+void CPlayer::Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CRendererGL	*renderer	= CManager::GetRendererGL();
 
@@ -62,11 +65,11 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 	m_PlayerNumber = whatPlayer;
 
 	// 各種初期化
-	SetPos(VECTOR3(pos.x, pos.y, pos.z));
-	SetRot(VECTOR3(0.0f, 0.0f, 0.0f));
+	SetPos(pos);
+	SetRot(rot);
 	m_Move			= VECTOR3(0.0f, 0.0f, 0.0f);
 	m_RotMove		= VECTOR3(0.0f, 0.0f, 0.0f);
-	m_MoveDirection = VECTOR3(0.0f, 0.0f, 0.0f);
+	m_MoveDirection = rot;
 	m_bJump			= false;
 	m_Scale			= VECTOR3(1.0f, 1.0f, 1.0f);
 
@@ -114,6 +117,11 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos)
 
 	// パーティクルオブジェクト生成
 	m_pParticle = CParticle::Create(VECTOR3(m_Pos.x,-100.0f,0.0f), VECTOR2(100.0f,100.0f), PARTICLE_DEADSMOKE, this);
+
+	FILE* fp;
+
+	fp = fopen("./data/ranking.txt", "w");
+	fclose(fp);
 }
 
 //=============================================================================
@@ -262,8 +270,8 @@ void CPlayer::Update(void)
 
 			static float rot = 0.0f;
 			rot += 0.08f;
-			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2, 0.0f));
-			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2, 0.0f));
+			Scene3D[0]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * 0.2f, 0.0f));
+			Scene3D[1]->SetRot(VECTOR3(-PI * 0.55f, sinf(rot) * -0.2f, 0.0f));
 
 			/*Scene3D[0]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y) * m_Radius));
 			Scene3D[1]->SetPos(VECTOR3(m_Pos.x + cosf(m_Rot.y + PI) * m_Radius, m_Pos.y, m_Pos.z + sinf(m_Rot.y + PI) * m_Radius));*/
@@ -286,7 +294,25 @@ void CPlayer::Update(void)
 			{
 				if ( m_Gauge > 100 )
 				{
-					CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					int bulletNum = 0;
+
+					// 取得したデータをセット
+					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
+					{
+						if(CNetwork::m_BulletInstance[m_PlayerNumber][j].Use == false)
+						{
+							CNetwork::m_BulletInstance[m_PlayerNumber][j].Instance
+								= CBullet::Create(m_PlayerNumber, j, m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+							CNetwork::m_BulletInstance[m_PlayerNumber][j].Use = true;
+							bulletNum = j;
+							break;
+						}
+					}
+
+					CNetwork::SendData("TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
+						m_PlayerNumber, bulletNum, m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+
+					//CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);
 				}
 			}
@@ -316,6 +342,15 @@ void CPlayer::Update(void)
 		m_RotMove.z = (rand() % 40) * 0.01f;
 		m_bJump = true;
 		m_DeadFlag = true;
+
+
+		FILE* fp;
+
+		fp = fopen("./data/ranking.txt", "a");
+
+		fprintf(fp, "%d\n", m_PlayerNumber);
+
+		fclose(fp);
 	}
 
 	m_Rot.x += m_RotMove.x;
@@ -384,8 +419,10 @@ void CPlayer::Update(void)
 		}
 	}
 
-	//CCollision::GetInstance()->PlayerToPlayer(m_Pos, m_Radius, VECTOR3(0.0f, 0.0f, 500.0f), 50.0f);
+	//CCollision::GetInstance()->SphereToBoard(m_Pos, m_Radius, VECTOR3(-200.0f, 100.0f, 500.0f), VECTOR3(200.0f, 100.0f, 500.0f), VECTOR3(-200.0f, 0.0f, 0.0f), VECTOR3(200.0f, 0.0f, 0.0f));
 
+	//CCollision::GetInstance()->PlayerToPlayer(m_Pos, m_Radius, VECTOR3(0.0f, 0.0f, 500.0f), 50.0f);
+	/*
 	if (m_PlayerNumber != CManager::GetWhatPlayer())
 	{
 		for each (CSceneGL* list in CSceneGL::GetList(PRIORITY_BULLET))
@@ -399,19 +436,20 @@ void CPlayer::Update(void)
 														 // 球ヒットエフェクト生成
 					CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
 					CBullet *bullet = (CBullet*)list;
-					bullet->SetLife(0);
+					bullet->SetLife(-100);
 				}
 				//				Release();
 				//				return;
 			}
 		}
-	}
+	}*/
 
 	// プレイヤーの高さを設定
 
 	if (m_Pos.y < 25.0f)
 	{
 		m_Pos.y = 25.0f;
+		m_Move.y = 0;
 		m_RotMove.x = 0;
 		m_RotMove.y = 0;
 		m_RotMove.z = 0;
@@ -428,6 +466,7 @@ void CPlayer::Update(void)
 
 	// テスト用 8～0キーで被弾エフェクト それぞれ長さが違う
 	// ※8の倍数-4～8の倍数-2に設定すると最初の点滅が3～1フレーム短くなるので注意。基本は4フレーム毎にONOFFを切り替える点滅
+/*	デバッグ用機能は出荷よー
 	if(CInput::GetKeyboardTrigger(DIK_8) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 30;
 	}
@@ -436,7 +475,7 @@ void CPlayer::Update(void)
 	}
 	else if(CInput::GetKeyboardTrigger(DIK_0) && m_HitEffectTime <= 0) {
 		m_HitEffectTime = 120;
-	}
+	}*/
 
 	// 被弾エフェクト処理を実行
 	if(m_HitEffectTime > 0) {
@@ -449,12 +488,17 @@ void CPlayer::Update(void)
 	// 自プレイヤーの場合、位置を送信
 	if (m_PlayerNumber == CManager::GetWhatPlayer())
 	{
-		char str[1024] = { NULL };
+		static char str[1024] = { NULL };
+		if(CGame::GetFrame() % 1 == 0)
+		{
+			memset(str, NULL, sizeof(str));
 
-		sprintf(str, "1, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-			m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
+			sprintf(str, "TAG:1, %d, POS(%f, %f, %f), ROT(%f, %f, %f), VEC(%f, %f, %f)",
+				CManager::GetWhatPlayer(), m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, m_Move.x, m_Move.y, m_Move.z);
 
-		CNetwork::SendData(str);
+			CNetwork::SendData(str);
+		}
+		//CDebugProcGL::DebugProc("%s\n", str);
 	}
 
 	//風船更新
@@ -467,6 +511,19 @@ void CPlayer::Update(void)
 	}
 
 	Model->Update();
+}
+
+void CPlayer::HitBullet(void)
+{
+	int life = m_pLife->GetLife();
+
+	if(m_HitEffectTime <= 0) {
+		m_pLife->HitDamage();
+		if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
+
+											// 球ヒットエフェクト生成
+		CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
+	}
 }
 
 //=============================================================================
@@ -494,9 +551,9 @@ void CPlayer::Draw(void)
 		glDisable(GL_CULL_FACE);
 
 		glEnable(GL_DEPTH_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.1);
+		glAlphaFunc(GL_GEQUAL, 0.1f);
 		glEnable(GL_ALPHA_TEST);
-		glDepthMask(GL_FALSE);
+//		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL_BLEND);
 		Scene3D[0]->Draw();
@@ -507,7 +564,7 @@ void CPlayer::Draw(void)
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glDepthMask(TRUE);
+//		glDepthMask(TRUE);
 		glDepthMask(GL_TRUE);
 
 		glEnable(GL_CULL_FACE);
@@ -519,7 +576,7 @@ void CPlayer::Draw(void)
 	//風船描画
 	m_pLife->Draw();
 
-	CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
+	//CDebugProcGL::DebugProc("chara:(%.2f:%.2f:%.2f)\n", m_Pos.x, m_Pos.y, m_Pos.z);
 }
 
 //=============================================================================
@@ -528,13 +585,13 @@ void CPlayer::Draw(void)
 //	戻り値	:無し
 //	説明	:インスタンス生成を行うと共に、初期位置を設定する。
 //=============================================================================
-CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos)
+CPlayer *CPlayer::Create(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 {
 	CPlayer *player;
 
 	player = new CPlayer;
 
-	player->Init(whatPlayer, pos);
+	player->Init(whatPlayer, pos, rot);
 
 	return player;
 }

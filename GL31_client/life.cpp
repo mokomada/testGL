@@ -38,7 +38,7 @@
 *	戻り値：なし
 *	説明  ：コンストラクタ
 ******************************************************************************/
-CLife::CLife(PRIORITY priority, OBJTYPE objType) : CSceneGL(priority, objType)
+CLife::CLife(bool ifListAdd, int priority, OBJTYPE objType) : CSceneGL(ifListAdd, priority, objType)
 {
 }
 /******************************************************************************
