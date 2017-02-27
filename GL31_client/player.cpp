@@ -370,7 +370,7 @@ void CPlayer::Update(void)
     float test = 0;//(float)(rand()%50 - 100.0f);
 
     // エフェクト生成
-    CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
+    CEffect2D::Create(VECTOR3(m_Pos.x + test , m_Pos.y , m_Pos.z) , VECTOR3(0.0f,0.0f,0.0f),VECTOR2(500.0f -  m_Pos.y , 500.0f -  m_Pos.y) , ETYPE_EXPLODE01);
   }
 
   // 以下(else if)は同期設定次第で後で消す。
@@ -509,6 +509,13 @@ void CPlayer::Update(void)
 	{
 		m_pParticle->Update();
 	}
+	
+	else
+	{
+		CEffect2D::Create(m_Pos, m_Rot,VECTOR2(25.0f, 25.0f), ETYPE_SMOKE00);
+	}
+
+
 
 	Model->Update();
 }
@@ -522,7 +529,7 @@ void CPlayer::HitBullet(void)
 		if(life > 1) m_HitEffectTime = 120; // ライフが1の時に被弾する＝吹っ飛びエフェクトに移行するので点滅処理はなし
 
 											// 球ヒットエフェクト生成
-		CEffect2D::Create(m_Pos, VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
+		CEffect2D::Create(m_Pos, VECTOR3(0.0f,0.0f,0.0f),VECTOR2(100.0f, 100.0f), ETYPE_EXPLODE01);
 	}
 }
 

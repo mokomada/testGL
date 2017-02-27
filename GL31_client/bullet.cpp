@@ -137,7 +137,7 @@ void CBullet::Update( void )
 
 	if( m_life <= 0 )	//õ–½‚ªs‚«‚½‚çíœ
 	{
-		if(m_life > -100) CEffect2D::Create( m_Pos , VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );
+		if(m_life > -100) CEffect2D::Create( m_Pos , VECTOR3(0.0f,0.0f,0.0f), VECTOR2( 50.0f , 50.0f ) , ETYPE_EXPLODE00 );
 		m_myShadow->DeleteFlag( true );	//‰e‚Ìíœƒtƒ‰ƒO‚ğON
 		CNetwork::m_BulletInstance[m_PlayerNum][m_BulletNum].Use = false;
 		CSceneGL::Release();
