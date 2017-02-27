@@ -80,6 +80,7 @@ void CPlayer::Init(uint whatPlayer, VECTOR3 pos, VECTOR3 rot)
 	m_HitEffectTime = 0; // 被弾エフェクト時間の初期化
 	m_DrawOnOffFlag = true; // 描画処理のONOFFフラグをONに
 	m_DeadFlag = false; // 死亡フラグをOFFに
+	m_BulletNumber = 0;
 
 	switch(m_PlayerNumber)
 	{
@@ -295,23 +296,14 @@ void CPlayer::Update(void)
 			{
 				if ( m_Gauge > 100 )
 				{
-					int bulletNum = 0;
-
-					// 取得したデータをセット
-					for(int j = 0 ; j < BULLET_NUM_MAX ; j++)
-					{
-						if(CNetwork::m_BulletInstance[m_PlayerNumber][j].Use == false)
-						{
-							CNetwork::m_BulletInstance[m_PlayerNumber][j].Instance
-								= CBullet::Create(m_PlayerNumber, j, m_Pos, m_Rot, 10.0f, m_PlayerNumber);
-							CNetwork::m_BulletInstance[m_PlayerNumber][j].Use = true;
-							bulletNum = j;
-							break;
-						}
-					}
+					CNetwork::m_BulletInstance[m_PlayerNumber][m_BulletNumber].Instance
+						= CBullet::Create(m_PlayerNumber, m_BulletNumber, m_Pos, m_Rot, 10.0f, m_PlayerNumber);
+					CNetwork::m_BulletInstance[m_PlayerNumber][m_BulletNumber].Use = true;
 
 					CNetwork::SendData("TAG:2, %d, %d, POS(%f, %f, %f), ROT(%f, %f, %f), %f",
-						m_PlayerNumber, bulletNum, m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+						m_PlayerNumber, m_BulletNumber, m_Pos.x, m_Pos.y, m_Pos.z, m_Rot.x, m_Rot.y, m_Rot.z, 10.0f);
+
+					m_BulletNumber++;
 
 					//CBullet::Create(m_Pos, m_Rot, 10.0f, m_PlayerNumber);
 					AddGauge(-100);

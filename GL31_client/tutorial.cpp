@@ -58,7 +58,7 @@ void CTutorial::Update(void)
 {
 	// シーン更新
 	CSceneGL::UpdateAll();
-	if(KT_ENTER)
+	if( ( KT_ENTER || KT_SPACE || KT_X || KT_J || KT_L ) && CFade::m_FadeState == FS_NONE )
 	{
 		CFade::Start(new CGame, MODE_GAME, FS_OUT);
 	}

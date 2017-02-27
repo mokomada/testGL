@@ -26,7 +26,7 @@
 #include "particle.h"
 #include "textureManager.h"
 #include "network.h"
-
+#include "confetti.h"
 //=============================================================================
 //	関数名	:Init
 //	引数	:無し
@@ -66,6 +66,7 @@ void CResult::Init(void)
 		".\\data\\TEXTURE\\pushbutton000.tga");
 		
 
+	CConfetti::MasterCreate( );
 
 	/*************************************
 	--------------表彰台------------------
@@ -109,7 +110,7 @@ void CResult::Update(void)
 	m_Particle->Update();
 	// シーン更新
 	CSceneGL::UpdateAll();
-	if(KT_ENTER)
+	if(( KT_ENTER || KT_SPACE || KT_X || KT_J || KT_L ) && CFade::m_FadeState == FS_NONE )
 	{
 		CFade::Start(new CTitle, MODE_TITLE, FS_OUT);
 	}
